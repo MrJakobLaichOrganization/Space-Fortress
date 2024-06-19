@@ -9,6 +9,7 @@ Dwarf Fortress but in space!
 
 1. mark what you are working on right now by adding some character ("MJL") in the second box (so we don't work on the same thing at the same time)
 2. mark with "X" in the first box when you push a working and tested solution
+3. add the mark by doing a direct commit to main (this is the only exception when you are allowed to commit to main directly, this way the todo list is always in sync!)
 
 - [X] [MJL] add todo to README so we know what to work on
 - [X] [MJL] add some infos at the bottom of the README so commits are standadized and whatever else
