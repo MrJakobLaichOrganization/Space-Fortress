@@ -13,24 +13,42 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Header Files\0 Static">
+      <UniqueIdentifier>{d0fb22d8-76b9-4acb-b33b-a09ec44a3c4a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\9 Misc">
+      <UniqueIdentifier>{1e5f7b87-c405-4143-b5d2-466545c7b315}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\0 Static">
+      <UniqueIdentifier>{cdd7309f-a903-4867-9869-8a3c37428765}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\9 Misc">
+      <UniqueIdentifier>{3598e73c-70b3-4fb7-b885-e6c8d3512634}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="SimplexNoise.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\9 Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="Game.cpp">
+      <Filter>Source Files\0 Static</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="entt.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="SimplexNoise.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\9 Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="entt.h">
+      <Filter>Header Files\9 Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="Game.h">
+      <Filter>Header Files\0 Static</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
