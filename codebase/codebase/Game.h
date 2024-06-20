@@ -5,6 +5,9 @@
 * main game file, this is static, this stores all the relevant data.
 */
 
+#include "LoggingManager.h"
+#include "GraphicsManager.h"
+
 class Game
 {
 public:
@@ -23,11 +26,14 @@ public:
 
 	void SetRunning(bool R);
 	bool IsRunning();
+
+	LoggingManager LOGGER;
+	GraphicsManager GRAPHICS;
+
 private:
 	Game() {}
 
 	int initState = -1;
-	int exitState = -1;
 	bool running = false;
 };
 

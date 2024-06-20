@@ -124,7 +124,7 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -132,8 +132,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="GraphicsManager.cpp" />
+    <ClCompile Include="LoggingManager.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="SimplexNoise.cpp" />
+    <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -141,7 +144,10 @@
   <ItemGroup>
     <ClInclude Include="entt.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="GraphicsManager.h" />
+    <ClInclude Include="LoggingManager.h" />
     <ClInclude Include="SimplexNoise.h" />
+    <ClInclude Include="Window.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
