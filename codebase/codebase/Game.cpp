@@ -135,6 +135,8 @@ int Game::Loop()
 			// here do game loop code stuff
 			EVENTS.Events();
 			GRAPHICS.Render();
+
+			TIME.Update();
 		}
 	}
 

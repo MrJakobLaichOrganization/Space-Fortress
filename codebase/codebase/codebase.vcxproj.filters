@@ -54,6 +54,9 @@
     <ClCompile Include="EventsManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="TimeManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -78,6 +81,9 @@
       <Filter>Header Files\9 Misc</Filter>
     </ClInclude>
     <ClInclude Include="EventsManager.h">
+      <Filter>Header Files\1 Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="TimeManager.h">
       <Filter>Header Files\1 Managers</Filter>
     </ClInclude>
   </ItemGroup>
