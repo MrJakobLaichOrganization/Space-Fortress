@@ -31,6 +31,12 @@
     <Filter Include="Source Files\1 Managers">
       <UniqueIdentifier>{9aa7024a-18f4-4d4c-94ed-20e0158f86cf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\2 GUI Elements">
+      <UniqueIdentifier>{780c7a3a-d23f-49d7-8ce2-299dcfaa8802}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\2 GUI Elements">
+      <UniqueIdentifier>{b8fe96ae-5561-41d6-8718-84cb37926614}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -52,10 +58,10 @@
       <Filter>Source Files\9 Misc</Filter>
     </ClCompile>
     <ClCompile Include="EventsManager.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\1 Managers</Filter>
     </ClCompile>
     <ClCompile Include="TimeManager.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\1 Managers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

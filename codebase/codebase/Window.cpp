@@ -26,7 +26,7 @@ int Window::Init()
 		}
 		else
 		{
-			Game::S().LOGGER.log("Initializing of " + WindowTitle + " successfully.");
+			Game::S().LOGGER.log("Initialized " + WindowTitle + " successfully.");
 		}
 		SDLWindowID = SDL_GetWindowID(SDLWindow);
 	}
@@ -43,7 +43,7 @@ int Window::Init()
 		}
 		else
 		{
-			Game::S().LOGGER.log("Initializing of Renderer successfully.");
+			Game::S().LOGGER.log("Initialized Renderer successfully.");
 			SDL_SetRenderDrawColor(SDLRenderer, 0, 0, 0, 255);
 			SDL_SetRenderDrawBlendMode(SDLRenderer, SDL_BLENDMODE_BLEND);
 		}
