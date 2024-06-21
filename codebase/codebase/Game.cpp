@@ -8,6 +8,7 @@
 
 int Game::Init()
 {
+	// the initState int can be improved with some smartly placed ++ and -- for exit but I'm not gonna bother with that for now
 	initState = 0;
 	running = false;
 
@@ -17,21 +18,36 @@ int Game::Init()
 		{
 			initState = 1;
 		}
+		else
+		{
+			LOGGER.log("LoggingManager has been loaded successfully.");
+		}
+	}
+
+	if (initState == 0)
+	{
+		if (TIME.Init() != 0)
+		{
+			LOGGER.log("TimeManager couldn't initialize.");
+			initState = 2;
+		}
+		else
+		{
+			LOGGER.log("TimeManager has been loaded successfully.");
+		}
 	}
 
 	if (initState == 0)
 	{
 		if (SDL_Init(SDL_INIT_EVERYTHING) < 0)
 		{
-			//LAUNCH_DATA["LOADING_STATE"]["SDL_INIT_SUCCESSFULL"] = false;
 			std::string ret_val = SDL_GetError();
 			LOGGER.log("SDL didn't load correctly.");
 			LOGGER.log("Error: " + ret_val);
-			initState = 2;
+			initState = 3;
 		}
 		else
 		{
-			//LAUNCH_DATA["LOADING_STATE"]["SDL_INIT_SUCCESSFULL"] = true;
 			LOGGER.log("SDL has been loaded successfully.");
 		}
 	}
@@ -41,15 +57,13 @@ int Game::Init()
 		int imgFlags = IMG_INIT_PNG;
 		if (!(IMG_Init(imgFlags) & imgFlags))
 		{
-			//LAUNCH_DATA["LOADING_STATE"]["SDL_INIT_SUCCESSFULL"] = false;
 			std::string ret_val = IMG_GetError();
 			LOGGER.log("SDL_image didn't load correctly.");
 			LOGGER.log("Error: " + ret_val);
-			initState = 3;
+			initState = 4;
 		}
 		else
 		{
-			//LAUNCH_DATA["LOADING_STATE"]["SDL_IMAGE_INIT_COUNT"] = true;
 			LOGGER.log("SDL_image has been loaded successfully.");
 		}
 	}
@@ -58,15 +72,13 @@ int Game::Init()
 	{
 		if (TTF_Init() == -1)
 		{
-			//LAUNCH_DATA["LOADING_STATE"]["SDL_INIT_SUCCESSFULL"] = false;
 			std::string ret_val = TTF_GetError();
 			LOGGER.log("SDL_ttf didn't load correctly.");
 			LOGGER.log("Error: " + ret_val);
-			initState = 4;
+			initState = 5;
 		}
 		else
 		{
-			//LAUNCH_DATA["LOADING_STATE"]["SDL_TTF_INIT_COUNT"] = true;
 			LOGGER.log("SDL_ttf has been loaded successfully.");
 		}
 	}
@@ -76,7 +88,11 @@ int Game::Init()
 		if (GRAPHICS.Init() != 0)
 		{
 			LOGGER.log("GraphicsManager couldn't initialize.");
-			initState = 5;
+			initState = 6;
+		}
+		else
+		{
+			LOGGER.log("GraphicsManager has been loaded successfully.");
 		}
 	}
 
@@ -85,7 +101,11 @@ int Game::Init()
 		if (EVENTS.Init() != 0)
 		{
 			LOGGER.log("EventsManager couldn't initialize.");
-			initState = 6;
+			initState = 7;
+		}
+		else
+		{
+			LOGGER.log("EventsManager has been loaded successfully.");
 		}
 	}
 
@@ -97,25 +117,29 @@ int Game::Exit()
 	running = false; // just to make sure it's not running anymore.
 
 	// because init fail could mean some resources have not been exited out we close out the failed system as well just to be sure.
-	if (initState >= 6)
+	if (initState >= 7)
 	{
 		EVENTS.Exit();
 	}
-	if (initState >= 5)
+	if (initState >= 6)
 	{
 		GRAPHICS.Exit();
 	}
-	if (initState >= 4)
+	if (initState >= 5)
 	{
 		TTF_Quit();
 	}
-	if (initState >= 3)
+	if (initState >= 4)
 	{
 		IMG_Quit();
 	}
-	if (initState >= 2)
+	if (initState >= 3)
 	{
 		SDL_Quit();
+	}
+	if (initState >= 2)
+	{
+		TIME.Exit();
 	}
 	if (initState >= 1)
 	{
