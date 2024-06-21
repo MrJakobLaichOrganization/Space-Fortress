@@ -51,6 +51,9 @@
     <ClCompile Include="Window.cpp">
       <Filter>Source Files\9 Misc</Filter>
     </ClCompile>
+    <ClCompile Include="EventsManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -73,6 +76,9 @@
     </ClInclude>
     <ClInclude Include="Window.h">
       <Filter>Header Files\9 Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="EventsManager.h">
+      <Filter>Header Files\1 Managers</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

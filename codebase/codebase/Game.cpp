@@ -75,8 +75,17 @@ int Game::Init()
 	{
 		if (GRAPHICS.Init() != 0)
 		{
-			LOGGER.log("GraphicManager couldn't initialize.");
+			LOGGER.log("GraphicsManager couldn't initialize.");
 			initState = 5;
+		}
+	}
+
+	if (initState == 0)
+	{
+		if (EVENTS.Init() != 0)
+		{
+			LOGGER.log("EventsManager couldn't initialize.");
+			initState = 6;
 		}
 	}
 
@@ -88,6 +97,10 @@ int Game::Exit()
 	running = false; // just to make sure it's not running anymore.
 
 	// because init fail could mean some resources have not been exited out we close out the failed system as well just to be sure.
+	if (initState >= 6)
+	{
+		EVENTS.Exit();
+	}
 	if (initState >= 5)
 	{
 		GRAPHICS.Exit();
@@ -120,7 +133,8 @@ int Game::Loop()
 		while (running)
 		{
 			// here do game loop code stuff
-			//running = false;
+			EVENTS.Events();
+			GRAPHICS.Render();
 		}
 	}
 

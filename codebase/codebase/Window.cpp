@@ -80,6 +80,13 @@ void Window::Update()
 
 void Window::Render()
 {
+	SDL_RenderClear(SDLRenderer);
+	// call every GUI elemts render function and just let them render whatever they want to render
+	//for (auto GUIObject : GUIObjects)
+	//{
+	//	GUIObject->Render();
+	//}
+	SDL_RenderPresent(SDLRenderer);
 }
 
 void Window::setTitle(std::string WT)
