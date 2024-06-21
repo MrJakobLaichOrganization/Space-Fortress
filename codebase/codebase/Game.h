@@ -8,6 +8,7 @@
 #include "LoggingManager.h"
 #include "GraphicsManager.h"
 #include "EventsManager.h"
+#include "TimeManager.h"
 
 class Game
 {
@@ -31,6 +32,7 @@ public:
 	LoggingManager LOGGER;
 	GraphicsManager GRAPHICS;
 	EventsManager EVENTS;
+	TimeManager TIME;
 
 private:
 	Game() {}

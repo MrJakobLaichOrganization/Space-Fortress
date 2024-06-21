@@ -137,6 +137,7 @@
     <ClCompile Include="LoggingManager.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="SimplexNoise.cpp" />
+    <ClCompile Include="TimeManager.cpp" />
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -149,6 +150,7 @@
     <ClInclude Include="GraphicsManager.h" />
     <ClInclude Include="LoggingManager.h" />
     <ClInclude Include="SimplexNoise.h" />
+    <ClInclude Include="TimeManager.h" />
     <ClInclude Include="Window.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
