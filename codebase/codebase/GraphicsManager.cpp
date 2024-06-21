@@ -42,4 +42,5 @@ void GraphicsManager::Update()
 
 void GraphicsManager::Render()
 {
+	gameWindow.Render();
 }
