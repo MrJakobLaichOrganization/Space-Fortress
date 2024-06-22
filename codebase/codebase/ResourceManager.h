@@ -2,6 +2,8 @@
 #define RESOURCE_MANAGER_H
 
 #include "LoggingManager.h"
+#include "Manager.h"
+#include "Game.h"
 #include <string>
 #include <filesystem>
 #include <optional>
@@ -9,8 +11,8 @@
 #include <fstream>
 #include <memory>
 
-/* This class creates an easy interface to pull json files. Can be extended to load PNG files. */
-class ResourceManager {
+/* This class creates an easy interface to pull json files. Can be extender to load PNG files. */
+class ResourceManager : public Manager {
 private:
 	/* This should be a directory. */
 	std::filesystem::path anchorPath;

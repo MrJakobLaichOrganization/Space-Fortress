@@ -3,6 +3,9 @@
 
 #include <string>
 
+// Note that the global logger exists in the `Game` class
+// Game::S().LOGGER.log is the function to use.
+
 class LoggingManager
 {
 public:
