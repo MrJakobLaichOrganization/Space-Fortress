@@ -1,12 +1,12 @@
-#include "ResourceManager.h"
+#include "JsonManager.h"
 //using namespace std::string_literals;
 
-ResourceManager::ResourceManager(std::string const path) : anchorPath(path) {
+JsonManager::JsonManager(std::string const path) : anchorPath(path) {
 }
 
-ResourceManager::~ResourceManager() = default;
+JsonManager::~JsonManager() = default;
 
-int ResourceManager::Init() {
+int JsonManager::Init() {
 	if (!std::filesystem::exists(anchorPath) || !std::filesystem::is_directory(anchorPath)) {
 		Game::S().LOGGER.log("[!] ResourceManager: Directory " + anchorPath.string() + " does not exist");
 		initState = -1;
@@ -16,7 +16,7 @@ int ResourceManager::Init() {
 	return initState;
 }
 
-std::optional<json> ResourceManager::LoadJson(std::string const fileName) const
+std::optional<json> JsonManager::LoadJson(std::string const fileName) const
 {
 	if (initState != 0) {
 		return std::nullopt;
@@ -41,18 +41,18 @@ std::optional<json> ResourceManager::LoadJson(std::string const fileName) const
 	return data;
 }
 
-int ResourceManager::Exit() {
+int JsonManager::Exit() {
 	return initState;
 }
 
-void ResourceManager::Event() {
+void JsonManager::Event() {
 
 }
 
-void ResourceManager::Render() {
+void JsonManager::Render() {
 
 }
 
-void ResourceManager::Update() {
+void JsonManager::Update() {
 
 }

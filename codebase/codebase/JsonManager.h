@@ -15,14 +15,14 @@
 using json = nlohmann::json;
 
 /* This class creates an easy interface to pull json files */
-class ResourceManager : public Manager {
+class JsonManager : public Manager {
 private:
 	/* This should be a directory containing the json files. */
 	std::filesystem::path anchorPath;
 	int initState = -1;
 public:
-	ResourceManager(std::string const path);
-	~ResourceManager();
+	JsonManager(std::string const path);
+	~JsonManager();
 
 	int Init();
 	int Exit();
