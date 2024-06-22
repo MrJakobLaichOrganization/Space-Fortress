@@ -152,6 +152,7 @@
     <ClInclude Include="FileFunctions.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GraphicsManager.h" />
+    <ClInclude Include="GUIBaseElement.h" />
     <ClInclude Include="LoggingManager.h" />
     <ClInclude Include="Manager.h" />
     <ClInclude Include="JsonManager.h" />

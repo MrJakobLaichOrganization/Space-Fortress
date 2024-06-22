@@ -70,7 +70,7 @@
       <Filter>Source Files\9 Misc</Filter>
     </ClCompile>
     <ClCompile Include="TestGUI.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\2 GUI Elements</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -112,6 +112,12 @@
     </ClInclude>
     <ClInclude Include="Manager.h">
       <Filter>Header Files\1 Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="TestGUI.h">
+      <Filter>Header Files\2 GUI Elements</Filter>
+    </ClInclude>
+    <ClInclude Include="GUIBaseElement.h">
+      <Filter>Header Files\2 GUI Elements</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
