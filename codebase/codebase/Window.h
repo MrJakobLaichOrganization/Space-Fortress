@@ -23,6 +23,10 @@ public:
 	void setPosition(SDL_Rect P);
 	SDL_Rect getPosition() { return { WindowPosX, WindowPosY, WindowSizeX, WindowSizeY }; }
 
+	SDL_Window* getSDLWindow() { return SDLWindow; }
+	SDL_Renderer* getSDLRenderer() { return SDLRenderer; }
+	Uint32 getSDLWindowID() { return SDLWindowID; }
+		
 private:
 	int initState = -1;
 	// SDL window specific information

@@ -24,6 +24,12 @@ public:
 	void loadAllSpriteSurfaces();
 	void loadAllSpriteTextures();
 
+	SDL_Surface* getSurface(std::string spriteSurfaceName);
+	SDL_Texture* getTexture(std::string spriteTextureName);
+
+	// we don't render surfaces, that's CPU stuff and I won't stand for it :bedge:
+	void renderTexture(SDL_Texture* spriteTexture, SDL_Rect* SourceRectangle = NULL, SDL_Rect* DestinationRectangle = NULL);
+
 private:
 	int initState = -1;
 	// Window data
