@@ -3,6 +3,7 @@
 
 #include "LoggingManager.h"
 #include "Manager.h"
+#include <nlohmann/json.hpp>
 #include "Game.h"
 #include <string>
 #include <filesystem>
@@ -11,15 +12,17 @@
 #include <fstream>
 #include <memory>
 
-/* This class creates an easy interface to pull json files. Can be extender to load PNG files. */
-class ResourceManager : public Manager {
+using json = nlohmann::json;
+
+/* This class creates an easy interface to pull json files */
+class JsonManager : public Manager {
 private:
-	/* This should be a directory. */
+	/* This should be a directory containing the json files. */
 	std::filesystem::path anchorPath;
 	int initState = -1;
 public:
-	ResourceManager(std::string const path);
-	~ResourceManager();
+	JsonManager(std::string const path);
+	~JsonManager();
 
 	int Init();
 	int Exit();
@@ -28,8 +31,8 @@ public:
 	void Update();
 	void Render();
 
-	/* Reading from a file can fail, so we return an optional. Subject to change? */
-	std::optional<std::string> ReadFile(std::string const fileName) const;
+	/* Reading from a file or parsing json can fail, so we return an optional. Error is logged. */
+	std::optional<json> LoadJson(std::string const fileName) const;
 };
 
 /*
