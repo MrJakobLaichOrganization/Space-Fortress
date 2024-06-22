@@ -11,7 +11,6 @@
 #include <fstream>
 #include <memory>
 
-
 /* This class creates an easy interface to pull json files. Can be extender to load PNG files. */
 class ResourceManager : public Manager {
 private:
@@ -29,7 +28,7 @@ public:
 	void Update();
 	void Render();
 
-	/* Reading from a file can file, so we return an optional. Subject to change? */
+	/* Reading from a file can fail, so we return an optional. Subject to change? */
 	std::optional<std::string> ReadFile(std::string const fileName) const;
 };
 
