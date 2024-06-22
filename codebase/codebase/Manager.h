@@ -2,8 +2,8 @@
 #define MANAGER_INTERFACE_H
 class Manager
 {
-public:
 	int initState = -1;
+public:
 
 	virtual int Init() = 0;
 	virtual int Exit() = 0;

@@ -63,7 +63,7 @@
     <ClCompile Include="TimeManager.cpp">
       <Filter>Source Files\1 Managers</Filter>
     </ClCompile>
-    <ClCompile Include="ResourceManager.cpp">
+    <ClCompile Include="JsonManager.cpp">
       <Filter>Source Files\1 Managers</Filter>
     </ClCompile>
     <ClCompile Include="FileFunctions.cpp">
@@ -107,7 +107,7 @@
     <ClInclude Include="TestGUI.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ResourceManager.h">
+    <ClInclude Include="JsonManager.h">
       <Filter>Header Files\1 Managers</Filter>
     </ClInclude>
     <ClInclude Include="Manager.h">

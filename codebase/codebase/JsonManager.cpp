@@ -1,4 +1,5 @@
 #include "ResourceManager.h"
+//using namespace std::string_literals;
 
 ResourceManager::ResourceManager(std::string const path) : anchorPath(path) {
 }
@@ -15,7 +16,7 @@ int ResourceManager::Init() {
 	return initState;
 }
 
-std::optional<std::string> ResourceManager::ReadFile(std::string const fileName) const
+std::optional<json> ResourceManager::LoadJson(std::string const fileName) const
 {
 	if (initState != 0) {
 		return std::nullopt;
@@ -30,9 +31,14 @@ std::optional<std::string> ResourceManager::ReadFile(std::string const fileName)
 		Game::S().LOGGER.log("[!] ResourceManager: Failed to open " + filePath.string());
 		return std::nullopt;
 	}
-	std::stringstream buffer;
-	buffer << file.rdbuf();
-	return std::move(buffer.str());
+	std::optional<json> data = std::nullopt;
+	try {
+		data = json::parse(file);
+	}
+	catch (json::exception& e) {
+		Game::S().LOGGER.log("Error while parsing JSON file at " + filePath.string() + "\n" + e.what());
+	}
+	return data;
 }
 
 int ResourceManager::Exit() {
