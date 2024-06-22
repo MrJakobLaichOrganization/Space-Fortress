@@ -132,6 +132,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="EventsManager.cpp" />
+    <ClCompile Include="FileFunctions.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GraphicsManager.cpp" />
     <ClCompile Include="LoggingManager.cpp" />
@@ -147,6 +148,7 @@
   <ItemGroup>
     <ClInclude Include="entt.h" />
     <ClInclude Include="EventsManager.h" />
+    <ClInclude Include="FileFunctions.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GraphicsManager.h" />
     <ClInclude Include="LoggingManager.h" />
