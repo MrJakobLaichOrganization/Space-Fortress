@@ -6,6 +6,9 @@
 
 #include <string>
 
+// for testing for now :bedge:
+#include "TestGUI.h"
+
 int Game::Init()
 {
 	// the initState int can be improved with some smartly placed ++ and -- for exit but I'm not gonna bother with that for now
@@ -109,6 +112,16 @@ int Game::Init()
 		}
 	}
 
+	// for testing for now lol
+	if (initState == 0)
+	{
+		TestGUI* testgui = new TestGUI();
+		if (testgui->Init() == 0)
+		{
+			GRAPHICS.getGameWindow().addGUIElement(testgui);
+		}
+	}
+
 	return initState;
 }
 
@@ -158,6 +171,8 @@ int Game::Loop()
 		{
 			// here do game loop code stuff
 			EVENTS.Events();
+			GRAPHICS.Events();
+			GRAPHICS.Updates();
 			GRAPHICS.Render();
 
 			TIME.Update();

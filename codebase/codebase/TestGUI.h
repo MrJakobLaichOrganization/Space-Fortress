@@ -1,7 +1,11 @@
 #ifndef __TESTGUI__
 #define __TESTGUI__
 
-class TestGUI
+#include <SDL.h>
+
+#include "GUIBaseElement.h"
+
+class TestGUI : public GUIBaseElement
 {
 public:
 	TestGUI();
@@ -16,6 +20,8 @@ public:
 
 private:
 	int initState = -1;
+	// GUI render stuff
+	SDL_Texture* testTexture = NULL;
 };
 
 #endif // !__TESTGUI__
