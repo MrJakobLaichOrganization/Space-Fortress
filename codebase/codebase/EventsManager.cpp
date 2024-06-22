@@ -166,7 +166,7 @@ void EventsManager::Events()
 		}
 		case SDL_WINDOWEVENT:
 		{
-			//checkWindowEvent(); // send this event to the window so it can deal with the window event stuff.
+			Game::S().GRAPHICS.getGameWindow().SDLEvents(&currentEvent);
 			break;
 		}
 		case SDL_TEXTINPUT:

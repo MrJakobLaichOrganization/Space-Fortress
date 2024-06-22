@@ -2,8 +2,13 @@
 
 #include <SDL_image.h>
 
+#define _USE_MATH_DEFINES
+#include <math.h>
+
 #include "Game.h"
 #include "FileFunctions.h"
+
+const long double TAU = 2 * M_PI;
 
 GraphicsManager::GraphicsManager()
 {
@@ -47,17 +52,24 @@ int GraphicsManager::Exit()
 	return initState;
 }
 
-void GraphicsManager::Event()
+void GraphicsManager::Events()
 {
+	gameWindow.Events();
 }
 
-void GraphicsManager::Update()
+void GraphicsManager::Updates()
 {
+	gameWindow.Updates();
 }
 
 void GraphicsManager::Render()
 {
 	gameWindow.Render();
+}
+
+void GraphicsManager::pushWindowToTop(Uint32 windowID)
+{
+	SDL_RaiseWindow(gameWindow.getSDLWindow());
 }
 
 void GraphicsManager::loadAllSpriteSurfaces()
@@ -81,7 +93,7 @@ void GraphicsManager::loadAllSpriteSurfaces()
 		else
 		{
 			Game::S().LOGGER.log("Initialized Surface " + pngOnDiskFile + " as " + pngOnDiskName + " correctly.");
-			spriteSurfaces[pngOnDiskFile] = pngSurface;
+			spriteSurfaces[pngOnDiskName] = pngSurface;
 		}
 	}
 }
@@ -139,4 +151,72 @@ SDL_Texture* GraphicsManager::getTexture(std::string spriteTextureName)
 void GraphicsManager::renderTexture(SDL_Texture* spriteTexture, SDL_Rect* SourceRectangle, SDL_Rect* DestinationRectangle)
 {
 	SDL_RenderCopy(gameWindow.getSDLRenderer(), spriteTexture, SourceRectangle, DestinationRectangle);
+}
+
+void GraphicsManager::renderLine(int SourceX, int SourceY, int DestX, int DestY)
+{
+	SDL_RenderDrawLine(gameWindow.getSDLRenderer(), SourceX, SourceY, DestX, DestY);
+}
+
+void GraphicsManager::renderFillBox(SDL_Rect* BoxRect)
+{
+	SDL_RenderFillRect(gameWindow.getSDLRenderer(), BoxRect);
+}
+
+void GraphicsManager::renderCircleBorder(int centerX, int centerY, int range, unsigned int sides)
+{
+	int cCx = centerX;
+	int cCy = centerY;
+	int cR = range;
+	unsigned int cSides = sides;
+
+	if (cSides < 3)
+	{
+		cSides = 3;
+	}
+
+	float angleIncrement = TAU / cSides;
+
+	int Lx = cCx + cR;
+	int Ly = cCy;
+
+	for (int count = 1; count < cSides + 1; count++)
+	{
+		float angle = count * angleIncrement;
+
+		int x = cCx + cos(angle) * cR;
+		int y = cCy + sin(angle) * cR;
+
+		//renderLine(WindowID, cCx, cCy, Lx, Ly);
+
+		renderLine(Lx, Ly, x, y);
+
+		Lx = x;
+		Ly = y;
+	}
+}
+
+void GraphicsManager::renderBoxBorder(SDL_Rect* BoxRect)
+{
+	SDL_RenderDrawRect(gameWindow.getSDLRenderer(), BoxRect);
+}
+
+void GraphicsManager::setDrawColor(Uint8 r, Uint8 g, Uint8 b, Uint8 a)
+{
+	SDL_SetRenderDrawColor(gameWindow.getSDLRenderer(), r, g, b, a);
+}
+
+void GraphicsManager::resetDrawColor()
+{
+	SDL_SetRenderDrawColor(gameWindow.getSDLRenderer(), 255, 255, 255, 255);
+}
+
+void GraphicsManager::setViewport(SDL_Rect* rectangle)
+{
+	SDL_RenderSetViewport(gameWindow.getSDLRenderer(), &rectangle);
+}
+
+void GraphicsManager::resetViewport()
+{
+	SDL_RenderSetViewport(gameWindow.getSDLRenderer(), NULL);
 }
