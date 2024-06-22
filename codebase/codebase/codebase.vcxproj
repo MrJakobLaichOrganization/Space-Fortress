@@ -139,6 +139,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ResourceManager.cpp" />
     <ClCompile Include="SimplexNoise.cpp" />
+    <ClCompile Include="TestGUI.cpp" />
     <ClCompile Include="TimeManager.cpp" />
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
@@ -155,6 +156,7 @@
     <ClInclude Include="Manager.h" />
     <ClInclude Include="ResourceManager.h" />
     <ClInclude Include="SimplexNoise.h" />
+    <ClInclude Include="TestGUI.h" />
     <ClInclude Include="TimeManager.h" />
     <ClInclude Include="Window.h" />
   </ItemGroup>
