@@ -1,5 +1,7 @@
 #include "GraphicsManager.h"
 
+#include <SDL_image.h>
+
 #include "Game.h"
 #include "FileFunctions.h"
 
@@ -28,6 +30,11 @@ int GraphicsManager::Init()
 	if (initState == 0)
 	{
 		loadAllSpriteSurfaces();
+	}
+
+	if (initState == 0)
+	{
+		loadAllSpriteTextures();
 	}
 
 	return initState;
@@ -60,43 +67,76 @@ void GraphicsManager::loadAllSpriteSurfaces()
 
 	Game::S().LOGGER.log("Load all Sprite Surfaces (.png format) from disk.");
 	std::string filter = ".png";
-	std::string spritePath = getFolder("sprites"); // check which path this is
-
-	//std::string graphicpath = ConfigManager::S()->DATA["SETTINGS"]["graphicpath"];
-	//for (std::string windowFolders : listThingInFolder(graphicpath))
-	//{
-	//	std::string windowFolderStem = getStemFromPath(windowFolders);
-	//	Game::S()->log("Loading Surfaces from window folder \"" + windowFolderStem + "\"");
-	//	// todo
-	//	// instead of loading all files in this folder I think I could just recursively load all files from all folders from inside each window folder
-	//	// in case I later get fucked by "too many images in one folder" stupid stuff
-	//	for (std::string thingInWindowFolder : listThingInFolder(graphicpath + "/" + windowFolderStem, filter))
-	//	{
-	//		std::string spriteStem = getStemFromPath(thingInWindowFolder);
-	//		SpriteSurfaces[windowFolderStem][spriteStem] = IMG_Load(thingInWindowFolder.c_str());
-	//		if (SpriteSurfaces[windowFolderStem][spriteStem] == NULL)
-	//		{
-	//			Game::S()->log("Could not initialize Surface for " + thingInWindowFolder);
-	//			std::string ret_val = IMG_GetError();
-	//			Game::S()->log("Error: " + ret_val);
-	//			SpriteSurfaces[windowFolderStem].erase(spriteStem);
-	//			abort = true;
-	//			break;
-	//		}
-	//		else
-	//		{
-	//			Game::S()->log("Initialized Surface " + thingInWindowFolder + " correctly.");
-	//		}
-	//	}
-
-	//	if (abort == true)
-	//	{
-	//		break;
-	//	}
-	//}
-
+	std::string spritePath = getFolder("sprites");
+	for (std::string pngOnDiskFile : getThingInFolderWithWildcard(spritePath, filter))
+	{
+		std::string pngOnDiskName = getStemFromPath(pngOnDiskFile);
+		SDL_Surface* pngSurface = IMG_Load(pngOnDiskFile.c_str());
+		if (pngSurface == NULL)
+		{
+			Game::S().LOGGER.log("Could not initialize Surface for " + pngOnDiskFile);
+			std::string ret_val = IMG_GetError();
+			Game::S().LOGGER.log("ERROR: " + ret_val);
+		}
+		else
+		{
+			Game::S().LOGGER.log("Initialized Surface " + pngOnDiskFile + " as " + pngOnDiskName + " correctly.");
+			spriteSurfaces[pngOnDiskFile] = pngSurface;
+		}
+	}
 }
 
 void GraphicsManager::loadAllSpriteTextures()
 {
+	missingTextureTexture = SDL_CreateTextureFromSurface(gameWindow.getSDLRenderer(), missingTextureSurface);
+	if (missingTextureTexture == NULL)
+	{
+		Game::S().LOGGER.log("Could not initialize Texture from \"MissingTextureSurface\", this should not happen.");
+		std::string ret_val = SDL_GetError();
+		Game::S().LOGGER.log("ERROR: " + ret_val);
+	}
+
+	Game::S().LOGGER.log("Create Textures from Surfaces.");
+	for (auto& each : spriteSurfaces)
+	{
+		std::string spriteSurfaceName = each.first;
+		SDL_Surface* spriteSurface = each.second;
+		SDL_Texture* spriteTexture = SDL_CreateTextureFromSurface(gameWindow.getSDLRenderer(), spriteSurface);
+		if (spriteTexture == NULL)
+		{
+			Game::S().LOGGER.log("Could not initialize Texture from " + spriteSurfaceName + " Surface.");
+			std::string ret_val = SDL_GetError();
+			Game::S().LOGGER.log("ERROR: " + ret_val);
+		}
+		else
+		{
+			Game::S().LOGGER.log("Initialized Texture " + spriteSurfaceName + " correctly.");
+			spriteTextures[spriteSurfaceName] = spriteTexture;
+		}
+	}
+}
+
+SDL_Surface* GraphicsManager::getSurface(std::string spriteSurfaceName)
+{
+	SDL_Surface* returnSurface = missingTextureSurface;
+	if (spriteSurfaces.contains(spriteSurfaceName))
+	{
+		returnSurface = spriteSurfaces[spriteSurfaceName];
+	}
+	return returnSurface;
+}
+
+SDL_Texture* GraphicsManager::getTexture(std::string spriteTextureName)
+{
+	SDL_Texture* returnTexture = missingTextureTexture;
+	if (spriteTextures.contains(spriteTextureName))
+	{
+		returnTexture = spriteTextures[spriteTextureName];
+	}
+	return returnTexture;
+}
+
+void GraphicsManager::renderTexture(SDL_Texture* spriteTexture, SDL_Rect* SourceRectangle, SDL_Rect* DestinationRectangle)
+{
+	SDL_RenderCopy(gameWindow.getSDLRenderer(), spriteTexture, SourceRectangle, DestinationRectangle);
 }
