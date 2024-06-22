@@ -69,6 +69,9 @@
     <ClCompile Include="FileFunctions.cpp">
       <Filter>Source Files\9 Misc</Filter>
     </ClCompile>
+    <ClCompile Include="TestGUI.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -98,14 +101,17 @@
     <ClInclude Include="TimeManager.h">
       <Filter>Header Files\1 Managers</Filter>
     </ClInclude>
-    <ClInclude Include="Manager.h">
+    <ClInclude Include="FileFunctions.h">
+      <Filter>Header Files\9 Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="TestGUI.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ResourceManager.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\1 Managers</Filter>
     </ClInclude>
-    <ClInclude Include="FileFunctions.h">
-      <Filter>Header Files\9 Misc</Filter>
+    <ClInclude Include="Manager.h">
+      <Filter>Header Files\1 Managers</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
