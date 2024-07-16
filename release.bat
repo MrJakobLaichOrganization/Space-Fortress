@@ -1,3 +1,0 @@
-
-python release.py
-PAUSE
