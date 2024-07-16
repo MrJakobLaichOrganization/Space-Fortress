@@ -1,7 +1,6 @@
-
-codebase/.vs
-codebase/x64
-codebase/packages
-codebase/codebase/x64
-Release
+build
+out
+.cache
+.idea
+.vs
 .vscode
