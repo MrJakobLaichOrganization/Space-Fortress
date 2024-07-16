@@ -11,6 +11,7 @@ option(BUILD_SHARED_LIBS "Build shared libraries" OFF)
 
 include(FetchContent)
 
+# SFML Libraries
 FetchContent_Declare(SFML
     GIT_REPOSITORY https://github.com/SFML/SFML.git
     GIT_TAG 2.6.x)
@@ -28,8 +29,16 @@ FetchContent_Declare(ImGui-SFML
     GIT_TAG 2.6.x)
 FetchContent_MakeAvailable(ImGui-SFML)
 
+# Cereal lib
+FetchContent_Declare(Cereal
+    GIT_REPOSITORY https://github.com/USCiLab/cereal.git
+    GIT_TAG v1.3.2)
+set(SKIP_PERFORMANCE_COMPARISON ON CACHE BOOL "Skip building performance sandbox comparison (requires boost)" FORCE)
+FetchContent_MakeAvailable(Cereal)
+unset(SKIP_PERFORMANCE_COMPARISON)
+
 add_executable (Game "src/main.cpp")
-target_link_libraries(Game PRIVATE sfml-graphics ImGui-SFML::ImGui-SFML)
+target_link_libraries(Game PRIVATE sfml-graphics ImGui-SFML::ImGui-SFML cereal)
 target_compile_features(Game PRIVATE cxx_std_20)
 set_property(TARGET Game PROPERTY CXX_STANDARD 20)
 
