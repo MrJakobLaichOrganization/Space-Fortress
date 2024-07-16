@@ -28,7 +28,7 @@ FetchContent_Declare(ImGui-SFML
     GIT_TAG 2.6.x)
 FetchContent_MakeAvailable(ImGui-SFML)
 
-add_executable (Game main.cpp)
+add_executable (Game "src/main.cpp")
 target_link_libraries(Game PRIVATE sfml-graphics ImGui-SFML::ImGui-SFML)
 target_compile_features(Game PRIVATE cxx_std_20)
 set_property(TARGET Game PROPERTY CXX_STANDARD 20)
