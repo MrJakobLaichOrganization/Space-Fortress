@@ -33,9 +33,13 @@ FetchContent_MakeAvailable(ImGui-SFML)
 FetchContent_Declare(Cereal
     GIT_REPOSITORY https://github.com/USCiLab/cereal.git
     GIT_TAG v1.3.2)
-set(SKIP_PERFORMANCE_COMPARISON ON CACHE BOOL "Skip building performance sandbox comparison (requires boost)" FORCE)
+set(SKIP_PERFORMANCE_COMPARISON ON)
+set(BUILD_DOC OFF)
+set(BUILD_SANDBOX OFF)
 FetchContent_MakeAvailable(Cereal)
 unset(SKIP_PERFORMANCE_COMPARISON)
+unset(BUILD_DOC)
+unset(BUILD_SANDBOX)
 
 add_executable (Game "src/main.cpp")
 target_link_libraries(Game PRIVATE sfml-graphics ImGui-SFML::ImGui-SFML cereal)
