@@ -6,8 +6,8 @@ int main()
 {
 	sf::RenderWindow window(sf::VideoMode(800, 600), "My window");
 
-	Tilemap tilemap("test.png", 8, 8, 800, 600);
-	tilemap.SetSprite({4, 4}, 3);
+	Tilemap tilemap("test.png", {8, 8}, {800, 600});
+	tilemap.SetTile({4, 4}, 3);
 
 	while (window.isOpen())
 	{
@@ -20,7 +20,7 @@ int main()
 				window.close();
 				break;
 			case sf::Event::Resized:
-				tilemap.Resize(event.size.width, event.size.height);
+				tilemap.Resize({event.size.width, event.size.height});
 				break;
 			}
 		}

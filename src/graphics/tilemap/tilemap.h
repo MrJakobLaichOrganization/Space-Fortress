@@ -17,7 +17,7 @@ class Tilemap : public sf::Drawable
 
 	const sf::Texture &GetTexture() const { return tx; }
 
-	void SetSprite(const sf::Vector2u &pos, std::uint32_t idx);
+	void SetTile(const sf::Vector2u &pos, std::uint32_t idx);
 
 	//! TODO: actually make it work, this shit sucks hard
 	void Resize(const sf::Vector2u &dims);

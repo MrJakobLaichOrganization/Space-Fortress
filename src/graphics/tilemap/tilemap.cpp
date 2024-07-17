@@ -47,7 +47,7 @@ Tilemap::Tilemap(const std::string &fPath, const sf::Vector2<std::uint8_t> &tile
 	}
 }
 
-void Tilemap::SetSprite(const sf::Vector2u &pos, std::uint32_t tileIdx)
+void Tilemap::SetTile(const sf::Vector2u &pos, std::uint32_t tileIdx)
 {
 	std::uint32_t idx = pos.y * tileCount.x + pos.x;
 	assert(idx < tileIndices.size());
