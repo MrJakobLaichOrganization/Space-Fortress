@@ -45,6 +45,7 @@ add_executable (Game "src/main.cpp")
 target_link_libraries(Game PRIVATE sfml-graphics ImGui-SFML::ImGui-SFML cereal)
 target_compile_features(Game PRIVATE cxx_std_20)
 set_property(TARGET Game PROPERTY CXX_STANDARD 20)
+target_include_directories(Game PRIVATE "./src/")
 
 if(WIN32)
     add_custom_command(
