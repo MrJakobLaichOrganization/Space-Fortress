@@ -1,26 +1,26 @@
 #include "tilemap.h"
 #include <cassert>
 
-Tilemap::Tilemap(const std::string &fPath, std::uint8_t spriteW,
-				 std::uint8_t spriteH, std::uint32_t windowW_,
-				 std::uint32_t windowH_)
-	: tileDims{spriteW, spriteH},
-	  tileCount{windowW_ / spriteW, windowH_ / spriteH}
+Tilemap::Tilemap(const std::string &fPath,
+				 const sf::Vector2<std::uint8_t> &tileDims_,
+				 const sf::Vector2u &windowDims)
+	: tileDims{tileDims_},
+	  tileCount{windowDims.x / tileDims_.y, windowDims.y / tileDims_.x}
 {
-	if (windowW_ > windowH_)
+	if (windowDims.x > windowDims.y)
 	{
-		factor.x = static_cast<float>(windowH_) / windowW_;
+		factor.x = static_cast<float>(windowDims.y) / windowDims.x;
 		factor.x = 1;
 	}
-	else if (windowH_ > windowW_)
+	else if (windowDims.y > windowDims.x)
 	{
-		factor.y = static_cast<float>(windowW_) / windowH_;
+		factor.y = static_cast<float>(windowDims.x) / windowDims.y;
 		factor.x = 1;
 	}
 	defaultFactor = factor;
 
 	tx.loadFromFile(fPath);
-	std::uint32_t tileNumber = tileCount.x * tileCount.y;
+	const std::uint32_t tileNumber = tileCount.x * tileCount.y;
 	verts.setPrimitiveType(sf::Quads);
 	verts.resize(4 * tileCount.x * tileCount.y);
 	tileIndices.resize(tileNumber, 0);
@@ -48,9 +48,9 @@ Tilemap::Tilemap(const std::string &fPath, std::uint8_t spriteW,
 	}
 }
 
-void Tilemap::SetSprite(const sf::Vector2u &pos, std::uint32_t tileIdx)
+void Tilemap::SetTile(const sf::Vector2u &pos, std::uint32_t tileIdx)
 {
-	std::uint32_t idx = pos.y * tileCount.x + pos.x;
+	const std::uint32_t idx = pos.y * tileCount.x + pos.x;
 	assert(idx < tileIndices.size());
 	if (tileIndices[idx] == tileIdx)
 	{
@@ -78,17 +78,17 @@ void Tilemap::SetSprite(const sf::Vector2u &pos, std::uint32_t tileIdx)
 		sf::Vector2f((tu + 1) * tileDims.x, (tv + 1) * tileDims.y);
 	quad[3].texCoords = sf::Vector2f(tu * tileDims.x, (tv + 1) * tileDims.y);
 }
-void Tilemap::Resize(std::uint32_t w, std::uint32_t h)
+void Tilemap::Resize(const sf::Vector2u &dims)
 {
 	//! TODO: you gotta account for the width and height of the tilemap too
-	if (w > h)
+	if (dims.x > dims.y)
 	{
-		factor.x = defaultFactor.x - (h / static_cast<float>(w));
+		factor.x = defaultFactor.x - (dims.y / static_cast<float>(dims.x));
 		factor.y = defaultFactor.y;
 	}
-	else if (h > w)
+	else if (dims.y > dims.x)
 	{
-		factor.y = defaultFactor.x - w / static_cast<float>(h);
+		factor.y = defaultFactor.x - (dims.x / static_cast<float>(dims.y));
 		factor.x = defaultFactor.y;
 	}
 
@@ -96,10 +96,10 @@ void Tilemap::Resize(std::uint32_t w, std::uint32_t h)
 	{
 		for (std::size_t x = 0; x < tileCount.x; ++x)
 		{
-			std::uint32_t tileIdx = tileIndices[y * tileCount.x + x];
+			const std::uint32_t tileIdx = tileIndices[y * tileCount.x + x];
 
-			auto tu = tileIdx % (tx.getSize().x / tileDims.x);
-			auto tv = tileIdx / (tx.getSize().x / tileDims.x);
+			const auto tu = tileIdx % (tx.getSize().x / tileDims.x);
+			const auto tv = tileIdx / (tx.getSize().x / tileDims.x);
 
 			sf::Vertex *quad = &verts[(y * tileCount.x + x) * 4];
 
