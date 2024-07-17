@@ -1,7 +1,8 @@
 #include "tilemap.h"
 #include <cassert>
 
-Tilemap::Tilemap(const std::string &fPath, const sf::Vector2<std::uint8_t> &tileDims_,
+Tilemap::Tilemap(const std::string &fPath,
+				 const sf::Vector2<std::uint8_t> &tileDims_,
 				 const sf::Vector2u &windowDims)
 	: tileDims{tileDims_},
 	  tileCount{windowDims.x / tileDims_.y, windowDims.y / tileDims_.x}
@@ -19,7 +20,7 @@ Tilemap::Tilemap(const std::string &fPath, const sf::Vector2<std::uint8_t> &tile
 	defaultFactor = factor;
 
 	tx.loadFromFile(fPath);
-	std::uint32_t tileNumber = tileCount.x * tileCount.y;
+	const std::uint32_t tileNumber = tileCount.x * tileCount.y;
 	verts.setPrimitiveType(sf::Quads);
 	verts.resize(4 * tileCount.x * tileCount.y);
 	tileIndices.resize(tileNumber, 0);
@@ -49,7 +50,7 @@ Tilemap::Tilemap(const std::string &fPath, const sf::Vector2<std::uint8_t> &tile
 
 void Tilemap::SetTile(const sf::Vector2u &pos, std::uint32_t tileIdx)
 {
-	std::uint32_t idx = pos.y * tileCount.x + pos.x;
+	const std::uint32_t idx = pos.y * tileCount.x + pos.x;
 	assert(idx < tileIndices.size());
 	if (tileIndices[idx] == tileIdx)
 	{
@@ -95,10 +96,10 @@ void Tilemap::Resize(const sf::Vector2u &dims)
 	{
 		for (std::size_t x = 0; x < tileCount.x; ++x)
 		{
-			std::uint32_t tileIdx = tileIndices[y * tileCount.x + x];
+			const std::uint32_t tileIdx = tileIndices[y * tileCount.x + x];
 
-			auto tu = tileIdx % (tx.getSize().x / tileDims.x);
-			auto tv = tileIdx / (tx.getSize().x / tileDims.x);
+			const auto tu = tileIdx % (tx.getSize().x / tileDims.x);
+			const auto tv = tileIdx / (tx.getSize().x / tileDims.x);
 
 			sf::Vertex *quad = &verts[(y * tileCount.x + x) * 4];
 
