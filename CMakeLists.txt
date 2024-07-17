@@ -41,7 +41,7 @@ unset(SKIP_PERFORMANCE_COMPARISON)
 unset(BUILD_DOC)
 unset(BUILD_SANDBOX)
 
-add_executable (Game "src/main.cpp")
+add_executable (Game "src/main.cpp" "src/graphics/tilemap/tilemap.h" "src/graphics/tilemap/tilemap.cpp")
 target_link_libraries(Game PRIVATE sfml-graphics ImGui-SFML::ImGui-SFML cereal)
 target_compile_features(Game PRIVATE cxx_std_20)
 set_property(TARGET Game PROPERTY CXX_STANDARD 20)
