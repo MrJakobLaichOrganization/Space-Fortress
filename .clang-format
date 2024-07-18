@@ -2,8 +2,9 @@
 Language: Cpp
 AccessModifierOffset: -2
 AlignAfterOpenBracket: Align
-AlignArrayOfStructures: None
+AlignArrayOfStructures: Right
 AlignConsecutiveAssignments:
+<<<<<<< Updated upstream
   Enabled: false
   AcrossEmptyLines: false
   AcrossComments: false
@@ -27,22 +28,52 @@ AlignConsecutiveMacros:
   AcrossComments: false
   AlignCompound: false
   PadOperators: false
+=======
+  Enabled:         true
+  AcrossEmptyLines: false
+  AcrossComments:  true
+  AlignCompound:   true
+  PadOperators:    true
+AlignConsecutiveBitFields:
+  Enabled:         true
+  AcrossEmptyLines: false
+  AcrossComments:  true
+AlignConsecutiveDeclarations:
+  Enabled:         true
+  AcrossEmptyLines: false
+  AcrossComments:  true
+  AlignFunctionPointers: true
+AlignConsecutiveMacros:
+  Enabled:         true
+  AcrossEmptyLines: false
+  AcrossComments:  true
+>>>>>>> Stashed changes
 AlignConsecutiveShortCaseStatements:
   Enabled: false
   AcrossEmptyLines: false
   AcrossComments: false
   AlignCaseColons: false
+<<<<<<< Updated upstream
 AlignEscapedNewlines: Right
 AlignOperands: Align
 AlignTrailingComments:
   Kind: Always
   OverEmptyLines: 0
+=======
+AlignEscapedNewlines: LeftWithLastLine
+AlignOperands:   Align
+AlignTrailingComments:
+  Kind:            Always
+  OverEmptyLines:  1
+>>>>>>> Stashed changes
 AllowAllArgumentsOnNextLine: true
 AllowAllParametersOfDeclarationOnNextLine: true
 AllowShortBlocksOnASingleLine: Never
+AllowShortCaseExpressionOnASingleLine: false
 AllowShortCaseLabelsOnASingleLine: false
-AllowShortEnumsOnASingleLine: true
-AllowShortFunctionsOnASingleLine: All
+AllowShortCompoundRequirementOnASingleLine: true
+AllowShortEnumsOnASingleLine: false
+AllowShortFunctionsOnASingleLine: Inline
 AllowShortIfStatementsOnASingleLine: Never
 AllowShortLambdasOnASingleLine: All
 AllowShortLoopsOnASingleLine: false
@@ -76,8 +107,13 @@ BraceWrapping:
   SplitEmptyNamespace: true
 BreakAfterAttributes: Never
 BreakAfterJavaFieldAnnotations: false
+<<<<<<< Updated upstream
 BreakArrays: true
 BreakBeforeBinaryOperators: None
+=======
+BreakArrays:     true
+BreakBeforeBinaryOperators: true
+>>>>>>> Stashed changes
 BreakBeforeConceptDeclarations: Always
 BreakBeforeBraces: Allman
 BreakBeforeInlineASMColon: OnlyMultiline
