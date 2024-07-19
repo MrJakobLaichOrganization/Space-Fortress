@@ -1,13 +1,16 @@
-#include <graphics/tilemap/tilemap.h>
+#include <graphics/tilemap.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Window/Event.hpp>
+#include "block.hpp"
 
 int main()
 {
 	sf::RenderWindow window(sf::VideoMode(800, 600), "My window");
 
-	Tilemap tilemap("test.png", {8, 8}, {800, 600});
-	tilemap.SetTile({4, 4}, 3);
+	Tilemap tilemap("tilesheet.png", {64, 64}, {12, 9});
+	BlockGrid grid({12, 9}, &tilemap);
+
+	grid.SetBlockType(1, {1, 2});
 
 	while (window.isOpen())
 	{
@@ -18,9 +21,6 @@ int main()
 			{
 			case sf::Event::Closed:
 				window.close();
-				break;
-			case sf::Event::Resized:
-				tilemap.Resize({event.size.width, event.size.height});
 				break;
 			}
 		}
