@@ -5,23 +5,22 @@
 
 int main()
 {
-	sf::RenderWindow window(sf::VideoMode(800, 600), "My window");
+	sf::RenderWindow window(sf::VideoMode({800, 600}), "My window");
 
-	Tilemap tilemap("tilesheet.png", {64, 64}, {12, 9});
+	auto tileTexture = sf::Texture::loadFromFile("tilesheet.png").value();
+
+	Tilemap tilemap(tileTexture, {64, 64}, {12, 9});
 	BlockGrid grid({12, 9}, &tilemap);
 
 	grid.SetBlockType(1, {1, 2});
 
 	while (window.isOpen())
 	{
-		sf::Event event;
-		while (window.pollEvent(event))
+		while (const auto event = window.pollEvent())
 		{
-			switch (event.type)
+			if (event->is<sf::Event::Closed>())
 			{
-			case sf::Event::Closed:
 				window.close();
-				break;
 			}
 		}
 

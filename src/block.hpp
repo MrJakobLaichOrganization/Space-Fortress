@@ -1,4 +1,4 @@
-#include <cstdint>
+ #include <cstdint>
 #include <string>
 #include <vector>
 #include <SFML/System/Vector2.hpp>

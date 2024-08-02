@@ -12,16 +12,14 @@
 class Tilemap : public sf::Drawable
 {
   public:
-	Tilemap(const std::string &fPath, const sf::Vector2<std::uint8_t> &tileDims,
+	Tilemap(const sf::Texture& tx, const sf::Vector2<std::uint8_t> &tileDims,
 			const sf::Vector2u &tileCount);
-
-	const sf::Texture &GetTexture() const { return tx; }
 
 	void SetTile(std::uint32_t idx, std::uint32_t tileIdx);
 	void SetTile(const sf::Vector2u &pos, std::uint32_t tileIdx);
 
   private:
-	sf::Texture tx;
+	const sf::Texture& tx;
 	// Pixel sizes of individual tiles
 	sf::Vector2<std::uint8_t> tileDims;
 	// Tile count in width height

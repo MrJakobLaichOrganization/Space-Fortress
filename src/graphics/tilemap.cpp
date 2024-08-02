@@ -2,14 +2,13 @@
 #include <cassert>
 #include <cmath>
 
-Tilemap::Tilemap(const std::string &fPath,
+Tilemap::Tilemap(const sf::Texture &tx,
 				 const sf::Vector2<std::uint8_t> &tileDims_,
 				 const sf::Vector2u &tileCount_)
-	: tileDims{tileDims_}, tileCount{tileCount_}
+	: tx{tx}, tileDims{tileDims_}, tileCount{tileCount_}
 {
-	tx.loadFromFile(fPath);
 	const std::uint32_t tileNumber = tileCount.x * tileCount.y;
-	verts.setPrimitiveType(sf::Quads);
+	verts.setPrimitiveType(sf::PrimitiveType::Triangles);
 	verts.resize(4 * tileCount.x * tileCount.y);
 	tileIndices.resize(tileNumber, 0);
 
