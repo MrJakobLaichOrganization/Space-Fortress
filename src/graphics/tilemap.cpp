@@ -9,27 +9,14 @@ Tilemap::Tilemap(const sf::Texture &tx,
 {
 	const std::uint32_t tileNumber = tileCount.x * tileCount.y;
 	verts.setPrimitiveType(sf::PrimitiveType::Triangles);
-	verts.resize(4 * tileCount.x * tileCount.y);
+	verts.resize(tileCount.x * tileCount.y * 6);
 	tileIndices.resize(tileNumber, 0);
 
 	for (std::size_t y = 0; y < tileCount.y; ++y)
 	{
 		for (std::size_t x = 0; x < tileCount.x; ++x)
 		{
-			sf::Vertex *quad = &verts[(y * tileCount.x + x) * 4];
-
-			quad[0].position = sf::Vector2f(x * tileDims.x, y * tileDims.y);
-			quad[1].position =
-				sf::Vector2f((x + 1) * tileDims.x, y * tileDims.y);
-			quad[2].position =
-				sf::Vector2f((x + 1) * tileDims.x, (y + 1) * tileDims.y);
-			quad[3].position =
-				sf::Vector2f(x * tileDims.x, (y + 1) * tileDims.y);
-
-			quad[0].texCoords = sf::Vector2f(0, 0);
-			quad[1].texCoords = sf::Vector2f(tileDims.x, 0);
-			quad[2].texCoords = sf::Vector2f(tileDims.x, tileDims.y);
-			quad[3].texCoords = sf::Vector2f(0, tileDims.y);
+			SetTile(sf::Vector2u(x, y), 0);
 		}
 	}
 }
@@ -50,21 +37,24 @@ void Tilemap::SetTile(std::uint32_t idx, std::uint32_t tileIdx) {
 		idx / tileCount.x
 	};
 
-	sf::Vertex *quad = &verts[(pos.y * tileCount.x + pos.x) * 4];
+	auto* vert = &verts[(pos.y * tileCount.x + pos.x) * 6];
 
-	quad[0].position = sf::Vector2f(pos.x * tileDims.x, pos.y * tileDims.y);
-	quad[1].position =
+	vert[0].position = sf::Vector2f(pos.x * tileDims.x, pos.y * tileDims.y);
+	vert[1].position =
 		sf::Vector2f((pos.x + 1) * tileDims.x, pos.y * tileDims.y);
-	quad[2].position =
+	vert[2].position =
 		sf::Vector2f((pos.x + 1) * tileDims.x, (pos.y + 1) * tileDims.y);
-	quad[3].position =
+	vert[3].position =
 		sf::Vector2f(pos.x * tileDims.x, (pos.y + 1) * tileDims.y);
 
-	quad[0].texCoords = sf::Vector2f(tu * tileDims.x, tv * tileDims.y);
-	quad[1].texCoords = sf::Vector2f((tu + 1) * tileDims.x, tv * tileDims.y);
-	quad[2].texCoords =
+	vert[0].texCoords = sf::Vector2f(tu * tileDims.x, tv * tileDims.y);
+	vert[1].texCoords = sf::Vector2f((tu + 1) * tileDims.x, tv * tileDims.y);
+	vert[2].texCoords =
 		sf::Vector2f((tu + 1) * tileDims.x, (tv + 1) * tileDims.y);
-	quad[3].texCoords = sf::Vector2f(tu * tileDims.x, (tv + 1) * tileDims.y);
+	vert[3].texCoords = sf::Vector2f(tu * tileDims.x, (tv + 1) * tileDims.y);
+
+	vert[4] = vert[0];
+	vert[5] = vert[2];
 }
 void Tilemap::SetTile(const sf::Vector2u &pos, std::uint32_t tileIdx)
 {
