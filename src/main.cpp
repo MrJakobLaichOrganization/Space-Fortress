@@ -7,7 +7,7 @@ int main()
 {
 	sf::RenderWindow window(sf::VideoMode({800, 600}), "My window");
 
-	auto tileTexture = sf::Texture::loadFromFile("tilesheet.png").value();
+	auto tileTexture = sf::Texture::loadFromFile(ASSETS_DIR "/TileMap_SF/tileset_sf.png").value();
 
 	Tilemap tilemap(tileTexture, {64, 64}, {12, 9});
 	BlockGrid grid({12, 9}, &tilemap);

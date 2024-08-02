@@ -48,3 +48,5 @@ target_link_libraries(Game PRIVATE sfml-graphics ImGui-SFML::ImGui-SFML cereal)
 target_compile_features(Game PRIVATE cxx_std_20)
 set_property(TARGET Game PROPERTY CXX_STANDARD 20)
 target_include_directories(Game PRIVATE "./src/")
+
+target_compile_definitions(Game PRIVATE ASSETS_DIR="${PROJECT_SOURCE_DIR}/assets")
