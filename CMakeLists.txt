@@ -42,7 +42,7 @@ unset(BUILD_DOC)
 unset(BUILD_SANDBOX)
 
 file(GLOB_RECURSE SRC_FILES "${PROJECT_SOURCE_DIR}/src/*.cpp")
-file(GLOB_RECURSE HDR_FILES "${PROJECT_SOURCE_DIR}/src/*.h")
+file(GLOB_RECURSE HDR_FILES "${PROJECT_SOURCE_DIR}/src/*.hpp")
 add_executable (Game ${SRC_FILES} ${HDR_FILES})
 target_link_libraries(Game PRIVATE sfml-graphics ImGui-SFML::ImGui-SFML cereal)
 target_compile_features(Game PRIVATE cxx_std_20)
