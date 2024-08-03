@@ -2,10 +2,10 @@
 #include "box2d-debug.hpp"
 #include "ship.hpp"
 
-World::World(b2Vec2 gravity_) : gravity(gravity_) {
+World::World(sf::RenderWindow &window, b2Vec2 gravity_) : gravity(gravity_)
+{
 	entities.push_back(std::make_unique<Ship>());
 	entities.push_back(std::make_unique<Ship>());
-
 	entities[0]->move({-250.f, 0.f});
 	entities[1]->move({250.f, 0.f});
 

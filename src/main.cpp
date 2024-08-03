@@ -8,14 +8,14 @@ int main()
 	sf::RenderWindow window(sf::VideoMode({800, 600}), "My window");
 	window.setVerticalSyncEnabled(true);
 
-	World world{};
+	World world{window};
 
 	while (window.isOpen())
 	{
 		world.Update(window);
 
 		window.clear();
-		world.Render();
+		world.Render(window);
 		window.display();
 	}
 

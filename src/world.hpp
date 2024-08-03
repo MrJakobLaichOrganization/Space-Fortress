@@ -10,11 +10,12 @@
 class World
 {
   public:
-	World(b2Vec2 gravity = b2Vec2{0, 0});
+	World(sf::RenderWindow &wind, b2Vec2 gravity = b2Vec2{0, 0});
 	~World();
 
 	void Update(sf::RenderWindow &window);
 	void Render(sf::RenderWindow &window);
+
   private:
 	static constexpr float minZoom = 0.2f;
 	static constexpr float maxZoom = 4.f;
