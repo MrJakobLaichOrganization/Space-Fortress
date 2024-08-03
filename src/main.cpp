@@ -30,40 +30,53 @@ int main()
 
 	sf::Clock clock;
 
-	b2Vec2 gravity(0.0f, 10.0f);
+	b2Vec2 gravity(0.0f, 0.0f);
 	b2World world(gravity);
-
-	b2BodyDef groundBodyDef;
-	groundBodyDef.position.Set(0.0f, 15.0f);
-
-	b2Body* groundBody = world.CreateBody(&groundBodyDef);
-
-	b2PolygonShape groundBox;
-	groundBox.SetAsBox(50.0f, 10.0f);
-
-	groundBody->CreateFixture(&groundBox, 0.0f);
-
-	b2BodyDef bodyDef;
-	bodyDef.type = b2_dynamicBody;
-	bodyDef.position.Set(0.0f, -4.0f);
-	//bodyDef.angle = 2.f;
-	b2Body *body = world.CreateBody(&bodyDef);
-
-	b2PolygonShape dynamicBox;
-	dynamicBox.SetAsBox(1.0f, 1.0f);
-
-	b2FixtureDef fixtureDef;
-	fixtureDef.shape = &dynamicBox;
-	fixtureDef.density = 1.0f;
-	fixtureDef.friction = 0.3f;
-	fixtureDef.restitution = 0.5f;
-
-	body->CreateFixture(&fixtureDef);
 
 	int32 velocityIterations = 6;
 	int32 positionIterations = 2;
 
-	Ship ship;
+	std::vector<std::unique_ptr<Entity>> entities;
+
+	entities.push_back(std::make_unique<Ship>());
+	entities.push_back(std::make_unique<Ship>());
+
+	entities[0]->move({-250.f, 0.f});
+	entities[1]->move({250.f, 0.f});
+	
+	entities[0]->rotate(sf::degrees(34.f));
+
+	for (auto& entity : entities)
+	{
+		if (auto* ship = dynamic_cast<Ship*>(entity.get()))
+		{
+			b2BodyDef bodyDef;
+			bodyDef.type = b2_dynamicBody;
+			ship->body = world.CreateBody(&bodyDef);
+
+			b2PolygonShape dynamicBox;
+
+			b2FixtureDef fixtureDef;
+			fixtureDef.shape = &dynamicBox;
+			fixtureDef.density = 1.0f;
+			fixtureDef.friction = 0.3f;
+			fixtureDef.restitution = 0.5f;
+
+			for (std::size_t y = 0; y < ship->grid.dims.y; ++y)
+			{
+				for (std::size_t x = 0; x < ship->grid.dims.x; ++x)
+				{
+					if (ship->grid.GetBlockData(sf::Vector2u( x, y )).blockAchetypeIdx != 0)
+					{
+						dynamicBox.SetAsBox(1.f / 2.f, 1.f / 2.f, {static_cast<float>(x) + 0.5f, static_cast<float>(y) + 0.5f}, 0.f);
+						ship->body->CreateFixture(&fixtureDef);
+					}
+				}
+			}
+		}
+	}
+
+	entities[0]->body->ApplyForce({1000.f, 0.f}, entities[0]->body->GetWorldCenter(), true);
 
 	PhysicsDebugDraw debugDraw{&window};
 	world.SetDebugDraw(&debugDraw);
@@ -130,13 +143,31 @@ int main()
 		viewZoom = std::clamp(viewZoom, 0.2f, 4.f);
 		window.setView(sf::View(viewCenter, sf::Vector2f(window.getSize()) * viewZoom));
 		
+		for (auto& entity : entities)
+		{
+			entity->PrePhysics();
+		}
+
 		world.Step(deltaTime.asSeconds(), velocityIterations, positionIterations);
 
-		ship.Update(deltaTime);
+		for (auto& entity : entities)
+		{
+			entity->PostPhysics();
+		}
+
+		for (auto& entity : entities)
+		{
+			entity->Update(deltaTime);
+		}
 
 		window.clear();
-		window.draw(ship);
-		world.DebugDraw();
+
+		for (auto& entity : entities)
+		{
+			window.draw(*entity);
+		}
+
+		//world.DebugDraw();
 		window.display();
 	}
 

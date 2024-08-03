@@ -40,11 +40,12 @@ class BlockGrid
 	BlockData &GetBlockData(std::uint32_t idx);
 	BlockData &GetBlockData(const sf::Vector2u &pos);
 
+	sf::Vector2u dims;
+
   private:
 	std::uint32_t CalculateIndex(const sf::Vector2u &pos) const;
 
 	Tilemap *tilemap;
-	sf::Vector2u dims;
 	std::vector<BlockArchetype> blockArchetypes;
 	std::vector<BlockData> blockData;
 };

@@ -12,7 +12,7 @@ BlockGrid::BlockGrid(const sf::Vector2u &dimensions, Tilemap *tilemap_)
 	blockData.resize(dims.x * dims.y);
 	for (std::size_t i = 0; i < blockData.size(); ++i)
 	{
-		blockData[i].blockAchetypeIdx = 3;
+		blockData[i].blockAchetypeIdx = 0;
 	}
 }
 
