@@ -1,45 +1,18 @@
 #include <algorithm>
 
-#include <graphics/tilemap.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Window/Event.hpp>
+
 #include "block.hpp"
+#include "entity.hpp"
+#include "ship.hpp"
+
+#include "graphics/tilemap.hpp"
 
 int main()
 {
 	sf::RenderWindow window(sf::VideoMode({800, 600}), "My window");
 	window.setVerticalSyncEnabled(true);
-
-	auto tileTexture = sf::Texture::loadFromFile(ASSETS_DIR "/TileMap_SF/tileset_sf.png").value();
-
-	Tilemap tilemap(tileTexture, {64, 64}, {32, 32});
-	BlockGrid grid({32, 32}, &tilemap);
-
-	const auto floorTile = 10 * 30 + 10;
-
-	grid.SetBlockType(6 * 30 + 10, {0, 0});
-	grid.SetBlockType(6 * 30 + 12, {6, 0});
-
-	grid.SetBlockType(8 * 30 + 10, {0, 7});
-	grid.SetBlockType(8 * 30 + 12, {6, 7});
-
-	for (std::uint32_t x = 0; x < 5; x++)
-	{
-		grid.SetBlockType(8 * 30 + 17, {x + 1, 0});
-		grid.SetBlockType(9 * 30 + 10, {x + 1, 1});
-		grid.SetBlockType(8 * 30 + 17, {x + 1, 7});
-		grid.SetBlockType(7 * 30 + 14, {0, x + 1});
-		grid.SetBlockType(7 * 30 + 14, {6, x + 1});
-		for (std::uint32_t y = 0; y < 5; y++)
-		{
-			grid.SetBlockType(floorTile, {x + 1, y + 2});
-		}
-	}
-
-	grid.SetBlockType(7 * 30 + 14, {0, 6});
-	grid.SetBlockType(7 * 30 + 14, {6, 6});
-
-	grid.SetBlockType(9 * 30 + 19, {2, 1});
 
 	sf::Vector2f viewCenter{128.f, 128.f};
 	float viewZoom = 1.5f;
@@ -52,6 +25,8 @@ int main()
 	std::array<bool, sf::Keyboard::ScancodeCount> keyStates{};
 
 	sf::Clock clock;
+
+	Ship ship;
 
 	while (window.isOpen())
 	{
@@ -108,8 +83,10 @@ int main()
 		viewZoom = std::clamp(viewZoom, 0.2f, 4.f);
 		window.setView(sf::View(viewCenter, sf::Vector2f(window.getSize()) * viewZoom));
 
+		ship.Update(deltaTime);
+
 		window.clear();
-		window.draw(tilemap);
+		window.draw(ship);
 		window.display();
 	}
 
