@@ -39,12 +39,17 @@ unset(SKIP_PERFORMANCE_COMPARISON)
 unset(BUILD_DOC)
 unset(BUILD_SANDBOX)
 
+FetchContent_Declare(box2d
+    GIT_REPOSITORY https://github.com/erincatto/box2d.git
+    GIT_TAG 411acc32eb6d4f2e96fc70ddbdf01fe5f9b16230)
+FetchContent_MakeAvailable(box2d)
+
 project ("Game" LANGUAGES CXX)
 
 file(GLOB_RECURSE SRC_FILES "${PROJECT_SOURCE_DIR}/src/*.cpp")
 file(GLOB_RECURSE HDR_FILES "${PROJECT_SOURCE_DIR}/src/*.hpp")
 add_executable (Game ${SRC_FILES} ${HDR_FILES})
-target_link_libraries(Game PRIVATE sfml-graphics ImGui-SFML::ImGui-SFML cereal)
+target_link_libraries(Game PRIVATE sfml-graphics ImGui-SFML::ImGui-SFML cereal box2d)
 target_compile_features(Game PRIVATE cxx_std_20)
 set_property(TARGET Game PROPERTY CXX_STANDARD 20)
 target_include_directories(Game PRIVATE "./src/")
