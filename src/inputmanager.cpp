@@ -6,11 +6,11 @@ InputManager::InputManager() {}
 void InputManager::Update() { 
 	keysLastDown = keysDown;
 }
-void InputManager::PressKey(sf::Keyboard::Scancode key)
+void InputManager::OnKeyPress(sf::Keyboard::Scancode key)
 {
 	keysDown[key] = true;
 }
-void InputManager::ReleaseKey(sf::Keyboard::Scancode key)
+void InputManager::OnKeyRelease(sf::Keyboard::Scancode key)
 {
 	keysDown[key] = false;
 }

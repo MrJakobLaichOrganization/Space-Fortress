@@ -9,8 +9,8 @@ class InputManager
   public:
 	InputManager();
 	void Update();
-	void PressKey(sf::Keyboard::Scancode key);
-	void ReleaseKey(sf::Keyboard::Scancode key);
+	void OnKeyPress(sf::Keyboard::Scancode key);
+	void OnKeyRelease(sf::Keyboard::Scancode key);
 	bool IsKeyDown(sf::Keyboard::Scancode key) const;
 	bool IsKeyPressed(sf::Keyboard::Scancode key) const;
 
