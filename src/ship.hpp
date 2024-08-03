@@ -3,6 +3,7 @@
 #include "graphics/tilemap.hpp"
 #include "entity.hpp"
 #include "resources.hpp"
+#include "block.hpp"
 
 class Ship : public Entity
 {

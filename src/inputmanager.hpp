@@ -15,6 +15,6 @@ class InputManager
 	bool IsKeyPressed(sf::Keyboard::Scancode key) const;
 
   private:
-	std::array<std::uint8_t, sf::Keyboard::Scancode::ScancodeCount> keysDown{};
-	std::array<std::uint8_t, sf::Keyboard::Scancode::ScancodeCount> keysLastDown{};
+	std::array<std::uint8_t, sf::Keyboard::ScancodeCount> keysDown{};
+	std::array<std::uint8_t, sf::Keyboard::ScancodeCount> keysLastDown{};
 };

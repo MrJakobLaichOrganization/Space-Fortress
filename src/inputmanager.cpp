@@ -8,17 +8,13 @@ void InputManager::Update() {
 }
 void InputManager::OnKeyPress(sf::Keyboard::Scancode key)
 {
-	keysDown[key] = true;
+	keysDown[static_cast<std::uint32_t>(key)] = true;
 }
 void InputManager::OnKeyRelease(sf::Keyboard::Scancode key)
-{
-	keysDown[key] = false;
-}
+{ keysDown[static_cast<std::uint32_t>(key)] = false; }
 bool InputManager::IsKeyDown(sf::Keyboard::Scancode key) const
-{
-	return keysDown.at(key);
-}
+{ return keysDown.at(static_cast<std::uint32_t>(key)); }
 bool InputManager::IsKeyPressed(sf::Keyboard::Scancode key) const
 {
-	return keysDown.at(key) && !keysLastDown.at(key);
+	return keysDown.at(static_cast<std::uint32_t>(key)) && !keysLastDown.at(static_cast<std::uint32_t>(key));
 }
