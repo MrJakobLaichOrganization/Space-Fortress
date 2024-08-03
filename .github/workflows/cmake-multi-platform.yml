@@ -180,7 +180,7 @@ jobs:
 
     - name: Install Linux Dependencies
       if: runner.os == 'Linux'
-      run: sudo apt-get update && sudo apt-get install libfreetype-dev libxrandr-dev libxcursor-dev libxi-dev libudev-dev libflac-dev libvorbis-dev libgl1-mesa-dev libegl1-mesa-dev libdrm-dev libgbm-dev
+      run: sudo apt-get update && sudo apt-get install libfreetype-dev libxrandr-dev libxcursor-dev libxi-dev libudev-dev libflac-dev libvorbis-dev libgl1-mesa-dev libegl1-mesa-dev libdrm-dev libgbm-dev libxinerama-dev libglfw3-dev libglfw3
 
     - name: Install macOS Dependencies
       if: runner.os == 'macOS'
