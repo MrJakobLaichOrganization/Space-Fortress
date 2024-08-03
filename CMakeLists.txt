@@ -1,5 +1,7 @@
 ﻿cmake_minimum_required (VERSION 3.19)
 
+project ("Game" LANGUAGES CXX)
+
 if (POLICY CMP0141)
   cmake_policy(SET CMP0141 NEW)
   set(CMAKE_MSVC_DEBUG_INFORMATION_FORMAT "$<IF:$<AND:$<C_COMPILER_ID:MSVC>,$<CXX_COMPILER_ID:MSVC>>,$<$<CONFIG:Debug,RelWithDebInfo>:EditAndContinue>,$<$<CONFIG:Debug,RelWithDebInfo>:ProgramDatabase>>")
@@ -41,10 +43,8 @@ unset(BUILD_SANDBOX)
 
 FetchContent_Declare(box2d
     GIT_REPOSITORY https://github.com/erincatto/box2d.git
-    GIT_TAG 411acc32eb6d4f2e96fc70ddbdf01fe5f9b16230)
+    GIT_TAG main)
 FetchContent_MakeAvailable(box2d)
-
-project ("Game" LANGUAGES CXX)
 
 file(GLOB_RECURSE SRC_FILES "${PROJECT_SOURCE_DIR}/src/*.cpp")
 file(GLOB_RECURSE HDR_FILES "${PROJECT_SOURCE_DIR}/src/*.hpp")
