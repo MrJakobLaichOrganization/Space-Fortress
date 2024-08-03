@@ -88,6 +88,8 @@ int main()
         b2Draw::e_pairBit |
         b2Draw::e_centerOfMassBit);
 
+	bool showDebug = false;
+
 	while (window.isOpen())
 	{
 		const auto deltaTime = clock.restart();
@@ -100,6 +102,11 @@ int main()
 			else if (const auto* e = event->getIf<sf::Event::KeyPressed>())
 			{
 				keyStates[static_cast<std::size_t>(e->scancode)] = true;
+
+				if (e->scancode == sf::Keyboard::Scan::T)
+				{
+					showDebug = !showDebug;
+				}
 			}
 			else if (const auto *e = event->getIf<sf::Event::KeyReleased>())
 			{
@@ -167,7 +174,11 @@ int main()
 			window.draw(*entity);
 		}
 
-		//world.DebugDraw();
+		if (showDebug)
+		{
+			world.DebugDraw();
+		}
+
 		window.display();
 	}
 
