@@ -2,19 +2,19 @@
 
 #include <SFML/Window/Keyboard.hpp>
 #include <cstdint>
-#include <vector>
+#include <array>
 
 class InputManager
 {
   public:
 	InputManager();
 	void Update();
-	void PressKey(sf::Keyboard::Key key);
-	void ReleaseKey(sf::Keyboard::Key key);
-	bool IsKeyDown(sf::Keyboard::Key key) const;
-	bool IsKeyPressed(sf::Keyboard::Key key) const;
+	void PressKey(sf::Keyboard::Scancode key);
+	void ReleaseKey(sf::Keyboard::Scancode key);
+	bool IsKeyDown(sf::Keyboard::Scancode key) const;
+	bool IsKeyPressed(sf::Keyboard::Scancode key) const;
 
   private:
-	std::vector<std::uint8_t> keysDown;
-	std::vector<std::uint8_t> keysLastDown;
+	std::array<std::uint8_t, sf::Keyboard::Scancode::ScancodeCount> keysDown{};
+	std::array<std::uint8_t, sf::Keyboard::Scancode::ScancodeCount> keysLastDown{};
 };
