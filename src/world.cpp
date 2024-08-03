@@ -2,7 +2,7 @@
 #include "box2d-debug.hpp"
 #include "ship.hpp"
 
-World::World(sf::RenderWindow &window_, b2Vec2 gravity_) : window(window_), gravity(gravity_) {
+World::World(b2Vec2 gravity_) : gravity(gravity_) {
 	entities.push_back(std::make_unique<Ship>());
 	entities.push_back(std::make_unique<Ship>());
 
@@ -50,7 +50,8 @@ World::World(sf::RenderWindow &window_, b2Vec2 gravity_) : window(window_), grav
 }
 World::~World() {}
 
-void World::Update() {
+void World::Update(sf::RenderWindow &window)
+{
 	const auto deltaTime = clock.restart();
 	while (const auto event = window.pollEvent())
 	{
@@ -125,14 +126,10 @@ void World::Update() {
 	inputManager.Update();
 }
 
-void World::Render()
+void World::Render(sf::RenderWindow &window)
 {
-	window.clear();
-
 	for (auto &entity : entities)
 	{
 		window.draw(*entity);
 	}
-
-	window.display();
 }
