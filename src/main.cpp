@@ -13,6 +13,8 @@ int main()
 
 	World world{window};
 
+	bool showDebug = false;
+
 	while (window.isOpen())
 	{
 		const auto delta = clock.restart();
