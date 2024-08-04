@@ -1,6 +1,7 @@
 #pragma once
 
 #include <SFML/Graphics/RenderWindow.hpp>
+#include <SFML/Window/Event.hpp>
 
 #include <box2d/box2d.h>
 
@@ -10,25 +11,23 @@
 class World
 {
   public:
-	World(sf::RenderWindow &wind, b2Vec2 gravity = b2Vec2{0, 0});
-	~World();
-
-	void Update(sf::RenderWindow &window);
-	void Render(sf::RenderWindow &window);
-
-  private:
 	static constexpr float minZoom = 0.2f;
 	static constexpr float maxZoom = 4.f;
 	static constexpr float viewSpeed = 100.f;
 
+	World(sf::RenderWindow &wind, b2Vec2 gravity = b2Vec2{0, 0});
+	~World();
+
+	void Update(const sf::Time &deltaTime);
+	void Render(sf::RenderWindow &window);
+
 	sf::Vector2f viewCenter{128.f, 128.f};
 	float viewZoom = 1.5f;
 
-	sf::Clock clock;
-	InputManager inputManager;
+  private:
 
 	b2Vec2 gravity{0, 0};
-	b2World world{gravity};
+	std::unique_ptr<b2World> world;
 	int32 velocityIterations = 6;
 	int32 positionIterations = 2;
 

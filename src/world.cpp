@@ -4,6 +4,7 @@
 
 World::World(sf::RenderWindow &window, b2Vec2 gravity_) : gravity(gravity_)
 {
+	world = std::make_unique<b2World>(gravity);
 	entities.push_back(std::make_unique<Ship>());
 	entities.push_back(std::make_unique<Ship>());
 	entities[0]->move({-250.f, 0.f});
@@ -17,7 +18,7 @@ World::World(sf::RenderWindow &window, b2Vec2 gravity_) : gravity(gravity_)
 		{
 			b2BodyDef bodyDef;
 			bodyDef.type = b2_dynamicBody;
-			ship->body = world.CreateBody(&bodyDef);
+			ship->body = world->CreateBody(&bodyDef);
 
 			b2PolygonShape dynamicBox;
 
@@ -44,74 +45,22 @@ World::World(sf::RenderWindow &window, b2Vec2 gravity_) : gravity(gravity_)
 	entities[0]->body->ApplyForce({1000.f, 0.f}, entities[0]->body->GetWorldCenter(), true);
 
 	PhysicsDebugDraw debugDraw{&window};
-	world.SetDebugDraw(&debugDraw);
+	world->SetDebugDraw(&debugDraw);
 
 	debugDraw.AppendFlags(b2Draw::e_shapeBit | b2Draw::e_jointBit | b2Draw::e_aabbBit | b2Draw::e_pairBit | b2Draw::e_centerOfMassBit);
 }
 World::~World() {}
 
-void World::Update(sf::RenderWindow &window)
+void World::Update(const sf::Time &deltaTime)
 {
-	const auto deltaTime = clock.restart();
-	while (const auto event = window.pollEvent())
-	{
-		if (event->is<sf::Event::Closed>())
-		{
-			window.close();
-			return;
-		}
-		else if (const auto *e = event->getIf<sf::Event::KeyPressed>())
-		{
-			inputManager.OnKeyPress(e->scancode);
-		}
-		else if (const auto *e = event->getIf<sf::Event::KeyReleased>())
-		{
-			inputManager.OnKeyRelease(e->scancode);
-		}
-		else if (const auto *e = event->getIf<sf::Event::MouseWheelScrolled>())
-		{
-			const auto ratio = e->delta < 0 ? 1.1f : 0.9f;
-			const auto newZoom = viewZoom * ratio;
-
-			if (newZoom > maxZoom || newZoom < minZoom)
-			{
-				continue;
-			}
-
-			const auto mousePos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
-
-			viewCenter = mousePos - (mousePos - viewCenter) * ratio;
-			viewZoom = newZoom;
-		}
-	}
-
-	const auto computedViewSpeed = viewSpeed * viewZoom * deltaTime.asSeconds();
-	if (inputManager.IsKeyDown(sf::Keyboard::Scan::Left))
-	{
-		viewCenter.x -= computedViewSpeed;
-	}
-	if (inputManager.IsKeyDown(sf::Keyboard::Scan::Right))
-	{
-		viewCenter.x += computedViewSpeed;
-	}
-	if (inputManager.IsKeyDown(sf::Keyboard::Scan::Up))
-	{
-		viewCenter.y -= computedViewSpeed;
-	}
-	if (inputManager.IsKeyDown(sf::Keyboard::Scan::Down))
-	{
-		viewCenter.y += computedViewSpeed;
-	}
-
-	viewZoom = std::clamp(viewZoom, 0.2f, 4.f);
-	window.setView(sf::View(viewCenter, sf::Vector2f(window.getSize()) * viewZoom));
+	viewZoom = std::clamp(viewZoom, minZoom, maxZoom);
 
 	for (auto &entity : entities)
 	{
 		entity->PrePhysics();
 	}
 
-	world.Step(deltaTime.asSeconds(), velocityIterations, positionIterations);
+	world->Step(deltaTime.asSeconds(), velocityIterations, positionIterations);
 
 	for (auto &entity : entities)
 	{
@@ -122,12 +71,11 @@ void World::Update(sf::RenderWindow &window)
 	{
 		entity->Update(deltaTime);
 	}
-
-	inputManager.Update();
 }
 
 void World::Render(sf::RenderWindow &window)
 {
+	window.setView(sf::View(viewCenter, sf::Vector2f(window.getSize()) * viewZoom));
 	for (auto &entity : entities)
 	{
 		window.draw(*entity);
