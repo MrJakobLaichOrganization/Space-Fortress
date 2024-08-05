@@ -69,7 +69,7 @@ add_custom_target(format
     COMMAND ${CMAKE_COMMAND} -DCLANG_FORMAT_EXECUTABLE=${CLANG_FORMAT_EXECUTABLE} -P ./cmake/Format.cmake
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR} VERBATIM)
 
-game_set_option(CLANG_TIDY_EXECUTABLE clang-tidy STRING "Override clang-tidy executable, requires minimum version 14")
+message(STATUS "tidy files: ${SRC_FILES}")
 add_custom_target(tidy
     COMMAND run-clang-tidy -p ${CMAKE_BINARY_DIR} ${SRC_FILES}
     WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
