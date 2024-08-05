@@ -1,8 +1,6 @@
 #include "crewmate.hpp"
 #include "world.hpp"
 
-#include <iostream>
-
 Crewmate::Crewmate(const World &world_, std::string_view name_, Gender gender_)
 	: name(name_), gender(gender_), world(world_)
 {

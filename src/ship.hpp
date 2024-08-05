@@ -43,7 +43,7 @@ class Ship : public Entity
 	}
 
 	void CreateCrewmate(Crewmate &&crewmate) { 
-		crewmates.push_back(crewmate);
+		crewmates.emplace_back(std::move(crewmate));
 	}
 
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override
