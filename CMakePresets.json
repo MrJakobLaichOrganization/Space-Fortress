@@ -8,9 +8,7 @@
       "cacheVariables": {
         "CMAKE_CXX_EXTENSIONS": "OFF",
         "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
-      },
-      "enableMicrosoftCodeAnalysis": true,
-      "enableClangTidyCodeAnalysis": true
+      }
     }
   ]
 }
