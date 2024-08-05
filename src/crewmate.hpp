@@ -17,18 +17,18 @@ class Crewmate: public Entity
 	};
 
 	Crewmate(const World &w, std::string_view name, Gender gender = Gender::MALE);
+	Crewmate(Crewmate &&other) noexcept;
 
 	void Update(sf::Time deltaTime) override;
 
-	bool Adult() const { return adult; }
-	Time BirthTimeStamp() const { return birthTimestamp; }
-	Time Age() const;
-	const std::string &Name() const { return name; }
+	bool IsAdult() const;
+	Time GetBirthTimeStamp() const { return birthTimestamp; }
+	Time GetAge() const;
+	const std::string &GetName() const { return name; }
 
   private:
 	std::string name;
 	Gender gender;
 	Time birthTimestamp;
 	const World &world;
-	bool adult = false;		// Cannot work if not adult
 };
