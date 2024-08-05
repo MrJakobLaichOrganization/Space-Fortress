@@ -1,5 +1,7 @@
 ﻿cmake_minimum_required (VERSION 3.19)
 
+set(VERBOSE=1)
+
 # define a macro that helps defining an option
 macro(game_set_option var default type docstring)
     if(NOT DEFINED ${var})
