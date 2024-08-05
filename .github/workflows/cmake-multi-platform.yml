@@ -169,7 +169,7 @@ jobs:
       run: cmake --preset dev -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_UNITY_BUILD=ON ${{matrix.platform.flags}}
 
     - name: Analyze Code
-      run: cmake --build build --target tidy
+      run: cmake --build build --target tidy VERBOSE=1
 
   sanitize:
     name: Sanitizing on ${{ matrix.platform.name }}
