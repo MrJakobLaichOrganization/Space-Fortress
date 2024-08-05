@@ -57,8 +57,8 @@ FetchContent_Declare(box2d
 FetchContent_MakeAvailable(box2d)
 
 file(GLOB_RECURSE SRC_FILES "${PROJECT_SOURCE_DIR}/src/*.cpp")
-file(GLOB_RECURSE HDR_FILES "${PROJECT_SOURCE_DIR}/src/*.hpp")
-add_executable (Game ${SRC_FILES} ${HDR_FILES})
+
+add_executable (Game ${SRC_FILES})
 target_link_libraries(Game PRIVATE sfml-graphics ImGui-SFML::ImGui-SFML cereal box2d)
 target_compile_features(Game PRIVATE cxx_std_20)
 set_property(TARGET Game PROPERTY CXX_STANDARD 20)
