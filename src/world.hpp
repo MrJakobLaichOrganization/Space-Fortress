@@ -7,6 +7,7 @@
 
 #include "inputmanager.hpp"
 #include "entity.hpp"
+#include "time.hpp"
 
 class World
 {
@@ -18,18 +19,20 @@ class World
 	World(sf::RenderWindow &wind, b2Vec2 gravity = b2Vec2{0, 0});
 	~World();
 
-	void Update(const sf::Time &deltaTime);
+	void Update(sf::Time deltaTime);
 	void Render(sf::RenderWindow &window);
 
 	sf::Vector2f viewCenter{128.f, 128.f};
 	float viewZoom = 1.5f;
 
-  private:
+	Time GetTime() const { return currentTimestamp; }
 
+  private:
 	b2Vec2 gravity{0, 0};
 	std::unique_ptr<b2World> world;
 	int32 velocityIterations = 6;
 	int32 positionIterations = 2;
+	Time currentTimestamp;
 
 	std::vector<std::unique_ptr<Entity>> entities;
 };

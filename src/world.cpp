@@ -1,6 +1,7 @@
 #include "world.hpp"
 #include "box2d-debug.hpp"
 #include "ship.hpp"
+#include "crewmate.hpp"
 
 World::World(sf::RenderWindow &window, b2Vec2 gravity_) : gravity(gravity_)
 {
@@ -9,6 +10,8 @@ World::World(sf::RenderWindow &window, b2Vec2 gravity_) : gravity(gravity_)
 	entities.push_back(std::make_unique<Ship>());
 	entities[0]->move({-250.f, 0.f});
 	entities[1]->move({250.f, 0.f});
+
+	static_cast<Ship *>(entities[1].get())->CreateCrewmate(Crewmate(*this, "Test"));
 
 	entities[0]->rotate(sf::degrees(34.f));
 
@@ -51,7 +54,7 @@ World::World(sf::RenderWindow &window, b2Vec2 gravity_) : gravity(gravity_)
 }
 World::~World() {}
 
-void World::Update(const sf::Time &deltaTime)
+void World::Update(sf::Time deltaTime)
 {
 	viewZoom = std::clamp(viewZoom, minZoom, maxZoom);
 
@@ -71,6 +74,8 @@ void World::Update(const sf::Time &deltaTime)
 	{
 		entity->Update(deltaTime);
 	}
+
+	++currentTimestamp;
 }
 
 void World::Render(sf::RenderWindow &window)

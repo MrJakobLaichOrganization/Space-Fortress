@@ -2,6 +2,7 @@
 
 #include "graphics/tilemap.hpp"
 #include "entity.hpp"
+#include "crewmate.hpp"
 #include "resources.hpp"
 #include "block.hpp"
 
@@ -10,6 +11,7 @@ class Ship : public Entity
   public:
 	Tilemap tilemap{Resources::Get().tilesTexture, {64, 64}, {32, 32}};
 	BlockGrid grid{{32, 32}, &tilemap};
+	std::vector<Crewmate> crewmates;
 
 	Ship()
 	{
@@ -40,9 +42,25 @@ class Ship : public Entity
 		grid.SetBlockType(9 * 30 + 19, {2, 1});
 	}
 
+	void CreateCrewmate(Crewmate &&crewmate) { 
+		crewmates.emplace_back(std::move(crewmate));
+	}
+
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override
 	{
 		states.transform *= getTransform();
 		target.draw(tilemap, states);
+
+		for (auto &crewmate : crewmates)
+		{
+			crewmate.draw(target, states);
+		}
+	}
+	void Update(sf::Time delta) override
+	{
+		for (auto &crewmate : crewmates)
+		{
+			crewmate.Update(delta);
+		}
 	}
 };
