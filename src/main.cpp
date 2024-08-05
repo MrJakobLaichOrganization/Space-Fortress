@@ -181,7 +181,7 @@ int main()
 
 		window.display();
 	}
-	bool *p;
+	bool *p = nullptr;
 	if (p)
 	{
 		return 84;
