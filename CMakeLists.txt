@@ -69,7 +69,23 @@ add_custom_target(format
     COMMAND ${CMAKE_COMMAND} -DCLANG_FORMAT_EXECUTABLE=${CLANG_FORMAT_EXECUTABLE} -P ./cmake/Format.cmake
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR} VERBATIM)
 
-message(STATUS "tidy files: ${SRC_FILES}")
+game_set_option(CLANG_TIDY_EXECUTABLE clang-tidy STRING "Override clang-tidy executable, requires minimum version 14")
+
+
+# Check executable exists
+if(NOT EXISTS ${CLANG_TIDY_EXECUTABLE})
+    find_program(CLANG_TIDY_EXEC_TEMP ${CLANG_TIDY_EXECUTABLE})
+    if(CLANG_TIDY_EXEC_TEMP)
+        set(CLANG_TIDY_EXECUTABLE ${CLANG_TIDY_EXEC_TEMP})
+        unset(CLANG_TIDY_EXEC_TEMP)
+    endif()
+endif()
+
+# Find Python and run-clang-tidy script
+find_package(Python 3 REQUIRED)
+
+find_program(RUN_CLANG_TIDY run-clang-tidy)
+
 add_custom_target(tidy
-    COMMAND run-clang-tidy -p ${CMAKE_BINARY_DIR} ${SRC_FILES}
-    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+    COMMAND COMMAND ${Python_EXECUTABLE} ${RUN_CLANG_TIDY} -clang-tidy-binary ${CLANG_TIDY_EXECUTABLE} -quiet -p ${PROJECT_BINARY_DIR} ${SRC_FILES} RESULTS_VARIABLE EXIT_CODE
+    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR} VERBATIM)
