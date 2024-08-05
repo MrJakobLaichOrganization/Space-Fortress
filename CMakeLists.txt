@@ -1,5 +1,7 @@
 ﻿cmake_minimum_required (VERSION 3.19)
 
+set(VERBOSE=1)
+
 # define a macro that helps defining an option
 macro(game_set_option var default type docstring)
     if(NOT DEFINED ${var})
@@ -70,6 +72,25 @@ add_custom_target(format
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR} VERBATIM)
 
 game_set_option(CLANG_TIDY_EXECUTABLE clang-tidy STRING "Override clang-tidy executable, requires minimum version 14")
+
+
+# Check executable exists
+if(NOT EXISTS ${CLANG_TIDY_EXECUTABLE})
+    find_program(CLANG_TIDY_EXEC_TEMP ${CLANG_TIDY_EXECUTABLE})
+    if(CLANG_TIDY_EXEC_TEMP)
+        set(CLANG_TIDY_EXECUTABLE ${CLANG_TIDY_EXEC_TEMP})
+        unset(CLANG_TIDY_EXEC_TEMP)
+    endif()
+endif()
+
+# Find Python and run-clang-tidy script
+find_package(Python 3 REQUIRED)
+
+#find_program(RUN_CLANG_TIDY run-clang-tidy)
+set(RUN_CLANG_TIDY run-clang-tidy)
+set(CLANG_TIDY_EXECUTABLE "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/Llvm/x64/bin/clang-tidy.exe")
+
+
 add_custom_target(tidy
-    COMMAND ${CMAKE_COMMAND} -DCLANG_TIDY_EXECUTABLE=${CLANG_TIDY_EXECUTABLE} -DPROJECT_BINARY_DIR=${PROJECT_BINARY_DIR} -P ./cmake/Tidy.cmake
+    COMMAND ${Python_EXECUTABLE} ${RUN_CLANG_TIDY} -clang-tidy-binary ${CLANG_TIDY_EXECUTABLE} -p ${PROJECT_BINARY_DIR} ${SRC_FILES}
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR} VERBATIM)

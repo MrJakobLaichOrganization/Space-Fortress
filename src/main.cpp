@@ -76,6 +76,45 @@ int main()
 		world.Render(window);
 		window.display();
 	}
+	bool *p = nullptr;
+	if (p)
+	{
+		return 84;
+	}
 
 	return 0;
+}
+
+void foo(int Value)
+{
+	int Local = 0;
+	for (int i = 0; i < 42; i++)
+	{
+		if (Value == 1)
+		{
+			return;
+		}
+		else
+		{
+			Local++;
+		}
+
+		if (Value == 2)
+		{
+			continue;
+		}
+		else
+		{
+			Local++;
+		}
+
+		if (Value == 3)
+		{
+			throw 42;
+		}
+		else
+		{
+			Local++;
+		}
+	}
 }
