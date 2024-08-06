@@ -11,8 +11,8 @@ class InputManager
 	void update();
 	void onKeyPress(sf::Keyboard::Scancode key);
 	void onKeyRelease(sf::Keyboard::Scancode key);
-	bool isKeyDown(sf::Keyboard::Scancode key) const;
-	bool isKeyPressed(sf::Keyboard::Scancode key) const;
+	[[nodiscard]] bool isKeyDown(sf::Keyboard::Scancode key) const;
+	[[nodiscard]] bool isKeyPressed(sf::Keyboard::Scancode key) const;
 
   private:
 	std::array<std::uint8_t, sf::Keyboard::ScancodeCount> m_keysDown{};

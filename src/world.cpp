@@ -2,9 +2,10 @@
 #include "ship.hpp"
 #include "crewmate.hpp"
 
-static std::size_t calculateGridIdx(sf::Vector2<std::size_t> pos, std::size_t width)
-{ return pos.y * width + pos.x; }
-static void createPolygon(b2Body &body, BlockGrid &grid)
+namespace
+{
+std::size_t calculateGridIdx(sf::Vector2<std::size_t> pos, std::size_t width) { return pos.y * width + pos.x; }
+void createPolygon(b2Body &body, BlockGrid &grid)
 {
 	std::vector<std::uint8_t> solidTiles(grid.dims.y * grid.dims.x, 0);
 
@@ -125,8 +126,9 @@ static void createPolygon(b2Body &body, BlockGrid &grid)
 		}
 	}
 }
+}
 
-World::World(sf::RenderWindow &window, b2Vec2 gravity_) : m_gravity(gravity_)
+World::World(sf::RenderWindow &window, b2Vec2 gravity) : m_gravity(gravity)
 {
 	m_world = std::make_unique<b2World>(m_gravity);
 	auto &firstShip = addEntity<Ship>();
