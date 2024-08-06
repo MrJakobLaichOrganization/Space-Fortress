@@ -17,4 +17,4 @@ void Crewmate::update(sf::Time deltaTime)
 }
 
 Time Crewmate::getAge() const { return m_world.getTime() - m_birthTimestamp; }
-bool Crewmate::isAdult() const { return getAge().year() >= AdultYear; }
+bool Crewmate::isAdult() const { return getAge().year() >= adultYear; }
