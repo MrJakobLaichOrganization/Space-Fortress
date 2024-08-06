@@ -10,6 +10,8 @@
 #include "time.hpp"
 #include "box2d-debug.hpp"
 
+#include <utility>
+
 class World
 {
   public:
@@ -36,7 +38,7 @@ class World
 	* @param Args - parameters you would put for T
 	*/
 	template <EntityDerivation T, typename... Args> T &addEntity(Args &&...args) {
-		m_entities.push_back(std::make_unique<T>(args...));
+		m_entities.push_back(std::make_unique<T>(std::forward<Args>(args)...));
 		return *static_cast<T*>(m_entities.back().get());
 	}
 
