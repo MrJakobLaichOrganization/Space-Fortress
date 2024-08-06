@@ -8,13 +8,13 @@ class InputManager
 {
   public:
 	InputManager();
-	void Update();
-	void OnKeyPress(sf::Keyboard::Scancode key);
-	void OnKeyRelease(sf::Keyboard::Scancode key);
-	bool IsKeyDown(sf::Keyboard::Scancode key) const;
-	bool IsKeyPressed(sf::Keyboard::Scancode key) const;
+	void update();
+	void onKeyPress(sf::Keyboard::Scancode key);
+	void onKeyRelease(sf::Keyboard::Scancode key);
+	bool isKeyDown(sf::Keyboard::Scancode key) const;
+	bool isKeyPressed(sf::Keyboard::Scancode key) const;
 
   private:
-	std::array<std::uint8_t, sf::Keyboard::ScancodeCount> keysDown{};
-	std::array<std::uint8_t, sf::Keyboard::ScancodeCount> keysLastDown{};
+	std::array<std::uint8_t, sf::Keyboard::ScancodeCount> m_keysDown{};
+	std::array<std::uint8_t, sf::Keyboard::ScancodeCount> m_keysLastDown{};
 };

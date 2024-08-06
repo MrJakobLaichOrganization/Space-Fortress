@@ -3,22 +3,22 @@
 
 InputManager::InputManager() {}
 
-void InputManager::Update() { 
-	keysLastDown = keysDown;
+void InputManager::update() { 
+	m_keysLastDown = m_keysDown;
 }
-void InputManager::OnKeyPress(sf::Keyboard::Scancode key)
+void InputManager::onKeyPress(sf::Keyboard::Scancode key)
 {
-	keysDown.at(static_cast<std::size_t>(key)) = true;
+	m_keysDown.at(static_cast<std::size_t>(key)) = true;
 }
-void InputManager::OnKeyRelease(sf::Keyboard::Scancode key)
+void InputManager::onKeyRelease(sf::Keyboard::Scancode key)
 {
-	keysDown.at(static_cast<std::size_t>(key)) = false;
+	m_keysDown.at(static_cast<std::size_t>(key)) = false;
 }
-bool InputManager::IsKeyDown(sf::Keyboard::Scancode key) const
+bool InputManager::isKeyDown(sf::Keyboard::Scancode key) const
 {
-	return keysDown.at(static_cast<std::size_t>(key));
+	return m_keysDown.at(static_cast<std::size_t>(key));
 }
-bool InputManager::IsKeyPressed(sf::Keyboard::Scancode key) const
+bool InputManager::isKeyPressed(sf::Keyboard::Scancode key) const
 {
-	return keysDown.at(static_cast<std::size_t>(key)) && !keysLastDown.at(static_cast<std::size_t>(key));
+	return m_keysDown.at(static_cast<std::size_t>(key)) && !m_keysLastDown.at(static_cast<std::size_t>(key));
 }

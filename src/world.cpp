@@ -2,9 +2,9 @@
 #include "ship.hpp"
 #include "crewmate.hpp"
 
-static std::size_t CalculateGridIdx(sf::Vector2<std::size_t> pos, std::size_t width)
+static std::size_t calculateGridIdx(sf::Vector2<std::size_t> pos, std::size_t width)
 { return pos.y * width + pos.x; }
-static void CreatePolygon(b2Body &body, BlockGrid &grid)
+static void createPolygon(b2Body &body, BlockGrid &grid)
 {
 	std::vector<std::uint8_t> solidTiles(grid.dims.y * grid.dims.x, 0);
 
@@ -21,7 +21,7 @@ static void CreatePolygon(b2Body &body, BlockGrid &grid)
 	{
 		for (std::size_t x = 0; x < grid.dims.x; ++x)
 		{
-			solidTiles[CalculateGridIdx({x, y}, grid.dims.x)] = grid.GetBlockArchetype(sf::Vector2u(x, y)).solid;
+			solidTiles[calculateGridIdx({x, y}, grid.dims.x)] = grid.getBlockArchetype(sf::Vector2u(x, y)).solid;
 		}
 	}
 
@@ -30,11 +30,11 @@ static void CreatePolygon(b2Body &body, BlockGrid &grid)
 	{
 		for (std::size_t x = 0; x < grid.dims.x; ++x)
 		{
-			if (!solidTiles[CalculateGridIdx({x, y}, grid.dims.x)])
+			if (!solidTiles[calculateGridIdx({x, y}, grid.dims.x)])
 			{
 				continue;
 			}
-			solidTiles[CalculateGridIdx({x, y}, grid.dims.x)] = 0;
+			solidTiles[calculateGridIdx({x, y}, grid.dims.x)] = 0;
 
 			sf::Vector2<std::size_t> leftPos;
 			leftPos.x = x;
@@ -46,26 +46,26 @@ static void CreatePolygon(b2Body &body, BlockGrid &grid)
 			// Go left
 			while (leftPos.x != 0 && leftPos.x - 1 > 0)
 			{
-				std::size_t idx = CalculateGridIdx({leftPos}, grid.dims.x);
+				const std::size_t idx = calculateGridIdx({leftPos}, grid.dims.x);
 				if (idx >= solidTiles.size() || !solidTiles[idx])
 				{
 					break;
 				}
 
 				leftPos.x--;
-				solidTiles[CalculateGridIdx(leftPos, grid.dims.x)] = 0;
+				solidTiles[calculateGridIdx(leftPos, grid.dims.x)] = 0;
 			}
 
 			// Go right
 			do
 			{
-				std::size_t idx = CalculateGridIdx({rightPos}, grid.dims.x);
+				const std::size_t idx = calculateGridIdx({rightPos}, grid.dims.x);
 				if (idx >= solidTiles.size() || !solidTiles[idx])
 				{
 					break;
 				}
 
-				solidTiles[CalculateGridIdx(rightPos, grid.dims.x)] = 0;
+				solidTiles[calculateGridIdx(rightPos, grid.dims.x)] = 0;
 				rightPos.x++;
 			} while (rightPos.x <= grid.dims.x);
 
@@ -77,24 +77,24 @@ static void CreatePolygon(b2Body &body, BlockGrid &grid)
 				// Go up
 				while (leftPos.y > 0)
 				{
-					std::size_t idx = CalculateGridIdx({leftPos}, grid.dims.x);
+					const std::size_t idx = calculateGridIdx({leftPos}, grid.dims.x);
 					if (idx >= solidTiles.size() || !solidTiles[idx])
 					{
 						break;
 					}
-					solidTiles[CalculateGridIdx(leftPos, grid.dims.x)] = 0;
+					solidTiles[calculateGridIdx(leftPos, grid.dims.x)] = 0;
 					leftPos.y--;
 				}
 
 				// Go down
 				do
 				{
-					std::size_t idx = CalculateGridIdx({rightPos}, grid.dims.x);
+					const std::size_t idx = calculateGridIdx({rightPos}, grid.dims.x);
 					if (idx >= solidTiles.size() || !solidTiles[idx])
 					{
 						break;
 					}
-					solidTiles[CalculateGridIdx(rightPos, grid.dims.x)] = 0;
+					solidTiles[calculateGridIdx(rightPos, grid.dims.x)] = 0;
 					rightPos.y++;
 				} while (rightPos.x < grid.dims.y);
 
@@ -107,7 +107,7 @@ static void CreatePolygon(b2Body &body, BlockGrid &grid)
 				}
 			}
 
-			b2Vec2 center;
+			b2Vec2 center{};
 			// If only moved horizontal
 			if (leftPos.y == rightPos.y)
 			{
@@ -126,23 +126,23 @@ static void CreatePolygon(b2Body &body, BlockGrid &grid)
 	}
 }
 
-World::World(sf::RenderWindow &window, b2Vec2 gravity_) : gravity(gravity_)
+World::World(sf::RenderWindow &window, b2Vec2 gravity_) : m_gravity(gravity_)
 {
-	world = std::make_unique<b2World>(gravity);
-	auto &firstShip = AddEntity<Ship>();
-	auto &secondShip = AddEntity<Ship>();
+	m_world = std::make_unique<b2World>(m_gravity);
+	auto &firstShip = addEntity<Ship>();
+	auto &secondShip = addEntity<Ship>();
 	firstShip.move({-250.f, 0.f});
 	secondShip.move({250.f, 0.f});
 
 	firstShip.rotate(sf::degrees(34.f));
 
-	for (auto &entity : entities)
+	for (auto &entity : m_entities)
 	{
 		if (auto *ship = dynamic_cast<Ship *>(entity.get()))
 		{
 			b2BodyDef bodyDef;
 			bodyDef.type = b2_dynamicBody;
-			ship->body = world->CreateBody(&bodyDef);
+			ship->body = m_world->CreateBody(&bodyDef);
 
 			/*	
 			b2PolygonShape dynamicBox;
@@ -157,7 +157,7 @@ World::World(sf::RenderWindow &window, b2Vec2 gravity_) : gravity(gravity_)
 			{
 				for (std::size_t x = 0; x < ship->grid.dims.x; ++x)
 				{
-					if (ship->grid.GetBlockData(sf::Vector2u(x, y)).blockAchetypeIdx != 0)
+					if (ship->grid.getBlockData(sf::Vector2u(x, y)).blockAchetypeIdx != 0)
 					{
 						dynamicBox.SetAsBox(1.f / 2.f, 1.f / 2.f, {static_cast<float>(x) + 0.5f, static_cast<float>(y) + 0.5f}, 0.f);
 						ship->body->CreateFixture(&fixtureDef);
@@ -167,54 +167,53 @@ World::World(sf::RenderWindow &window, b2Vec2 gravity_) : gravity(gravity_)
 			*/
 			
 
-			CreatePolygon(*ship->body, ship->grid);
+			createPolygon(*ship->body, ship->grid);
 		}
 	}
 
 	firstShip.body->ApplyForce({1000.f, 0.f}, firstShip.body->GetWorldCenter(), true);
 
-	debugDraw = std::make_unique<PhysicsDebugDraw>(&window);
-	world->SetDebugDraw(debugDraw.get());
+	m_debugDraw = std::make_unique<PhysicsDebugDraw>(&window);
+	m_world->SetDebugDraw(m_debugDraw.get());
 
-	debugDraw->AppendFlags(b2Draw::e_shapeBit | b2Draw::e_jointBit | b2Draw::e_aabbBit | b2Draw::e_pairBit | b2Draw::e_centerOfMassBit);
+	m_debugDraw->AppendFlags(b2Draw::e_shapeBit | b2Draw::e_jointBit | b2Draw::e_aabbBit | b2Draw::e_pairBit | b2Draw::e_centerOfMassBit);
 }
-World::~World() {}
 
-void World::Update(sf::Time deltaTime)
+void World::update(sf::Time deltaTime)
 {
 	viewZoom = std::clamp(viewZoom, minZoom, maxZoom);
 
-	for (auto &entity : entities)
+	for (auto &entity : m_entities)
 	{
-		entity->PrePhysics();
+		entity->prePhysics();
 	}
 
-	world->Step(deltaTime.asSeconds(), velocityIterations, positionIterations);
+	m_world->Step(deltaTime.asSeconds(), m_velocityIterations, m_positionIterations);
 
-	for (auto &entity : entities)
+	for (auto &entity : m_entities)
 	{
-		entity->PostPhysics();
+		entity->postPhysics();
 	}
 
-	for (auto &entity : entities)
+	for (auto &entity : m_entities)
 	{
-		entity->Update(deltaTime);
+		entity->update(deltaTime);
 	}
 
-	++currentTimestamp;
+	++m_currentTimestamp;
 }
 
-void World::Render(sf::RenderWindow &window)
+void World::render(sf::RenderWindow &window)
 {
 	window.setView(sf::View(viewCenter, sf::Vector2f(window.getSize()) * viewZoom));
-	for (auto &entity : entities)
+	for (auto &entity : m_entities)
 	{
 		window.draw(*entity);
 	}
-	if (drawDebugInfo)
+	if (m_drawDebugInfo)
 	{
-		world->DebugDraw();
+		m_world->DebugDraw();
 	}
 }
 
-void World::SetDebugDraw(bool on) { drawDebugInfo = on; }
+void World::setDebugDraw(bool on) { m_drawDebugInfo = on; }

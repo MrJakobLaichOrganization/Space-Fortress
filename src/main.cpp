@@ -18,7 +18,7 @@ int main()
 	while (window.isOpen())
 	{
 		const auto delta = clock.restart();
-		const auto computedViewSpeed = world.viewSpeed * world.viewZoom * delta.asSeconds();
+		const auto computedViewSpeed = World::viewSpeed * world.viewZoom * delta.asSeconds();
 
 		while (const auto event = window.pollEvent())
 		{
@@ -27,20 +27,21 @@ int main()
 				window.close();
 				break;
 			}
-			else if (const auto *e = event->getIf<sf::Event::KeyPressed>())
+
+			if (const auto *e = event->getIf<sf::Event::KeyPressed>())
 			{
-				inputManager.OnKeyPress(e->scancode);
+				inputManager.onKeyPress(e->scancode);
 			}
 			else if (const auto *e = event->getIf<sf::Event::KeyReleased>())
 			{
-				inputManager.OnKeyRelease(e->scancode);
+				inputManager.onKeyRelease(e->scancode);
 			}
 			else if (const auto *e = event->getIf<sf::Event::MouseWheelScrolled>())
 			{
 				const auto ratio = e->delta < 0 ? 1.1f : 0.9f;
 				const auto newZoom = world.viewZoom * ratio;
 
-				if (newZoom > world.maxZoom || newZoom < world.minZoom)
+				if (newZoom > World::maxZoom || newZoom < World::minZoom)
 				{
 					continue;
 				}
@@ -52,75 +53,36 @@ int main()
 			}
 		}
 
-		if (inputManager.IsKeyDown(sf::Keyboard::Scan::Left))
+		if (inputManager.isKeyDown(sf::Keyboard::Scan::Left))
 		{
 			world.viewCenter.x -= computedViewSpeed;
 		}
-		if (inputManager.IsKeyDown(sf::Keyboard::Scan::Right))
+		if (inputManager.isKeyDown(sf::Keyboard::Scan::Right))
 		{
 			world.viewCenter.x += computedViewSpeed;
 		}
-		if (inputManager.IsKeyDown(sf::Keyboard::Scan::Up))
+		if (inputManager.isKeyDown(sf::Keyboard::Scan::Up))
 		{
 			world.viewCenter.y -= computedViewSpeed;
 		}
-		if (inputManager.IsKeyDown(sf::Keyboard::Scan::Down))
+		if (inputManager.isKeyDown(sf::Keyboard::Scan::Down))
 		{
 			world.viewCenter.y += computedViewSpeed;
 		}
 
-		if (inputManager.IsKeyPressed(sf::Keyboard::Scan::T))
+		if (inputManager.isKeyPressed(sf::Keyboard::Scan::T))
 		{
 			showDebug = !showDebug;
-			world.SetDebugDraw(showDebug);
+			world.setDebugDraw(showDebug);
 		}
 
-		world.Update(delta);
-		inputManager.Update();
+		world.update(delta);
+		inputManager.update();
 
 		window.clear();
-		world.Render(window);
+		world.render(window);
 		window.display();
-	}
-	bool *p = nullptr;
-	if (p)
-	{
-		return 84;
 	}
 
 	return 0;
-}
-
-void foo(int Value)
-{
-	int Local = 0;
-	for (int i = 0; i < 42; i++)
-	{
-		if (Value == 1)
-		{
-			return;
-		}
-		else
-		{
-			Local++;
-		}
-
-		if (Value == 2)
-		{
-			continue;
-		}
-		else
-		{
-			Local++;
-		}
-
-		if (Value == 3)
-		{
-			throw 42;
-		}
-		else
-		{
-			Local++;
-		}
-	}
 }

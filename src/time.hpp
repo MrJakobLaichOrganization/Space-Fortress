@@ -4,15 +4,15 @@
 
 struct Time
 {
-	static constexpr std::uint64_t SecsPerTick = 60;
-	static constexpr std::uint64_t SecsPerYear = 31'556'952;
+	static constexpr std::uint64_t secsPerTick = 60;
+	static constexpr std::uint64_t secsPerYear = 31'556'952;
 	std::uint64_t ticks = 0;
 
 	// --- Helper methods ---
 
 	explicit operator std::uint64_t() const { return ticks; }
-	std::uint64_t Seconds() const { return ticks * SecsPerTick; }
-	std::uint64_t Year() const { return Seconds() / SecsPerYear; }
+	[[nodiscard]] std::uint64_t seconds() const { return ticks * secsPerTick; }
+	[[nodiscard]] std::uint64_t year() const { return seconds() / secsPerYear; }
 
 	Time &operator++() { ticks++; return *this; }				// Prefix
 	Time &operator--() { ticks--; return *this; }				// Prefix

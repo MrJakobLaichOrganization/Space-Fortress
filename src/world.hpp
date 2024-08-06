@@ -20,34 +20,34 @@ class World
 	float viewZoom = 1.5f;
 
 	World(sf::RenderWindow &wind, b2Vec2 gravity = b2Vec2{0, 0});
-	~World();
+	~World() = default;
 
-	void Update(sf::Time deltaTime);
-	void Render(sf::RenderWindow &window);
+	void update(sf::Time deltaTime);
+	void render(sf::RenderWindow &window);
 
 
-	Time GetTime() const { return currentTimestamp; }
+	[[nodiscard]] Time getTime() const { return m_currentTimestamp; }
 
-	void SetDebugDraw(bool on);
+	void setDebugDraw(bool on);
 
 	/**
 	* @brief Creates an entity in the world
 	* @param T - derivation of Entity
 	* @param Args - parameters you would put for T
 	*/
-	template <EntityDerivation T, typename... Args> T &AddEntity(Args &&...args) {
-		entities.push_back(std::make_unique<T>(args...));
-		return *static_cast<T*>(entities.back().get());
+	template <EntityDerivation T, typename... Args> T &addEntity(Args &&...args) {
+		m_entities.push_back(std::make_unique<T>(args...));
+		return *static_cast<T*>(m_entities.back().get());
 	}
 
   private:
-	b2Vec2 gravity{0, 0};
-	std::unique_ptr<b2World> world;
-	int32 velocityIterations = 6;
-	int32 positionIterations = 2;
-	Time currentTimestamp;
-	std::unique_ptr<PhysicsDebugDraw> debugDraw;
-	bool drawDebugInfo = false;
+	b2Vec2 m_gravity{0, 0};
+	std::unique_ptr<b2World> m_world;
+	const int32 m_velocityIterations = 6;
+	const int32 m_positionIterations = 2;
+	Time m_currentTimestamp;
+	std::unique_ptr<PhysicsDebugDraw> m_debugDraw;
+	bool m_drawDebugInfo = false;
 
-	std::vector<std::unique_ptr<Entity>> entities;
+	std::vector<std::unique_ptr<Entity>> m_entities;
 };

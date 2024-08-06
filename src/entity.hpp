@@ -12,24 +12,24 @@ class Entity : public sf::Transformable, public sf::Drawable
   public:
 	b2Body *body{};
 
-	virtual void PrePhysics()
+	virtual void prePhysics()
 	{
 		if (body)
 		{
-			body->SetTransform(toBox2d(getPosition() / MeterToPixels), getRotation().asRadians());
+			body->SetTransform(toBox2d(getPosition() / meterToPixels), getRotation().asRadians());
 		}
 	}
 
-	virtual void PostPhysics()
+	virtual void postPhysics()
 	{
 		if (body)
 		{
-			setPosition(toSFML(body->GetPosition()) * MeterToPixels);
+			setPosition(toSFML(body->GetPosition()) * meterToPixels);
 			setRotation(sf::radians(body->GetAngle()));
 		}
 	}
 
-	virtual void Update(sf::Time deltaTime)
+	virtual void update(sf::Time deltaTime)
 	{
 
 	}
@@ -39,7 +39,7 @@ class Entity : public sf::Transformable, public sf::Drawable
 
 	}
 
-	virtual ~Entity() = default;
+	virtual ~Entity() override = default;
 };
 template<typename T>
 concept EntityDerivation = std::is_base_of_v<Entity, T>;
