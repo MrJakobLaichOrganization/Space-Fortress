@@ -23,11 +23,13 @@ include(FetchContent)
 
 # SFML Libraries
 FetchContent_Declare(SFML
+    SYSTEM 
     GIT_REPOSITORY https://github.com/SFML/SFML.git
     GIT_TAG dffdaa52a74428cf399502198a23ff2b2bdc8043)
 FetchContent_MakeAvailable(SFML)
 
 FetchContent_Declare(ImGui
+    SYSTEM 
     GIT_REPOSITORY https://github.com/ocornut/imgui
     GIT_TAG v1.89.9)
 FetchContent_MakeAvailable(ImGui)
@@ -35,12 +37,14 @@ FetchContent_GetProperties(ImGui SOURCE_DIR IMGUI_DIR)
 
 set(IMGUI_SFML_FIND_SFML OFF)
 FetchContent_Declare(ImGui-SFML
+    SYSTEM 
     GIT_REPOSITORY https://github.com/SFML/imgui-sfml
     GIT_TAG 4bebb4ec4e87a26b8bfeda66f905bd93d70c2582)
 FetchContent_MakeAvailable(ImGui-SFML)
 
 # Cereal lib
 FetchContent_Declare(Cereal
+    SYSTEM 
     GIT_REPOSITORY https://github.com/USCiLab/cereal.git
     GIT_TAG v1.3.2)
 set(SKIP_PERFORMANCE_COMPARISON ON)
@@ -52,6 +56,7 @@ unset(BUILD_DOC)
 unset(BUILD_SANDBOX)
 
 FetchContent_Declare(box2d
+    SYSTEM 
     GIT_REPOSITORY https://github.com/erincatto/box2d.git
     GIT_TAG main)
 FetchContent_MakeAvailable(box2d)
@@ -66,32 +71,7 @@ target_include_directories(Game PRIVATE "./src/")
 
 target_compile_definitions(Game PRIVATE ASSETS_DIR="${PROJECT_SOURCE_DIR}/assets")
 
-game_set_option(CLANG_FORMAT_EXECUTABLE clang-format STRING "Override clang-format executable, requires version 12, 13, or 14")
-add_custom_target(format
-    COMMAND ${CMAKE_COMMAND} -DCLANG_FORMAT_EXECUTABLE=${CLANG_FORMAT_EXECUTABLE} -P ./cmake/Format.cmake
-    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR} VERBATIM)
-
-game_set_option(CLANG_TIDY_EXECUTABLE clang-tidy STRING "Override clang-tidy executable, requires minimum version 14")
-
-
-# Check executable exists
-if(NOT EXISTS ${CLANG_TIDY_EXECUTABLE})
-    find_program(CLANG_TIDY_EXEC_TEMP ${CLANG_TIDY_EXECUTABLE})
-    if(CLANG_TIDY_EXEC_TEMP)
-        set(CLANG_TIDY_EXECUTABLE ${CLANG_TIDY_EXEC_TEMP})
-        unset(CLANG_TIDY_EXEC_TEMP)
-    endif()
-endif()
-
-# Find Python and run-clang-tidy script
-find_package(Python 3 REQUIRED)
-
-find_program(RUN_CLANG_TIDY run-clang-tidy)
-
-#set(RUN_CLANG_TIDY run-clang-tidy)
-#set(CLANG_TIDY_EXECUTABLE "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/Llvm/x64/bin/clang-tidy.exe")
-
-
+sfml_set_option(CLANG_TIDY_EXECUTABLE clang-tidy STRING "Override clang-tidy executable, requires minimum version 14")
 add_custom_target(tidy
-    COMMAND ${Python_EXECUTABLE} ${RUN_CLANG_TIDY} -quiet -clang-tidy-binary ${CLANG_TIDY_EXECUTABLE} -p ${PROJECT_BINARY_DIR} "^((?!_deps).)*$"
+    COMMAND ${CMAKE_COMMAND} -DCLANG_TIDY_EXECUTABLE=${CLANG_TIDY_EXECUTABLE} -DPROJECT_BINARY_DIR=${PROJECT_BINARY_DIR} -P ./cmake/Tidy.cmake
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR} VERBATIM)
