@@ -3,16 +3,19 @@
 BlockGrid::BlockGrid(const sf::Vector2u &dimensions, Tilemap *tilemap)
 	: dims{dimensions}, m_tilemap{tilemap}
 {
-	m_blockArchetypes.push_back(BlockArchetype{"Air", "", 1 * 30 + 1, false});
-	m_blockArchetypes.push_back(BlockArchetype{"Wall", "", 9 * 30 + 10, true});
-	m_blockArchetypes.push_back(BlockArchetype{"Wall_TL", "", 6 * 30 + 10, true});
-	m_blockArchetypes.push_back(BlockArchetype{"Wall_TR", "", 6 * 30 + 12, true});
-	m_blockArchetypes.push_back(BlockArchetype{"Wall_BL", "", 8 * 30 + 10, true});
-	m_blockArchetypes.push_back(BlockArchetype{"Wall_BR", "", 8 * 30 + 12, true});
-	m_blockArchetypes.push_back(BlockArchetype{"Wall_MUD", "", 7 * 30 + 14, true});
-	m_blockArchetypes.push_back(BlockArchetype{"Wall_MLR", "", 8 * 30 + 17, true});
-	m_blockArchetypes.push_back(BlockArchetype{"Floor", "", 10 * 30 + 10, false});
-	m_blockArchetypes.push_back(BlockArchetype{"GateO2", "", 9 * 30 + 19, true});
+	m_blockArchetypes.push_back(BlockArchetype{"Air", "", getBlockIdx({4, 1}), false});
+	m_blockArchetypes.push_back(BlockArchetype{"Wall_TL", "", getBlockIdx({3, 0}), true});
+	m_blockArchetypes.push_back(BlockArchetype{"Wall_TR", "", getBlockIdx({5, 0}), true});
+	m_blockArchetypes.push_back(BlockArchetype{"Wall_BL", "", getBlockIdx({3, 2}), true});
+	m_blockArchetypes.push_back(BlockArchetype{"Wall_BR", "", getBlockIdx({5, 2}), true});
+	m_blockArchetypes.push_back(BlockArchetype{"Wall_MU", "", getBlockIdx({4, 0}), true});
+	m_blockArchetypes.push_back(BlockArchetype{"Wall_MD", "", getBlockIdx({4, 2}), true});
+	m_blockArchetypes.push_back(BlockArchetype{"Wall_MR", "", getBlockIdx({5, 1}), true});
+	m_blockArchetypes.push_back(BlockArchetype{"Wall_ML", "", getBlockIdx({3, 1}), true});
+	m_blockArchetypes.push_back(BlockArchetype{"Floor", "", getBlockIdx({1, 1}), false});
+	m_blockArchetypes.push_back(BlockArchetype{"DoorLocked", "", getBlockIdx({7, 5}), true});
+	m_blockArchetypes.push_back(BlockArchetype{"DoorClosed", "", getBlockIdx({6, 2}), true});
+	m_blockArchetypes.push_back(BlockArchetype{"DoorOpen", "", getBlockIdx({7, 2}), true});
 
 	m_blockData.resize(dims.x * dims.y);
 	for (std::size_t i = 0; i < m_blockData.size(); ++i)
