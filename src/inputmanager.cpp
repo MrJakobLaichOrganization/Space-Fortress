@@ -1,8 +1,6 @@
 #include "inputmanager.hpp"
 #include <cstring>
 
-InputManager::InputManager() {}
-
 void InputManager::update() { 
 	m_keysLastDown = m_keysDown;
 }

@@ -7,7 +7,6 @@
 class InputManager
 {
   public:
-	InputManager();
 	void update();
 	void onKeyPress(sf::Keyboard::Scancode key);
 	void onKeyRelease(sf::Keyboard::Scancode key);

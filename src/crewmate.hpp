@@ -8,7 +8,7 @@ class World;
 class Crewmate: public Entity
 {
   public:
-	static constexpr std::uint64_t AdultYear = 16;	// Year at which they are adult
+	static constexpr std::uint64_t adultYear = 16;	// Year at which they are adult
 
 	enum class Gender : std::uint8_t
 	{

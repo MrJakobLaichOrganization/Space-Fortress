@@ -39,7 +39,7 @@ class Entity : public sf::Transformable, public sf::Drawable
 
 	}
 
-	virtual ~Entity() override = default;
+	~Entity() override = default;
 };
 template<typename T>
 concept EntityDerivation = std::is_base_of_v<Entity, T>;

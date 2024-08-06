@@ -32,7 +32,7 @@ void Tilemap::setTile(std::uint32_t idx, std::uint32_t tileIdx) {
 
 	auto tu = tileIdx % (m_tx.getSize().x / m_tileDims.x);
 	auto tv = tileIdx / (m_tx.getSize().x / m_tileDims.x);
-	sf::Vector2 pos{
+	const sf::Vector2 pos{
 		idx % m_tileCount.x,
 		idx / m_tileCount.x
 	};
