@@ -86,7 +86,7 @@ endif()
 # Find Python and run-clang-tidy script
 find_package(Python 3 REQUIRED)
 
-#find_program(RUN_CLANG_TIDY run-clang-tidy)
+find_program(RUN_CLANG_TIDY run-clang-tidy)
 #set(RUN_CLANG_TIDY run-clang-tidy)
 #set(CLANG_TIDY_EXECUTABLE "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/Llvm/x64/bin/clang-tidy.exe")
 
