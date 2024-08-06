@@ -69,6 +69,12 @@ int main()
 			world.viewCenter.y += computedViewSpeed;
 		}
 
+		if (inputManager.IsKeyPressed(sf::Keyboard::Scan::T))
+		{
+			showDebug = !showDebug;
+			world.SetDebugDraw(showDebug);
+		}
+
 		world.Update(delta);
 		inputManager.Update();
 

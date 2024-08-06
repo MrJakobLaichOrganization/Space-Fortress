@@ -1,6 +1,8 @@
  #include <cstdint>
 #include <string>
 #include <vector>
+#include <string_view>
+
 #include <SFML/System/Vector2.hpp>
 #include <graphics/tilemap.hpp>
 
@@ -10,6 +12,7 @@ struct BlockArchetype
 	std::string description;
 	// index of the tile in tilesheet
 	std::uint32_t tilemapIdx;
+	bool solid = true;
 };
 struct BlockData
 {
@@ -32,8 +35,13 @@ class BlockGrid
 	/// @param blockType - block archetype to set
 	/// @param pos - position relative to the top left
 	void SetBlockType(std::uint32_t blockType, const sf::Vector2u &pos);
+	/// @brief
+	/// @param blockType - block archetype name to set
+	/// @param pos - position relative to the top left
+	void SetBlockType(std::string_view archetype_name, const sf::Vector2u &pos);
 	const BlockArchetype &GetBlockArchetype(std::uint32_t idx) const;
 	const BlockArchetype &GetBlockArchetype(const sf::Vector2u &pos) const;
+	std::uint32_t GetBlockArchetypeIdx(std::string_view name) const;
 
 	const BlockData &GetBlockData(std::uint32_t idx) const;
 	const BlockData &GetBlockData(const sf::Vector2u &pos) const;

@@ -15,31 +15,33 @@ class Ship : public Entity
 
 	Ship()
 	{
-		const auto floorTile = 10 * 30 + 10;
+		const auto floorTile = grid.GetBlockArchetypeIdx("Floor");
+		const auto floorMidUD = grid.GetBlockArchetypeIdx("Wall_MUD");
 
-		grid.SetBlockType(6 * 30 + 10, {0, 0});
-		grid.SetBlockType(6 * 30 + 12, {6, 0});
+		grid.SetBlockType(grid.GetBlockArchetypeIdx("Wall_TL"), {0, 0});
+		grid.SetBlockType(grid.GetBlockArchetypeIdx("Wall_MLR"), {8, 0});
+		grid.SetBlockType(grid.GetBlockArchetypeIdx("Wall_TR"), {6, 0});
 
-		grid.SetBlockType(8 * 30 + 10, {0, 7});
-		grid.SetBlockType(8 * 30 + 12, {6, 7});
+		grid.SetBlockType(grid.GetBlockArchetypeIdx("Wall_BL"), {0, 7});
+		grid.SetBlockType(grid.GetBlockArchetypeIdx("Wall_BR"), {6, 7});
 
 		for (std::uint32_t x = 0; x < 5; x++)
 		{
-			grid.SetBlockType(8 * 30 + 17, {x + 1, 0});
-			grid.SetBlockType(9 * 30 + 10, {x + 1, 1});
-			grid.SetBlockType(8 * 30 + 17, {x + 1, 7});
-			grid.SetBlockType(7 * 30 + 14, {0, x + 1});
-			grid.SetBlockType(7 * 30 + 14, {6, x + 1});
+			grid.SetBlockType(grid.GetBlockArchetypeIdx("Wall_MLR"), {x + 1, 0});
+			grid.SetBlockType(grid.GetBlockArchetypeIdx("Wall"), {x + 1, 1});
+			grid.SetBlockType(grid.GetBlockArchetypeIdx("Wall_MLR"), {x + 1, 7});
+			grid.SetBlockType(floorMidUD, {0, x + 1});
+			grid.SetBlockType(floorMidUD, {6, x + 1});
 			for (std::uint32_t y = 0; y < 5; y++)
 			{
 				grid.SetBlockType(floorTile, {x + 1, y + 2});
 			}
 		}
 
-		grid.SetBlockType(7 * 30 + 14, {0, 6});
-		grid.SetBlockType(7 * 30 + 14, {6, 6});
+		grid.SetBlockType(floorMidUD, {0, 6});
+		grid.SetBlockType(floorMidUD, {6, 6});
 
-		grid.SetBlockType(9 * 30 + 19, {2, 1});
+		grid.SetBlockType(grid.GetBlockArchetypeIdx("GateO2"), {2, 1});
 	}
 
 	void CreateCrewmate(Crewmate &&crewmate) { 

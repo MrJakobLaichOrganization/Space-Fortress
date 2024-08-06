@@ -4,6 +4,9 @@
 
 #include "units.hpp"
 
+#include <concepts>
+#include <type_traits>
+
 class Entity : public sf::Transformable, public sf::Drawable
 {
   public:
@@ -37,6 +40,6 @@ class Entity : public sf::Transformable, public sf::Drawable
 	}
 
 	virtual ~Entity() = default;
-
-
 };
+template<typename T>
+concept EntityDerivation = std::is_base_of_v<Entity, T>;
