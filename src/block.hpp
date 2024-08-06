@@ -52,7 +52,7 @@ class BlockGrid
 	sf::Vector2u dims;
 
   private:
-	[[nodiscard]] std::uint32_t BlockIdx(sf::Vector2u pos) { return pos.y * m_tilemap->getTilesetDims().x + pos.x; }
+	[[nodiscard]] std::uint32_t getBlockIdx(sf::Vector2u pos) { return pos.y * m_tilemap->getTilesetDims().x + pos.x; }
 	[[nodiscard]] std::uint32_t calculateIndex(const sf::Vector2u &pos) const;
 
 	Tilemap *m_tilemap;
