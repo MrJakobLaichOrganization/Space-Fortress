@@ -87,10 +87,11 @@ endif()
 find_package(Python 3 REQUIRED)
 
 find_program(RUN_CLANG_TIDY run-clang-tidy)
+
 #set(RUN_CLANG_TIDY run-clang-tidy)
 #set(CLANG_TIDY_EXECUTABLE "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/Llvm/x64/bin/clang-tidy.exe")
 
 
 add_custom_target(tidy
-    COMMAND ${Python_EXECUTABLE} ${RUN_CLANG_TIDY} -clang-tidy-binary ${CLANG_TIDY_EXECUTABLE} -p ${PROJECT_BINARY_DIR} ${SRC_FILES}
+    COMMAND ${Python_EXECUTABLE} ${RUN_CLANG_TIDY} -quiet -clang-tidy-binary ${CLANG_TIDY_EXECUTABLE} -p ${PROJECT_BINARY_DIR} "^((?!_deps).)*$"
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR} VERBATIM)
