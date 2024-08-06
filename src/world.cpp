@@ -2,6 +2,8 @@
 #include "ship.hpp"
 #include "crewmate.hpp"
 
+#include <algorithm>
+
 namespace
 {
 std::size_t calculateGridIdx(sf::Vector2<std::size_t> pos, std::size_t width) { return pos.y * width + pos.x; }
