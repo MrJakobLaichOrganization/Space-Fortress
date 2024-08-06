@@ -3,9 +3,9 @@
 #include <cmath>
 
 Tilemap::Tilemap(const sf::Texture &tx,
-				 const sf::Vector2<std::uint8_t> &tileDims,
-				 const sf::Vector2u &tileCount, float scale)
-	: m_tx{tx}, m_tileDims{tileDims}, m_tileCount{tileCount}, m_scale{scale}
+				 const sf::Vector2<std::uint8_t> &tileDims, const sf::Vector2u &tileCount,
+				 const sf::Vector2u &renderTileSize)
+	: m_tx{tx}, m_tileDims{tileDims}, m_tileCount{tileCount}, m_renderDims{renderTileSize}
 {
 	const std::uint32_t tileNumber = m_tileCount.x * m_tileCount.y;
 	m_verts.setPrimitiveType(sf::PrimitiveType::Triangles);
@@ -39,10 +39,10 @@ void Tilemap::setTile(std::uint32_t idx, std::uint32_t tileIdx) {
 
 	auto* vert = &m_verts[(pos.y * m_tileCount.x + pos.x) * 6];
 
-	vert[0].position = sf::Vector2f(pos.x * m_tileDims.x * m_scale, pos.y * m_tileDims.y * m_scale);
-	vert[1].position = sf::Vector2f((pos.x + 1) * m_tileDims.x * m_scale, pos.y * m_tileDims.y * m_scale);
-	vert[2].position = sf::Vector2f((pos.x + 1) * m_tileDims.x * m_scale, (pos.y + 1) * m_tileDims.y * m_scale);
-	vert[3].position = sf::Vector2f(pos.x * m_tileDims.x * m_scale, (pos.y + 1) * m_tileDims.y * m_scale);
+	vert[0].position = sf::Vector2f(pos.x * m_renderDims.x, pos.y * m_renderDims.y);
+	vert[1].position = sf::Vector2f((pos.x + 1) * m_renderDims.x, pos.y * m_renderDims.y);
+	vert[2].position = sf::Vector2f((pos.x + 1) * m_renderDims.x, (pos.y + 1) * m_renderDims.y);
+	vert[3].position = sf::Vector2f(pos.x * m_renderDims.x, (pos.y + 1) * m_renderDims.y);
 
 	vert[0].texCoords = sf::Vector2f(tu * m_tileDims.x, tv * m_tileDims.y);
 	vert[1].texCoords = sf::Vector2f((tu + 1) * m_tileDims.x, tv * m_tileDims.y);

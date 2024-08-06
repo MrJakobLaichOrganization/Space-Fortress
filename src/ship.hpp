@@ -9,7 +9,7 @@
 class Ship : public Entity
 {
   public:
-	Tilemap tilemap{Resources::get().tilesTexture, {32, 32}, {32, 32}, 2.f};
+	Tilemap tilemap{Resources::get().tilesTexture, {32, 32}, {32, 32}};
 	BlockGrid grid{{32, 32}, &tilemap};
 	std::vector<Crewmate> crewmates;
 
