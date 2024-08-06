@@ -23,7 +23,7 @@ class PhysicsDebugDraw : public b2Draw
 		sf::ConvexShape shape(vertexCount);
 		for (int32 x = 0; x < vertexCount; x++)
 		{
-			shape.setPoint(x, {vertices[x].x * MeterToPixels, vertices[x].y * MeterToPixels});
+			shape.setPoint(x, {vertices[x].x * meterToPixels, vertices[x].y * meterToPixels});
 		}
 
 		shape.setFillColor(sf::Color::Transparent);
@@ -38,7 +38,7 @@ class PhysicsDebugDraw : public b2Draw
 		sf::ConvexShape shape(vertexCount);
 		for (int32 x = 0; x < vertexCount; x++)
 		{
-			shape.setPoint(x, {vertices[x].x * MeterToPixels, vertices[x].y * MeterToPixels});
+			shape.setPoint(x, {vertices[x].x * meterToPixels, vertices[x].y * meterToPixels});
 		}
 
 		shape.setFillColor(sf::Color(color.r * 255, color.g * 255, color.b * 255, color.a * 255));
@@ -49,10 +49,10 @@ class PhysicsDebugDraw : public b2Draw
 
 	void DrawCircle(const b2Vec2 &center, float radius, const b2Color &color) override
 	{
-		sf::CircleShape shape(radius * MeterToPixels);
+		sf::CircleShape shape(radius * meterToPixels);
 
 		shape.setOrigin({radius / 2.f, radius / 2.f});
-		shape.setPosition(sf::Vector2f{center.x, center.y} * MeterToPixels);
+		shape.setPosition(sf::Vector2f{center.x, center.y} * meterToPixels);
 
 		shape.setOutlineColor(sf::Color(color.r * 255, color.g * 255, color.b * 255, color.a * 255));
 		shape.setOutlineThickness(-outlineWidth);
@@ -62,10 +62,10 @@ class PhysicsDebugDraw : public b2Draw
 
 	void DrawSolidCircle(const b2Vec2 &center, float radius, const b2Vec2 &axis, const b2Color &color) override
 	{
-		sf::CircleShape shape(radius * MeterToPixels);
+		sf::CircleShape shape(radius * meterToPixels);
 
 		shape.setOrigin({radius / 2.f, radius / 2.f});
-		shape.setPosition(sf::Vector2f{center.x, center.y} * MeterToPixels);
+		shape.setPosition(sf::Vector2f{center.x, center.y} * meterToPixels);
 
 		shape.setFillColor(sf::Color(color.r * 255, color.g * 255, color.b * 255, color.a * 255));
 
@@ -76,10 +76,10 @@ class PhysicsDebugDraw : public b2Draw
 	{
 		const auto line = (p2 - p1);
 
-		sf::RectangleShape shape({outlineWidth, line.Length() * MeterToPixels});
+		sf::RectangleShape shape({outlineWidth, line.Length() * meterToPixels});
 		shape.setOrigin({outlineWidth / 2.f, 0.f});
 		shape.setRotation(sf::Vector2f{line.x, line.y}.angle());
-		shape.setPosition(sf::Vector2f{p1.x, p1.y} * MeterToPixels);
+		shape.setPosition(sf::Vector2f{p1.x, p1.y} * meterToPixels);
 
 		shape.setFillColor(sf::Color(color.r * 255, color.g * 255, color.b * 255, color.a * 255));
 

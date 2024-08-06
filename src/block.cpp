@@ -1,58 +1,80 @@
 #include "block.hpp"
 
-BlockGrid::BlockGrid(const sf::Vector2u &dimensions, Tilemap *tilemap_)
-	: dims{dimensions}, tilemap{tilemap_}
+BlockGrid::BlockGrid(const sf::Vector2u &dimensions, Tilemap *tilemap)
+	: dims{dimensions}, m_tilemap{tilemap}
 {
-	blockArchetypes.push_back(BlockArchetype{"Dirt", "Dirt block", 4});
-	blockArchetypes.push_back(BlockArchetype{"Stone", "Stone block", 6});
-	blockArchetypes.push_back(BlockArchetype{"Stone wall", "Stone wall", 10});
-	blockArchetypes.push_back(
-		BlockArchetype{"Wooden floor", "Floor made out of wood", 43});
+	m_blockArchetypes.push_back(BlockArchetype{"Air", "", 1 * 30 + 1, false});
+	m_blockArchetypes.push_back(BlockArchetype{"Wall", "", 9 * 30 + 10, true});
+	m_blockArchetypes.push_back(BlockArchetype{"Wall_TL", "", 6 * 30 + 10, true});
+	m_blockArchetypes.push_back(BlockArchetype{"Wall_TR", "", 6 * 30 + 12, true});
+	m_blockArchetypes.push_back(BlockArchetype{"Wall_BL", "", 8 * 30 + 10, true});
+	m_blockArchetypes.push_back(BlockArchetype{"Wall_BR", "", 8 * 30 + 12, true});
+	m_blockArchetypes.push_back(BlockArchetype{"Wall_MUD", "", 7 * 30 + 14, true});
+	m_blockArchetypes.push_back(BlockArchetype{"Wall_MLR", "", 8 * 30 + 17, true});
+	m_blockArchetypes.push_back(BlockArchetype{"Floor", "", 10 * 30 + 10, false});
+	m_blockArchetypes.push_back(BlockArchetype{"GateO2", "", 9 * 30 + 19, true});
 
-	blockData.resize(dims.x * dims.y);
-	for (std::size_t i = 0; i < blockData.size(); ++i)
+	m_blockData.resize(dims.x * dims.y);
+	for (std::size_t i = 0; i < m_blockData.size(); ++i)
 	{
-		blockData[i].blockAchetypeIdx = 0;
+		m_blockData[i].blockAchetypeIdx = 0;
+		m_tilemap->setTile(i, m_blockArchetypes[0].tilemapIdx);
 	}
 }
 
-void BlockGrid::SetBlockType(std::uint32_t blockType, std::uint32_t idx)
+void BlockGrid::setBlockType(std::uint32_t blockType, std::uint32_t idx)
 {
-	blockData[idx].blockAchetypeIdx = blockType;
+	m_blockData[idx].blockAchetypeIdx = blockType;
 
-	if (tilemap)
+	if (m_tilemap)
 	{
-		tilemap->SetTile(idx, blockType);
+		m_tilemap->setTile(idx, getBlockArchetype(idx).tilemapIdx);
 	}
 }
-void BlockGrid::SetBlockType(std::uint32_t blockType, const sf::Vector2u &pos)
+void BlockGrid::setBlockType(std::uint32_t blockType, const sf::Vector2u &pos)
 {
-	SetBlockType(blockType, pos.y * dims.x + pos.x);
+	setBlockType(blockType, pos.y * dims.x + pos.x);
+}
+void BlockGrid::setBlockType(std::string_view archetypeName, const sf::Vector2u &pos)
+{
+	setBlockType(getBlockArchetypeIdx(archetypeName), pos);
 }
 
-const BlockArchetype &BlockGrid::GetBlockArchetype(std::uint32_t idx) const
+const BlockArchetype &BlockGrid::getBlockArchetype(std::uint32_t idx) const
 {
-	return blockArchetypes[blockData[idx].blockAchetypeIdx];
+	return m_blockArchetypes[m_blockData[idx].blockAchetypeIdx];
 }
-const BlockArchetype &BlockGrid::GetBlockArchetype(const sf::Vector2u &pos) const {
-	return GetBlockArchetype(CalculateIndex(pos));
+const BlockArchetype &BlockGrid::getBlockArchetype(const sf::Vector2u &pos) const {
+	return getBlockArchetype(calculateIndex(pos));
+}
+std::uint32_t BlockGrid::getBlockArchetypeIdx(std::string_view name) const
+{
+	for (std::size_t i = 0; i < m_blockArchetypes.size(); ++i)
+	{
+		if (m_blockArchetypes[i].name == name)
+		{
+			return i;
+		}
+	}
+
+	return static_cast<std::uint32_t>(-1);
 }
 
-const BlockData &BlockGrid::GetBlockData(std::uint32_t idx) const
+const BlockData &BlockGrid::getBlockData(std::uint32_t idx) const
 {
-	return blockData[idx];
+	return m_blockData[idx];
 }
-const BlockData &BlockGrid::GetBlockData(const sf::Vector2u &pos) const
+const BlockData &BlockGrid::getBlockData(const sf::Vector2u &pos) const
 {
-	return blockData[CalculateIndex(pos)];
+	return m_blockData[calculateIndex(pos)];
 }
-BlockData &BlockGrid::GetBlockData(std::uint32_t idx) { return blockData[idx]; }
-BlockData &BlockGrid::GetBlockData(const sf::Vector2u &pos)
+BlockData &BlockGrid::getBlockData(std::uint32_t idx) { return m_blockData[idx]; }
+BlockData &BlockGrid::getBlockData(const sf::Vector2u &pos)
 {
-	return blockData[CalculateIndex(pos)];
+	return m_blockData[calculateIndex(pos)];
 }
 
-std::uint32_t BlockGrid::CalculateIndex(const sf::Vector2u &pos) const
+std::uint32_t BlockGrid::calculateIndex(const sf::Vector2u &pos) const
 {
 	return pos.y * dims.x + pos.x;
 }
