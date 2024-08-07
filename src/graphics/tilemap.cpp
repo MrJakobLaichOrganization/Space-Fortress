@@ -7,10 +7,10 @@ Tilemap::Tilemap(const sf::Texture& tx,
                  const sf::Vector2<std::uint8_t>& tileDims,
                  const sf::Vector2u& tileCount,
                  const sf::Vector2u& renderTileSize) :
-m_tx{tx},
-m_tileDims{tileDims},
-m_tileCount{tileCount},
-m_renderDims{renderTileSize}
+    m_tx{tx},
+    m_tileDims{tileDims},
+    m_tileCount{tileCount},
+    m_renderDims{renderTileSize}
 {
     const std::uint32_t tileNumber = m_tileCount.x * m_tileCount.y;
     m_verts.setPrimitiveType(sf::PrimitiveType::Triangles);
