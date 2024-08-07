@@ -8,10 +8,10 @@ constexpr float meterToPixels = 64.f;
 
 inline b2Vec2 toBox2d(sf::Vector2f v)
 {
-	return {v.x, v.y};
+    return {v.x, v.y};
 }
 
 inline sf::Vector2f toSFML(b2Vec2 v)
 {
-	return {v.x, v.y};
+    return {v.x, v.y};
 }
