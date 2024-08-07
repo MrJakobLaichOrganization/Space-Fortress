@@ -13,7 +13,7 @@ public:
     BlockGrid grid{{32, 32}, &tilemap};
     std::vector<Crewmate> crewmates;
 
-    Ship()
+    Ship(Id id) : Entity{id}
     {
         const auto floorTile = grid.getBlockArchetypeIdx("Floor");
 

@@ -17,8 +17,8 @@ public:
         FEMALE
     };
 
-    Crewmate(const World& w, std::string_view name, Gender gender = Gender::MALE);
-    Crewmate(Crewmate&& other) noexcept;
+    Crewmate(Id id, const World& w, std::string_view name, Gender gender = Gender::MALE);
+    Crewmate(Crewmate&& other) noexcept = default;
 
     void update(sf::Time deltaTime) override;
 

@@ -10,7 +10,17 @@
 class Entity : public sf::Transformable, public sf::Drawable
 {
 public:
+    using Id = std::int64_t;
+
+    Id id;
     b2Body* body{};
+
+    Entity(Id id) : id{id}
+    {
+    }
+
+    Entity(const Entity&) = delete;
+    Entity(Entity&&) = default;
 
     virtual void prePhysics()
     {

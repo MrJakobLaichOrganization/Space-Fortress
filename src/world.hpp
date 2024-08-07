@@ -43,7 +43,7 @@ public:
     template <EntityDerivation T, typename... Args>
     T& addEntity(Args&&... args)
     {
-        m_entities.push_back(std::make_unique<T>(std::forward<Args>(args)...));
+        m_entities.push_back(std::make_unique<T>(m_nextEntityId++, std::forward<Args>(args)...));
         return *static_cast<T*>(m_entities.back().get());
     }
 
@@ -57,4 +57,6 @@ private:
     bool m_drawDebugInfo = false;
 
     std::vector<std::unique_ptr<Entity>> m_entities;
+
+    Entity::Id m_nextEntityId{};
 };
