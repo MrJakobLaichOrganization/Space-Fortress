@@ -122,7 +122,7 @@ jobs:
       uses: actions/checkout@v4
 
     - name: Format Code
-      run: cmake -DCLANG_FORMAT_EXECUTABLE=clang-format-17 -P cmake/Format.cmake
+      run: cmake -DCLANG_FORMAT_EXECUTABLE=clang-format-14 -P cmake/Format.cmake
 
     - name: Check Formatting
       run: git diff --exit-code
