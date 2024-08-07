@@ -1,21 +1,9 @@
 #include "block.hpp"
 
+std::vector<BlockArchetype> BlockGrid::m_blockArchetypes{};
+
 BlockGrid::BlockGrid(const sf::Vector2u& dimensions, Tilemap* tilemap) : dims{dimensions}, m_tilemap{tilemap}
 {
-    m_blockArchetypes.push_back(BlockArchetype{"Air", "", getBlockIdx({4, 1}), false});
-    m_blockArchetypes.push_back(BlockArchetype{"Wall_TL", "", getBlockIdx({3, 0}), true});
-    m_blockArchetypes.push_back(BlockArchetype{"Wall_TR", "", getBlockIdx({5, 0}), true});
-    m_blockArchetypes.push_back(BlockArchetype{"Wall_BL", "", getBlockIdx({3, 2}), true});
-    m_blockArchetypes.push_back(BlockArchetype{"Wall_BR", "", getBlockIdx({5, 2}), true});
-    m_blockArchetypes.push_back(BlockArchetype{"Wall_MU", "", getBlockIdx({4, 0}), true});
-    m_blockArchetypes.push_back(BlockArchetype{"Wall_MD", "", getBlockIdx({4, 2}), true});
-    m_blockArchetypes.push_back(BlockArchetype{"Wall_MR", "", getBlockIdx({5, 1}), true});
-    m_blockArchetypes.push_back(BlockArchetype{"Wall_ML", "", getBlockIdx({3, 1}), true});
-    m_blockArchetypes.push_back(BlockArchetype{"Floor", "", getBlockIdx({1, 1}), false});
-    m_blockArchetypes.push_back(BlockArchetype{"DoorLocked", "", getBlockIdx({7, 5}), true});
-    m_blockArchetypes.push_back(BlockArchetype{"DoorClosed", "", getBlockIdx({6, 2}), true});
-    m_blockArchetypes.push_back(BlockArchetype{"DoorOpen", "", getBlockIdx({7, 2}), true});
-
     m_blockData.resize(dims.x * dims.y);
     for (std::size_t i = 0; i < m_blockData.size(); ++i)
     {
