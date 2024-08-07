@@ -1,6 +1,9 @@
- #include <cstdint>
+#pragma once
+#include <cstdint>
 #include <string>
 #include <vector>
+#include <string_view>
+
 #include <SFML/System/Vector2.hpp>
 #include <graphics/tilemap.hpp>
 
@@ -10,6 +13,7 @@ struct BlockArchetype
 	std::string description;
 	// index of the tile in tilesheet
 	std::uint32_t tilemapIdx;
+	bool solid = true;
 };
 struct BlockData
 {
@@ -27,25 +31,31 @@ class BlockGrid
 	/// @brief Sets block type in grid
 	/// @param blockType - block archetype to set
 	/// @param idx - index of the block in array
-	void SetBlockType(std::uint32_t blockType, std::uint32_t idx);
+	void setBlockType(std::uint32_t blockType, std::uint32_t idx);
 	/// @brief 
 	/// @param blockType - block archetype to set
 	/// @param pos - position relative to the top left
-	void SetBlockType(std::uint32_t blockType, const sf::Vector2u &pos);
-	const BlockArchetype &GetBlockArchetype(std::uint32_t idx) const;
-	const BlockArchetype &GetBlockArchetype(const sf::Vector2u &pos) const;
+	void setBlockType(std::uint32_t blockType, const sf::Vector2u &pos);
+	/// @brief
+	/// @param blockType - block archetype name to set
+	/// @param pos - position relative to the top left
+	void setBlockType(std::string_view archetypeName, const sf::Vector2u &pos);
+	[[nodiscard]] const BlockArchetype &getBlockArchetype(std::uint32_t idx) const;
+	[[nodiscard]] const BlockArchetype &getBlockArchetype(const sf::Vector2u &pos) const;
+	[[nodiscard]] std::uint32_t getBlockArchetypeIdx(std::string_view name) const;
 
-	const BlockData &GetBlockData(std::uint32_t idx) const;
-	const BlockData &GetBlockData(const sf::Vector2u &pos) const;
-	BlockData &GetBlockData(std::uint32_t idx);
-	BlockData &GetBlockData(const sf::Vector2u &pos);
+	[[nodiscard]] const BlockData &getBlockData(std::uint32_t idx) const;
+	[[nodiscard]] const BlockData &getBlockData(const sf::Vector2u &pos) const;
+	[[nodiscard]] BlockData &getBlockData(std::uint32_t idx);
+	[[nodiscard]] BlockData &getBlockData(const sf::Vector2u &pos);
 
 	sf::Vector2u dims;
 
   private:
-	std::uint32_t CalculateIndex(const sf::Vector2u &pos) const;
+	[[nodiscard]] std::uint32_t getBlockIdx(sf::Vector2u pos) { return pos.y * m_tilemap->getTilesetDims().x + pos.x; }
+	[[nodiscard]] std::uint32_t calculateIndex(const sf::Vector2u &pos) const;
 
-	Tilemap *tilemap;
-	std::vector<BlockArchetype> blockArchetypes;
-	std::vector<BlockData> blockData;
+	Tilemap *m_tilemap;
+	std::vector<BlockArchetype> m_blockArchetypes;
+	std::vector<BlockData> m_blockData;
 };

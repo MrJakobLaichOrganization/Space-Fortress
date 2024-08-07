@@ -6,7 +6,7 @@ class Resources
 
 	sf::Texture tilesTexture = sf::Texture::loadFromFile(ASSETS_DIR "/TileMap_SF/tileset_sf.png").value();
 
-	static Resources& Get()
+	static Resources& get()
 	{
 		static Resources res;
 		return res;

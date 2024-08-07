@@ -1,20 +1,20 @@
 #include "crewmate.hpp"
 #include "world.hpp"
 
-Crewmate::Crewmate(const World &world_, std::string_view name_, Gender gender_)
-	: name(name_), gender(gender_), world(world_)
+Crewmate::Crewmate(const World &world, std::string_view name, Gender gender)
+	: m_name(name), m_gender(gender), m_world(world)
 {
-	birthTimestamp = world.GetTime();
+	m_birthTimestamp = m_world.getTime();
 }
 Crewmate::Crewmate(Crewmate &&other) noexcept
-	: name(std::exchange(other.name, "")), gender(other.gender), world(other.world), 
-	birthTimestamp(std::exchange(other.birthTimestamp, Time()))
+	: m_name(std::exchange(other.m_name, "")), m_gender(other.m_gender), m_world(other.m_world), 
+	m_birthTimestamp(std::exchange(other.m_birthTimestamp, Time()))
 {
 }
 
-void Crewmate::Update(sf::Time deltaTime)
+void Crewmate::update(sf::Time deltaTime)
 {
 }
 
-Time Crewmate::GetAge() const { return world.GetTime() - birthTimestamp; }
-bool Crewmate::IsAdult() const { return GetAge().Year() >= AdultYear; }
+Time Crewmate::getAge() const { return m_world.getTime() - m_birthTimestamp; }
+bool Crewmate::isAdult() const { return getAge().year() >= adultYear; }
