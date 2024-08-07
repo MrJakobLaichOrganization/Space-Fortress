@@ -62,8 +62,8 @@ FetchContent_Declare(box2d
     SYSTEM 
     GIT_REPOSITORY https://github.com/erincatto/box2d.git
     GIT_TAG main)
-set(BOX2D_BUILD_UNIT_TESTS OFF)
-set(BOX2D_BUILD_TESTBED OFF)
+set(BOX2D_BUILD_UNIT_TESTS OFF CACHE BOOL "")
+set(BOX2D_BUILD_TESTBED OFF CACHE BOOL "")
 FetchContent_MakeAvailable(box2d)
 
 file(GLOB_RECURSE SRC_FILES "${PROJECT_SOURCE_DIR}/src/*.cpp")
