@@ -13,9 +13,84 @@ std::size_t calculateGridIdx(sf::Vector2<std::size_t> pos, std::size_t width)
 }
 void createPolygon(b2Body& body, BlockGrid& grid)
 {
-    std::vector<std::uint8_t> solidTiles(grid.dims.y * grid.dims.x, 0);
+    std::vector<b2Vec2> hull;
+
+    const auto blockSize = toBox2d({64.f, 64.f});
+
+    const auto isBlocked = [&](sf::Vector2i pos)
+    {
+        if (pos.x < 0 || pos.y < 0 || pos.x >= grid.dims.x || pos.y >= grid.dims.y)
+        {
+            return false;
+        }
+
+        return grid.getBlockArchetype(sf::Vector2u{pos}).solid;
+    };
+
+    const auto canMove = [&](sf::Vector2i pos, int d)
+    {
+        if (d == 0)
+        {
+            return isBlocked({pos.x, pos.y - 1}) && !isBlocked({pos.x - 1, pos.y - 1});
+        }
+        else if (d == 1)
+        {
+            return isBlocked({pos.x, pos.y}) && !isBlocked({pos.x, pos.y - 1});
+        }
+        else if (d == 2)
+        {
+            return !isBlocked({pos.x, pos.y}) && isBlocked({pos.x - 1, pos.y});
+        }
+        else if (d == 3)
+        {
+            return isBlocked({pos.x - 1, pos.y - 1}) && !isBlocked({pos.x - 1, pos.y});
+        }
+    };
+
+    const auto startBlock = [&]()
+    {
+        for (int y = 0; y < grid.dims.y; ++y)
+        {
+            for (int x = 0; x < grid.dims.x; ++x)
+            {
+                if (isBlocked({x, y}))
+                {
+                    return sf::Vector2i{x, y};
+                }
+            }
+        }
+    }();
+
+    auto currentBlock = startBlock;
+
+    std::array<sf::Vector2i, 4> dirs{{
+        {0, -1},
+        {1, 0},
+        {0, 1},
+        {-1, 0},
+    }};
+
+    int dir = 1;
+    
+    do
+    {
+        for (int x = 0; x < 4; x++)
+        {
+            if (canMove(currentBlock, dir))
+            {
+                break;
+            }
+
+            dir = (dir + 1) % 4;
+        }
+
+        hull.push_back({currentBlock.x * blockSize.x, currentBlock.y * blockSize.y});
+        currentBlock += dirs[dir];
+    } while (currentBlock != startBlock);
+
 
     b2PolygonShape dynamicBox;
+    dynamicBox.Set(hull.data(), hull.size());
 
     b2FixtureDef fixtureDef;
     fixtureDef.shape = &dynamicBox;
@@ -23,114 +98,7 @@ void createPolygon(b2Body& body, BlockGrid& grid)
     fixtureDef.friction = 0.3f;
     fixtureDef.restitution = 0.5f;
 
-    // Fill the solid tiles
-    for (std::size_t y = 0; y < grid.dims.y; ++y)
-    {
-        for (std::size_t x = 0; x < grid.dims.x; ++x)
-        {
-            solidTiles[calculateGridIdx({x, y}, grid.dims.x)] = grid.getBlockArchetype(sf::Vector2u(x, y)).solid;
-        }
-    }
-
-    // Create the box strips
-    for (std::size_t y = 0; y < grid.dims.y; ++y)
-    {
-        for (std::size_t x = 0; x < grid.dims.x; ++x)
-        {
-            if (!solidTiles[calculateGridIdx({x, y}, grid.dims.x)])
-            {
-                continue;
-            }
-            solidTiles[calculateGridIdx({x, y}, grid.dims.x)] = 0;
-
-            sf::Vector2<std::size_t> leftPos;
-            leftPos.x = x;
-            leftPos.y = y;
-            sf::Vector2<std::size_t> rightPos;
-            rightPos.x = x + 1;
-            rightPos.y = y;
-
-            // Go left
-            while (leftPos.x != 0 && leftPos.x - 1 > 0)
-            {
-                const std::size_t idx = calculateGridIdx({leftPos}, grid.dims.x);
-                if (idx >= solidTiles.size() || !solidTiles[idx])
-                {
-                    break;
-                }
-
-                leftPos.x--;
-                solidTiles[calculateGridIdx(leftPos, grid.dims.x)] = 0;
-            }
-
-            // Go right
-            do
-            {
-                const std::size_t idx = calculateGridIdx({rightPos}, grid.dims.x);
-                if (idx >= solidTiles.size() || !solidTiles[idx])
-                {
-                    break;
-                }
-
-                solidTiles[calculateGridIdx(rightPos, grid.dims.x)] = 0;
-                rightPos.x++;
-            } while (rightPos.x <= grid.dims.x);
-
-            // If no movement done, move vertically
-            if (leftPos == sf::Vector2<std::size_t>{rightPos.x - 1, rightPos.y})
-            {
-                rightPos.x -= 1;
-                rightPos.y++;
-                // Go up
-                while (leftPos.y > 0)
-                {
-                    const std::size_t idx = calculateGridIdx({leftPos}, grid.dims.x);
-                    if (idx >= solidTiles.size() || !solidTiles[idx])
-                    {
-                        break;
-                    }
-                    solidTiles[calculateGridIdx(leftPos, grid.dims.x)] = 0;
-                    leftPos.y--;
-                }
-
-                // Go down
-                do
-                {
-                    const std::size_t idx = calculateGridIdx({rightPos}, grid.dims.x);
-                    if (idx >= solidTiles.size() || !solidTiles[idx])
-                    {
-                        break;
-                    }
-                    solidTiles[calculateGridIdx(rightPos, grid.dims.x)] = 0;
-                    rightPos.y++;
-                } while (rightPos.x < grid.dims.y);
-
-                // If no bigger box still, make one small
-                if (leftPos == sf::Vector2<std::size_t>{rightPos.x, rightPos.y - 1})
-                {
-                    dynamicBox.SetAsBox(1.f / 2.f, 1.f / 2.f, {x + 0.5f, y + 0.5f}, 0.0f);
-                    body.CreateFixture(&fixtureDef);
-                    continue;
-                }
-            }
-
-            b2Vec2 center{};
-            // If only moved horizontal
-            if (leftPos.y == rightPos.y)
-            {
-                center.x = (rightPos.x + leftPos.x) / 2.f;
-                center.y = y + 0.5f;
-                dynamicBox.SetAsBox((rightPos.x - leftPos.x) / 2.f, 1.f / 2.f, center, 0.0f);
-            }
-            else
-            {
-                center.y = (rightPos.y + leftPos.y) / 2.f;
-                center.x = x + 0.5f;
-                dynamicBox.SetAsBox(1.f / 2.f, (rightPos.y - leftPos.y) / 2.f, center, 0.0f);
-            }
-            body.CreateFixture(&fixtureDef);
-        }
-    }
+    body.CreateFixture(&fixtureDef);
 }
 } // namespace
 
