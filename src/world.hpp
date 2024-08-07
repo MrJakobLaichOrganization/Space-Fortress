@@ -41,9 +41,15 @@ public:
 	* @param Args - parameters you would put for T
 	*/
     template <EntityDerivation T, typename... Args>
+    T createEntity(Args&&... args)
+    {
+        return {m_nextEntityId++, std::forward<Args>(args)...};
+    }
+
+    template <EntityDerivation T, typename... Args>
     T& addEntity(Args&&... args)
     {
-        m_entities.push_back(std::make_unique<T>(m_nextEntityId++, std::forward<Args>(args)...));
+        m_entities.push_back(std::make_unique<T>(createEntity<T>(std::forward<Args>(args)...)));
         return *static_cast<T*>(m_entities.back().get());
     }
 

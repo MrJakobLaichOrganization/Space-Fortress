@@ -12,6 +12,7 @@ int main()
 
     InputManager inputManager;
 
+
     World world{window};
 
     bool showDebug = false;

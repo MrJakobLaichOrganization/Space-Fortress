@@ -2,16 +2,15 @@
 
 class Resources
 {
-  public:
+public:
+    sf::Texture tilesTexture = sf::Texture::loadFromFile(ASSETS_DIR "/TileMap_SF/tileset_sf.png").value();
 
-	sf::Texture tilesTexture = sf::Texture::loadFromFile(ASSETS_DIR "/TileMap_SF/tileset_sf.png").value();
+    static Resources& get()
+    {
+        static Resources res;
+        return res;
+    }
 
-	static Resources& get()
-	{
-		static Resources res;
-		return res;
-	}
-
-  private:
-	Resources() = default;
+private:
+    Resources() = default;
 };

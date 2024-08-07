@@ -42,9 +42,9 @@ public:
         grid.setBlockType(grid.getBlockArchetypeIdx("DoorClosed"), {2, 0});
     }
 
-    void createCrewmate(Crewmate&& crewmate)
+    Crewmate& addCrewmate(Crewmate&& crewmate)
     {
-        crewmates.emplace_back(std::move(crewmate));
+        return crewmates.emplace_back(std::move(crewmate));
     }
 
     void draw(sf::RenderTarget& target, sf::RenderStates states) const override
@@ -57,6 +57,7 @@ public:
             crewmate.draw(target, states);
         }
     }
+
     void update(sf::Time delta) override
     {
         for (auto& crewmate : crewmates)

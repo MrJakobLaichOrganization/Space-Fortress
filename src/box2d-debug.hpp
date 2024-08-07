@@ -59,7 +59,7 @@ public:
         target->draw(shape);
     }
 
-    void DrawSolidCircle(const b2Vec2& center, float radius, const b2Vec2& axis, const b2Color& color) override
+    void DrawSolidCircle(const b2Vec2& center, float radius, const b2Vec2& /* axis */, const b2Color& color) override
     {
         sf::CircleShape shape(radius * meterToPixels);
 
