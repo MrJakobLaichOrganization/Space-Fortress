@@ -113,7 +113,7 @@ jobs:
   format:
     name: Formatting
     runs-on: ubuntu-22.04
-
+        
     strategy:
       fail-fast: false
 
@@ -122,7 +122,7 @@ jobs:
       uses: actions/checkout@v4
 
     - name: Format Code
-      run: cmake -DCLANG_FORMAT_EXECUTABLE=clang-format-14 -P cmake/Format.cmake
+      run: cmake -DCLANG_FORMAT_EXECUTABLE=clang-format-17 -P cmake/Format.cmake
 
     - name: Check Formatting
       run: git diff --exit-code
@@ -201,4 +201,4 @@ jobs:
       run: cmake --preset dev -GNinja -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_COMPILER=clang++ -DSFML_BUILD_EXAMPLES=OFF -DENABLE_SANITIZERS=ON ${{matrix.platform.flags}}
 
     - name: Build
-      run: cmake --build build
+      run: cmake --build build --target Game
