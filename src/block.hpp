@@ -2,10 +2,13 @@
 #include <SFML/System/Vector2.hpp>
 
 #include <graphics/tilemap.hpp>
+
+#include <cereal/types/vector.hpp>
+#include <cereal/archives/json.hpp>
+
 #include <string>
 #include <string_view>
 #include <vector>
-
 #include <cstdint>
 
 struct BlockArchetype
@@ -15,11 +18,23 @@ struct BlockArchetype
     // index of the tile in tilesheet
     std::uint32_t tilemapIdx;
     bool solid = true;
+
+    template <class Archive>
+    void serialize(Archive& ar)
+    {
+        ar(name, description, tilemapIdx, solid);
+    }
 };
 struct BlockData
 {
     // block archetype
     std::uint32_t blockAchetypeIdx;
+
+    template <class Archive>
+    void serialize(Archive& ar)
+    {
+        ar(blockAchetypeIdx);
+    }
 };
 
 class BlockGrid
@@ -52,14 +67,45 @@ public:
 
     sf::Vector2u dims;
 
+    // Doesnt deal with tilemap, you gotta pass it yourself
+    template <class Archive>
+    void save(Archive& ar) const
+    {
+        ar(dims.x, dims.y, m_blockData);
+    }
+    template <class Archive>
+    void load(Archive& ar)
+    {
+        m_blockData.clear();
+        ar(dims.x, dims.y, m_blockData);
+    }
+
+    template<class Archive>
+    [[nodiscard]] static BlockGrid loadFromFile(Archive& ar, Tilemap* tilemap = nullptr)
+    {
+        BlockGrid returnVal;
+
+        ar(returnVal);
+        returnVal.m_tilemap = tilemap;
+
+        return returnVal;
+    }
+    static void loadArchetypes(cereal::JSONInputArchive& ar)
+    {
+        m_blockArchetypes.clear();
+        ar(m_blockArchetypes);
+    }
+
 private:
+    BlockGrid() = default;
+
     [[nodiscard]] std::uint32_t getBlockIdx(sf::Vector2u pos)
     {
         return pos.y * m_tilemap->getTilesetDims().x + pos.x;
     }
     [[nodiscard]] std::uint32_t calculateIndex(const sf::Vector2u& pos) const;
 
-    Tilemap* m_tilemap;
-    std::vector<BlockArchetype> m_blockArchetypes;
+    Tilemap* m_tilemap = nullptr;
+    static std::vector<BlockArchetype> m_blockArchetypes;
     std::vector<BlockData> m_blockData;
 };

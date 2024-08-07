@@ -1,0 +1,82 @@
+{
+  "archetypes": [
+    {
+      "name": "Air",
+      "description": "",
+      "tilemap_index": 14,
+      "is_solid": false
+    },
+    {
+      "name": "Wall_TL",
+      "description": "",
+      "tilemap_index": 3,
+      "is_solid": true
+    },
+    {
+      "name": "Wall_TR",
+      "description": "",
+      "tilemap_index": 5,
+      "is_solid": true
+    },
+    {
+      "name": "Wall_BL",
+      "description": "",
+      "tilemap_index": 23,
+      "is_solid": true
+    },
+    {
+      "name": "Wall_BR",
+      "description": "",
+      "tilemap_index": 25,
+      "is_solid": true
+    },
+    {
+      "name": "Wall_MU",
+      "description": "",
+      "tilemap_index": 4,
+      "is_solid": true
+    },
+    {
+      "name": "Wall_MD",
+      "description": "",
+      "tilemap_index": 24,
+      "is_solid": true
+    },
+    {
+      "name": "Wall_MR",
+      "description": "",
+      "tilemap_index": 15,
+      "is_solid": true
+    },
+    {
+      "name": "Wall_ML",
+      "description": "",
+      "tilemap_index": 13,
+      "is_solid": true
+    },
+    {
+      "name": "Floor",
+      "description": "",
+      "tilemap_index": 11,
+      "is_solid": false
+    },
+    {
+      "name": "DoorLocked",
+      "description": "",
+      "tilemap_index": 57,
+      "is_solid": true
+    },
+    {
+      "name": "DoorClosed",
+      "description": "",
+      "tilemap_index": 26,
+      "is_solid": true
+    },
+    {
+      "name": "DoorOpen",
+      "description": "",
+      "tilemap_index": 27,
+      "is_solid": true
+    }
+  ]
+}
