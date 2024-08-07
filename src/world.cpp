@@ -144,6 +144,9 @@ World::World(sf::RenderWindow& window, b2Vec2 gravity) : m_gravity(gravity)
 
     firstShip.rotate(sf::degrees(34.f));
 
+    auto& crewmate = firstShip.addCrewmate(createEntity<Crewmate>(*this, "crewmate #1"));
+    crewmate.move({76.f, 94.f});
+
     for (auto& entity : m_entities)
     {
         if (auto* ship = dynamic_cast<Ship*>(entity.get()))
