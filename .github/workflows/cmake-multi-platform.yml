@@ -108,7 +108,7 @@ jobs:
       run: cmake --preset dev -DCMAKE_VERBOSE_MAKEFILE=ON ${{matrix.platform.flags}} ${{matrix.config.flags}} ${{matrix.type.flags}}
 
     - name: Build
-      run: cmake --build build --config ${{ matrix.type.name == 'Debug' && 'Debug' || 'Release' }} --target install
+      run: cmake --build build --config ${{ matrix.type.name == 'Debug' && 'Debug' || 'Release' }} --target Game
 
   format:
     name: Formatting
@@ -198,7 +198,7 @@ jobs:
       run: sudo apt-get update && sudo apt-get install xorg-dev libxrandr-dev libxcursor-dev libxi-dev libudev-dev libflac-dev libvorbis-dev libgl1-mesa-dev libegl1-mesa-dev libdrm-dev libgbm-dev xvfb fluxbox && sudo apt-get remove -y libasound2
 
     - name: Configure
-      run: cmake --preset dev -GNinja -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_COMPILER=clang++ -DSFML_BUILD_EXAMPLES=OFF -DSFML_ENABLE_SANITIZERS=ON ${{matrix.platform.flags}}
+      run: cmake --preset dev -GNinja -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_COMPILER=clang++ -DSFML_BUILD_EXAMPLES=OFF -DENABLE_SANITIZERS=ON ${{matrix.platform.flags}}
 
     - name: Build
       run: cmake --build build

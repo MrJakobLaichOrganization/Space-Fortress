@@ -17,6 +17,11 @@ endif()
 
 option(BUILD_SHARED_LIBS "Build shared libraries" ON)
 
+if(ENABLE_SANITIZERS)
+    set(SFML_ENABLE_SANITIZERS ON)
+    string(APPEND CMAKE_CXX_FLAGS " -fno-omit-frame-pointer -fno-sanitize-recover=all -fsanitize=undefined")
+endif()
+
 include(FetchContent)
 
 # SFML Libraries
