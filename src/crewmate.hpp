@@ -22,6 +22,15 @@ public:
 
     void update(sf::Time deltaTime) override;
 
+    void draw(sf::RenderTarget& target, sf::RenderStates states) const override
+    {
+        states.transform *= getTransform();
+
+        sf::CircleShape circle(16.f);
+        circle.setFillColor(sf::Color::Yellow);
+        target.draw(circle, states);
+    }
+
     bool isAdult() const;
 
     Time getBirthTimeStamp() const
