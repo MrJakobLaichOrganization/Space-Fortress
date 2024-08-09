@@ -3,7 +3,7 @@
 #include "world.hpp"
 
 Crewmate::Crewmate(Id id, const World& world, std::string_view name, Gender gender) :
-    Entity{id},
+    AttachEntity{id},
     m_name(name),
     m_gender(gender),
     m_world(world)

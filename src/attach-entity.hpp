@@ -7,19 +7,20 @@
 #include <concepts>
 #include <type_traits>
 
-class Entity : public sf::Transformable, public sf::Drawable
+#include "entity.hpp"
+
+class AttachEntity : public Entity
 {
 public:
-    using Id = std::int64_t;
 
-    Id id;
+    class RootEntity* parent{};
 
-    Entity(Id id) : id{id}
+    AttachEntity(Id id) : Entity{id}
     {
     }
 
-    Entity(const Entity&) = delete;
-    Entity(Entity&&) = default;
+    AttachEntity(const AttachEntity&) = delete;
+    AttachEntity(AttachEntity&&) = default;
 
     virtual void update(sf::Time deltaTime)
     {
@@ -29,6 +30,3 @@ public:
     {
     }
 };
-
-template <typename T>
-concept EntityDerivation = std::is_base_of_v<Entity, T>;

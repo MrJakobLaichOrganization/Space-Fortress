@@ -153,15 +153,16 @@ World::World(sf::RenderWindow& window, b2Vec2 gravity) : m_gravity(gravity)
     }
 
     m_world = std::make_unique<b2World>(m_gravity);
-    auto& firstShip = addEntity<Ship>();
-    auto& secondShip = addEntity<Ship>();
+    auto& firstShip = createEntity<Ship>();
+    auto& secondShip = createEntity<Ship>();
     firstShip.move({-250.f, 0.f});
     secondShip.move({250.f, 0.f});
 
     firstShip.rotate(sf::degrees(34.f));
 
-    auto& crewmate = firstShip.addCrewmate(createEntity<Crewmate>(*this, "crewmate #1"));
+    auto& crewmate = createEntity<Crewmate>(*this, "crewmate #1");
     crewmate.move({76.f, 94.f});
+    firstShip.attachChild(&crewmate);
 
     for (auto& entity : m_entities)
     {
@@ -188,19 +189,19 @@ void World::update(sf::Time deltaTime)
 {
     viewZoom = std::clamp(viewZoom, minZoom, maxZoom);
 
-    for (auto& entity : m_entities)
+    for (auto& entity : m_rootEntities)
     {
         entity->prePhysics();
     }
 
     m_world->Step(deltaTime.asSeconds(), m_velocityIterations, m_positionIterations);
 
-    for (auto& entity : m_entities)
+    for (auto& entity : m_rootEntities)
     {
         entity->postPhysics();
     }
 
-    for (auto& entity : m_entities)
+    for (auto& entity : m_rootEntities)
     {
         entity->update(deltaTime);
     }
@@ -211,7 +212,7 @@ void World::update(sf::Time deltaTime)
 void World::render(sf::RenderWindow& window)
 {
     window.setView(sf::View(viewCenter, sf::Vector2f(window.getSize()) * viewZoom));
-    for (auto& entity : m_entities)
+    for (auto& entity : m_rootEntities)
     {
         window.draw(*entity);
     }

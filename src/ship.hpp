@@ -6,14 +6,13 @@
 #include "graphics/tilemap.hpp"
 #include "resources.hpp"
 
-class Ship : public Entity
+class Ship : public RootEntity
 {
 public:
     Tilemap tilemap{Resources::get().tilesTexture, {32, 32}, {32, 32}};
     BlockGrid grid{{32, 32}, &tilemap};
-    std::vector<Crewmate> crewmates;
 
-    Ship(Id id) : Entity{id}
+    Ship(Id id) : RootEntity{id}
     {
         const auto floorTile = grid.getBlockArchetypeIdx("Floor");
 
@@ -42,27 +41,19 @@ public:
         grid.setBlockType(grid.getBlockArchetypeIdx("DoorClosed"), {2, 0});
     }
 
-    Crewmate& addCrewmate(Crewmate&& crewmate)
-    {
-        return crewmates.emplace_back(std::move(crewmate));
-    }
-
     void draw(sf::RenderTarget& target, sf::RenderStates states) const override
     {
+        const auto originalStates = states;
+
         states.transform *= getTransform();
         target.draw(tilemap, states);
 
-        for (const auto& crewmate : crewmates)
-        {
-            crewmate.draw(target, states);
-        }
+        RootEntity::draw(target, originalStates);
     }
 
     void update(sf::Time delta) override
     {
-        for (auto& crewmate : crewmates)
-        {
-            crewmate.update(delta);
-        }
+
+        RootEntity::update(delta);
     }
 };
