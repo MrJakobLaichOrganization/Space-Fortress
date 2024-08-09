@@ -15,7 +15,7 @@ if (POLICY CMP0141)
   set(CMAKE_MSVC_DEBUG_INFORMATION_FORMAT "$<IF:$<AND:$<C_COMPILER_ID:MSVC>,$<CXX_COMPILER_ID:MSVC>>,$<$<CONFIG:Debug,RelWithDebInfo>:EditAndContinue>,$<$<CONFIG:Debug,RelWithDebInfo>:ProgramDatabase>>")
 endif()
 
-option(BUILD_SHARED_LIBS "Build shared libraries" ON)
+option(BUILD_SHARED_LIBS "Build shared libraries" OFF)
 
 if(ENABLE_SANITIZERS)
     set(SFML_ENABLE_SANITIZERS ON)
@@ -77,7 +77,7 @@ target_include_directories(Game PRIVATE "./src/")
 target_compile_definitions(Game PRIVATE ASSETS_DIR="${PROJECT_SOURCE_DIR}/assets")
 target_compile_definitions(Game PRIVATE CONFIG_DIR="${PROJECT_SOURCE_DIR}/config")
 
-sfml_set_option(CLANG_TIDY_EXECUTABLE clang-tidy STRING "Override clang-tidy executable, requires minimum version 14")
+game_set_option(CLANG_TIDY_EXECUTABLE clang-tidy STRING "Override clang-tidy executable, requires minimum version 14")
 add_custom_target(tidy
     COMMAND ${CMAKE_COMMAND} -DCLANG_TIDY_EXECUTABLE=${CLANG_TIDY_EXECUTABLE} -DPROJECT_BINARY_DIR=${PROJECT_BINARY_DIR} -P ./cmake/Tidy.cmake
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR} VERBATIM)

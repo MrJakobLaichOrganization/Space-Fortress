@@ -1,12 +1,12 @@
 #pragma once
 
-#include "entity.hpp"
+#include "attach-entity.hpp"
 #include "time.hpp"
 
 #include <string>
 
 class World;
-class Crewmate : public Entity
+class Crewmate : public AttachEntity
 {
 public:
     static constexpr std::uint64_t adultYear = 16; // Year at which they are adult
