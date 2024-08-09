@@ -1,14 +1,13 @@
 #pragma once
 
+#include "attach-entity.hpp"
+#include "entity.hpp"
 #include "units.hpp"
 
 #include <SFML/Graphics.hpp>
 
 #include <concepts>
 #include <type_traits>
-
-#include "entity.hpp"
-#include "attach-entity.hpp"
 
 class RootEntity : public Entity
 {
@@ -47,7 +46,7 @@ public:
         }
     }
 
-    virtual void update(sf::Time deltaTime)
+    void update(sf::Time deltaTime) override
     {
         for (auto& entity : children)
         {
@@ -59,7 +58,7 @@ public:
     {
         states.transform *= getTransform();
 
-        for (auto& entity : children)
+        for (const auto& entity : children)
         {
             entity->draw(target, states);
         }

@@ -1,13 +1,13 @@
 #include "world.hpp"
 
-#include <cereal/archives/json.hpp>
-
 #include "crewmate.hpp"
 #include "ship.hpp"
 
 #include <algorithm>
-#include <fstream>
 #include <exception>
+#include <fstream>
+
+#include <cereal/archives/json.hpp>
 
 namespace
 {

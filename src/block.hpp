@@ -2,13 +2,12 @@
 #include <SFML/System/Vector2.hpp>
 
 #include <graphics/tilemap.hpp>
-
-#include <cereal/types/vector.hpp>
-#include <cereal/archives/json.hpp>
-
 #include <string>
 #include <string_view>
 #include <vector>
+
+#include <cereal/archives/json.hpp>
+#include <cereal/types/vector.hpp>
 #include <cstdint>
 
 struct BlockArchetype
@@ -16,7 +15,7 @@ struct BlockArchetype
     std::string name;
     std::string description;
     // index of the tile in tilesheet
-    std::uint32_t tilemapIdx;
+    std::uint32_t tilemapIdx{};
     bool solid = true;
 
     template <class Archive>
@@ -80,7 +79,7 @@ public:
         ar(dims.x, dims.y, m_blockData);
     }
 
-    template<class Archive>
+    template <class Archive>
     [[nodiscard]] static BlockGrid loadFromFile(Archive& ar, Tilemap* tilemap = nullptr)
     {
         BlockGrid returnVal;

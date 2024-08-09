@@ -2,8 +2,8 @@
 
 #include "box2d-debug.hpp"
 #include "entity.hpp"
-#include "root-entity.hpp"
 #include "inputmanager.hpp"
+#include "root-entity.hpp"
 #include "time.hpp"
 
 #include <SFML/Graphics/RenderWindow.hpp>
