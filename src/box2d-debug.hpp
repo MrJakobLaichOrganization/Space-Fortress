@@ -50,7 +50,7 @@ public:
     {
         sf::CircleShape shape(radius * meterToPixels);
 
-        shape.setOrigin({radius / 2.f, radius / 2.f});
+        shape.setOrigin({shape.getRadius() / 2.f, shape.getRadius() / 2.f});
         shape.setPosition(sf::Vector2f{center.x, center.y} * meterToPixels);
 
         shape.setOutlineColor(sf::Color(color.r * 255, color.g * 255, color.b * 255, color.a * 255));
@@ -63,7 +63,7 @@ public:
     {
         sf::CircleShape shape(radius * meterToPixels);
 
-        shape.setOrigin({radius / 2.f, radius / 2.f});
+        shape.setOrigin({shape.getRadius() / 2.f, shape.getRadius() / 2.f});
         shape.setPosition(sf::Vector2f{center.x, center.y} * meterToPixels);
 
         shape.setFillColor(sf::Color(color.r * 255, color.g * 255, color.b * 255, color.a * 255));
@@ -75,8 +75,8 @@ public:
     {
         const auto line = (p2 - p1);
 
-        sf::RectangleShape shape({outlineWidth, line.Length() * meterToPixels});
-        shape.setOrigin({outlineWidth / 2.f, 0.f});
+        sf::RectangleShape shape({line.Length() * meterToPixels, outlineWidth});
+        shape.setOrigin({0.f, outlineWidth / 2.f});
         shape.setRotation(sf::Vector2f{line.x, line.y}.angle());
         shape.setPosition(sf::Vector2f{p1.x, p1.y} * meterToPixels);
 
