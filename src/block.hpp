@@ -36,35 +36,40 @@ struct BlockData
     }
 };
 
+using BlockArchetypeIndex = std::uint32_t;
+
 class BlockGrid
 {
 public:
+    using Location = sf::Vector2u;
+    using Index = std::uint32_t;
+
     /// @param dimensions - grid size in tile count
     /// @param tilemap - optional parameter, leave nullptr if not tilemap will be linked
-    BlockGrid(const sf::Vector2u& dimensions, Tilemap* tilemap = nullptr);
+    BlockGrid(sf::Vector2u dimensions, Tilemap* tilemap = nullptr);
 
     /// @brief Sets block type in grid
     /// @param blockType - block archetype to set
     /// @param idx - index of the block in array
-    void setBlockType(std::uint32_t blockType, std::uint32_t idx);
+    void setBlockType(BlockArchetypeIndex blockType, Index idx);
     /// @brief
     /// @param blockType - block archetype to set
     /// @param pos - position relative to the top left
-    void setBlockType(std::uint32_t blockType, const sf::Vector2u& pos);
+    void setBlockType(BlockArchetypeIndex blockType, Location pos);
     /// @brief
     /// @param blockType - block archetype name to set
     /// @param pos - position relative to the top left
-    void setBlockType(std::string_view archetypeName, const sf::Vector2u& pos);
-    [[nodiscard]] const BlockArchetype& getBlockArchetype(std::uint32_t idx) const;
-    [[nodiscard]] const BlockArchetype& getBlockArchetype(const sf::Vector2u& pos) const;
-    [[nodiscard]] std::uint32_t getBlockArchetypeIdx(std::string_view name) const;
+    void setBlockType(std::string_view archetypeName, Location pos);
+    [[nodiscard]] const BlockArchetype& getBlockArchetype(Index idx) const;
+    [[nodiscard]] const BlockArchetype& getBlockArchetype(Location pos) const;
+    [[nodiscard]] BlockArchetypeIndex getBlockArchetypeIdx(std::string_view name) const;
 
-    [[nodiscard]] const BlockData& getBlockData(std::uint32_t idx) const;
-    [[nodiscard]] const BlockData& getBlockData(const sf::Vector2u& pos) const;
-    [[nodiscard]] BlockData& getBlockData(std::uint32_t idx);
-    [[nodiscard]] BlockData& getBlockData(const sf::Vector2u& pos);
+    [[nodiscard]] const BlockData& getBlockData(Index idx) const;
+    [[nodiscard]] const BlockData& getBlockData(Location pos) const;
+    [[nodiscard]] BlockData& getBlockData(Index idx);
+    [[nodiscard]] BlockData& getBlockData(Location pos);
 
-    sf::Vector2u dims;
+    Location dims;
 
     // Doesnt deal with tilemap, you gotta pass it yourself
     template <class Archive>
@@ -95,12 +100,12 @@ public:
         ar(m_blockArchetypes);
     }
 
-    [[nodiscard]] std::uint32_t calculateIndex(const sf::Vector2u& pos) const;
+    [[nodiscard]] Index calculateIndex(Location pos) const;
 
 private:
     BlockGrid() = default;
 
-    [[nodiscard]] std::uint32_t getBlockIdx(sf::Vector2u pos)
+    [[nodiscard]] Index getBlockIdx(Location pos)
     {
         return pos.y * m_tilemap->getTilesetDims().x + pos.x;
     }
