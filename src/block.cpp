@@ -2,19 +2,17 @@
 
 std::vector<BlockArchetype> BlockGrid::m_blockArchetypes{};
 
-BlockGrid::BlockGrid(sf::Vector2u dimensions, Tilemap* tilemap) : dims{dimensions}, m_tilemap{tilemap}
+BlockGrid::BlockGrid(sf::Vector2u dimensions, Tilemap* tilemap) : Grid(dimensions), m_tilemap{tilemap}
 {
-    m_blockData.resize(dims.x * dims.y);
-    for (std::size_t i = 0; i < m_blockData.size(); ++i)
+    for (std::size_t i = 0; i < getCount(); ++i)
     {
-        m_blockData[i].blockAchetypeIdx = 0;
         m_tilemap->setTile(i, m_blockArchetypes[0].tilemapIdx);
     }
 }
 
 void BlockGrid::setBlockType(BlockArchetypeIndex blockType, Index idx)
 {
-    m_blockData[idx].blockAchetypeIdx = blockType;
+    get(idx).blockAchetypeIdx = blockType;
 
     if (m_tilemap)
     {
@@ -23,7 +21,7 @@ void BlockGrid::setBlockType(BlockArchetypeIndex blockType, Index idx)
 }
 void BlockGrid::setBlockType(BlockArchetypeIndex blockType, Location pos)
 {
-    setBlockType(blockType, pos.y * dims.x + pos.x);
+    setBlockType(blockType, locationToIndex(pos));
 }
 void BlockGrid::setBlockType(std::string_view archetypeName, Location pos)
 {
@@ -32,11 +30,11 @@ void BlockGrid::setBlockType(std::string_view archetypeName, Location pos)
 
 const BlockArchetype& BlockGrid::getBlockArchetype(Index idx) const
 {
-    return m_blockArchetypes[m_blockData[idx].blockAchetypeIdx];
+    return m_blockArchetypes[get(idx).blockAchetypeIdx];
 }
 const BlockArchetype& BlockGrid::getBlockArchetype(Location pos) const
 {
-    return getBlockArchetype(calculateIndex(pos));
+    return getBlockArchetype(locationToIndex(pos));
 }
 BlockGrid::Index BlockGrid::getBlockArchetypeIdx(std::string_view name) const
 {
@@ -53,22 +51,17 @@ BlockGrid::Index BlockGrid::getBlockArchetypeIdx(std::string_view name) const
 
 const BlockData& BlockGrid::getBlockData(Index idx) const
 {
-    return m_blockData[idx];
+    return get(idx);
 }
 const BlockData& BlockGrid::getBlockData(Location pos) const
 {
-    return m_blockData[calculateIndex(pos)];
+    return get(pos);
 }
 BlockData& BlockGrid::getBlockData(Index idx)
 {
-    return m_blockData[idx];
+    return get(idx);
 }
 BlockData& BlockGrid::getBlockData(Location pos)
 {
-    return m_blockData[calculateIndex(pos)];
-}
-
-BlockGrid::Index BlockGrid::calculateIndex(Location pos) const
-{
-    return pos.y * dims.x + pos.x;
+    return get(pos);
 }
