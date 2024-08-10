@@ -16,7 +16,7 @@ public:
 
     std::vector<class AttachEntity*> children;
 
-    RootEntity(Entity::Id id) : Entity{id}
+    RootEntity(class World* world, Id id) : Entity{world, id}
     {
     }
 

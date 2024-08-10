@@ -1,9 +1,9 @@
 #pragma once
 
 #include "box2d-debug.hpp"
-#include "entity.hpp"
+#include "entity/entity.hpp"
+#include "entity/root-entity.hpp"
 #include "inputmanager.hpp"
-#include "root-entity.hpp"
 #include "time.hpp"
 
 #include <SFML/Graphics/RenderWindow.hpp>
@@ -44,7 +44,7 @@ public:
     template <EntityDerivation T, typename... Args>
     T& createEntity(Args&&... args)
     {
-        auto entity = std::make_unique<T>(m_nextEntityId++, std::forward<Args>(args)...);
+        auto entity = std::make_unique<T>(this, m_nextEntityId++, std::forward<Args>(args)...);
         const auto ptr = entity.get();
 
         m_idToEntity.emplace(entity->id, ptr);
@@ -58,6 +58,11 @@ public:
         return *ptr;
     }
 
+    b2World& getPhysicsWorld()
+    {
+        return *m_world;
+    }
+
 private:
     b2Vec2 m_gravity{0, 0};
     std::unique_ptr<b2World> m_world;
@@ -66,7 +71,6 @@ private:
     Time m_currentTimestamp;
     std::unique_ptr<PhysicsDebugDraw> m_debugDraw;
     bool m_drawDebugInfo = false;
-
 
     std::vector<RootEntity*> m_rootEntities;
     std::vector<std::unique_ptr<Entity>> m_entities;

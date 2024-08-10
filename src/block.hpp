@@ -95,6 +95,8 @@ public:
         ar(m_blockArchetypes);
     }
 
+    [[nodiscard]] std::uint32_t calculateIndex(const sf::Vector2u& pos) const;
+
 private:
     BlockGrid() = default;
 
@@ -102,7 +104,6 @@ private:
     {
         return pos.y * m_tilemap->getTilesetDims().x + pos.x;
     }
-    [[nodiscard]] std::uint32_t calculateIndex(const sf::Vector2u& pos) const;
 
     Tilemap* m_tilemap = nullptr;
     static std::vector<BlockArchetype> m_blockArchetypes;

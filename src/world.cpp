@@ -1,142 +1,13 @@
 #include "world.hpp"
 
-#include "crewmate.hpp"
-#include "ship.hpp"
+#include "entity/attach-entities/crewmate.hpp"
+#include "entity/root-entities/ship.hpp"
 
 #include <algorithm>
 #include <exception>
 #include <fstream>
 
 #include <cereal/archives/json.hpp>
-
-namespace
-{
-std::size_t calculateGridIdx(sf::Vector2<std::size_t> pos, std::size_t width)
-{
-    return pos.y * width + pos.x;
-}
-void createPolygon(b2Body& body, BlockGrid& grid)
-{
-    std::vector<std::uint8_t> solidTiles(grid.dims.y * grid.dims.x, 0);
-
-    b2PolygonShape dynamicBox;
-
-    b2FixtureDef fixtureDef;
-    fixtureDef.shape = &dynamicBox;
-    fixtureDef.density = 1.0f;
-    fixtureDef.friction = 0.3f;
-    fixtureDef.restitution = 0.5f;
-
-    // Fill the solid tiles
-    for (std::size_t y = 0; y < grid.dims.y; ++y)
-    {
-        for (std::size_t x = 0; x < grid.dims.x; ++x)
-        {
-            solidTiles[calculateGridIdx({x, y}, grid.dims.x)] = grid.getBlockArchetype(sf::Vector2u(x, y)).solid;
-        }
-    }
-
-    // Create the box strips
-    for (std::size_t y = 0; y < grid.dims.y; ++y)
-    {
-        for (std::size_t x = 0; x < grid.dims.x; ++x)
-        {
-            if (!solidTiles[calculateGridIdx({x, y}, grid.dims.x)])
-            {
-                continue;
-            }
-            solidTiles[calculateGridIdx({x, y}, grid.dims.x)] = 0;
-
-            sf::Vector2<std::size_t> leftPos;
-            leftPos.x = x;
-            leftPos.y = y;
-            sf::Vector2<std::size_t> rightPos;
-            rightPos.x = x + 1;
-            rightPos.y = y;
-
-            // Go left
-            while (leftPos.x != 0 && leftPos.x - 1 > 0)
-            {
-                const std::size_t idx = calculateGridIdx({leftPos}, grid.dims.x);
-                if (idx >= solidTiles.size() || !solidTiles[idx])
-                {
-                    break;
-                }
-
-                leftPos.x--;
-                solidTiles[calculateGridIdx(leftPos, grid.dims.x)] = 0;
-            }
-
-            // Go right
-            do
-            {
-                const std::size_t idx = calculateGridIdx({rightPos}, grid.dims.x);
-                if (idx >= solidTiles.size() || !solidTiles[idx])
-                {
-                    break;
-                }
-
-                solidTiles[calculateGridIdx(rightPos, grid.dims.x)] = 0;
-                rightPos.x++;
-            } while (rightPos.x <= grid.dims.x);
-
-            // If no movement done, move vertically
-            if (leftPos == sf::Vector2<std::size_t>{rightPos.x - 1, rightPos.y})
-            {
-                rightPos.x -= 1;
-                rightPos.y++;
-                // Go up
-                while (leftPos.y > 0)
-                {
-                    const std::size_t idx = calculateGridIdx({leftPos}, grid.dims.x);
-                    if (idx >= solidTiles.size() || !solidTiles[idx])
-                    {
-                        break;
-                    }
-                    solidTiles[calculateGridIdx(leftPos, grid.dims.x)] = 0;
-                    leftPos.y--;
-                }
-
-                // Go down
-                do
-                {
-                    const std::size_t idx = calculateGridIdx({rightPos}, grid.dims.x);
-                    if (idx >= solidTiles.size() || !solidTiles[idx])
-                    {
-                        break;
-                    }
-                    solidTiles[calculateGridIdx(rightPos, grid.dims.x)] = 0;
-                    rightPos.y++;
-                } while (rightPos.x < grid.dims.y);
-
-                // If no bigger box still, make one small
-                if (leftPos == sf::Vector2<std::size_t>{rightPos.x, rightPos.y - 1})
-                {
-                    dynamicBox.SetAsBox(1.f / 2.f, 1.f / 2.f, {x + 0.5f, y + 0.5f}, 0.0f);
-                    body.CreateFixture(&fixtureDef);
-                    continue;
-                }
-            }
-
-            b2Vec2 center{};
-            // If only moved horizontal
-            if (leftPos.y == rightPos.y)
-            {
-                center.x = (rightPos.x + leftPos.x) / 2.f;
-                center.y = y + 0.5f;
-                dynamicBox.SetAsBox((rightPos.x - leftPos.x) / 2.f, 1.f / 2.f, center, 0.0f);
-            }
-            else
-            {
-                center.y = (rightPos.y + leftPos.y) / 2.f;
-                center.x = x + 0.5f;
-                dynamicBox.SetAsBox(1.f / 2.f, (rightPos.y - leftPos.y) / 2.f, center, 0.0f);
-            }
-            body.CreateFixture(&fixtureDef);
-        }
-    }
-}
-} // namespace
 
 World::World(sf::RenderWindow& window, b2Vec2 gravity) : m_gravity(gravity)
 {
@@ -160,7 +31,7 @@ World::World(sf::RenderWindow& window, b2Vec2 gravity) : m_gravity(gravity)
 
     firstShip.rotate(sf::degrees(34.f));
 
-    auto& crewmate = createEntity<Crewmate>(*this, "crewmate #1");
+    auto& crewmate = createEntity<Crewmate>("crewmate #1");
     crewmate.move({76.f, 94.f});
     firstShip.attachChild(&crewmate);
 
@@ -168,11 +39,6 @@ World::World(sf::RenderWindow& window, b2Vec2 gravity) : m_gravity(gravity)
     {
         if (auto* ship = dynamic_cast<Ship*>(entity.get()))
         {
-            b2BodyDef bodyDef;
-            bodyDef.type = b2_dynamicBody;
-            ship->body = m_world->CreateBody(&bodyDef);
-
-            createPolygon(*ship->body, ship->grid);
         }
     }
 

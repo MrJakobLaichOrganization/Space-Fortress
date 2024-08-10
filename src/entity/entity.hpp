@@ -13,8 +13,9 @@ public:
     using Id = std::int64_t;
 
     Id id;
+    class World* world;
 
-    Entity(Id id) : id{id}
+    Entity(class World* world, Id id) : id{id}, world{world}
     {
     }
 

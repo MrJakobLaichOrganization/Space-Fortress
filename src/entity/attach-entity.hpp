@@ -13,7 +13,7 @@ class AttachEntity : public Entity
 public:
     class RootEntity* parent{};
 
-    AttachEntity(Id id) : Entity{id}
+    AttachEntity(class World* world, Id id) : Entity{world, id}
     {
     }
 
