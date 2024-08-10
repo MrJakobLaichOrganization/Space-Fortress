@@ -1,8 +1,8 @@
 #pragma once
 
 #include "block.hpp"
-#include "crewmate.hpp"
-#include "entity.hpp"
+#include "entity/attach-entities/crewmate.hpp"
+#include "entity/entity.hpp"
 #include "graphics/tilemap.hpp"
 #include "resources.hpp"
 
@@ -40,7 +40,7 @@ public:
 
         grid.setBlockType(grid.getBlockArchetypeIdx("DoorClosed"), {2, 0});
 
-        
+
         b2BodyDef bodyDef;
         bodyDef.type = b2_dynamicBody;
         body = world->getPhysicsWorld().CreateBody(&bodyDef);

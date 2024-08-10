@@ -1,7 +1,7 @@
 #include "world.hpp"
 
-#include "crewmate.hpp"
-#include "ship.hpp"
+#include "entity/attach-entities/crewmate.hpp"
+#include "entity/root-entities/ship.hpp"
 
 #include <algorithm>
 #include <exception>
