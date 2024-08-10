@@ -5,6 +5,7 @@
 #include "entity.hpp"
 #include "graphics/tilemap.hpp"
 #include "resources.hpp"
+#include "root-entity.hpp"
 
 class Ship : public RootEntity
 {
