@@ -4,8 +4,9 @@
 
 #include <limits>
 #include <vector>
-
+#include <list>
 #include <cmath>
+
 
 namespace
 {
@@ -27,7 +28,7 @@ struct PathNode
 
 float getTileValue(sf::Vector2i pos, sf::Vector2i target)
 {
-    return std::sqrtf(pos.x - target.x) + std::sqrtf(pos.y - target.y);
+    return std::sqrt(static_cast<float>(pos.x) - target.x) + std::sqrt(static_cast<float>(pos.y) - target.y);
 }
 
 std::queue<sf::Vector2i> retracePath(const PathNode* start, const PathNode* end)
