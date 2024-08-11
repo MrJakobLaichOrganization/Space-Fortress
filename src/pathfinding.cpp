@@ -15,7 +15,6 @@ struct PathNode
     PathNode* parent;
     sf::Vector2i pos;
     float cost = std::numeric_limits<float>::max();
-
     bool operator==(const PathNode& node)
     {
         return node.pos == pos;

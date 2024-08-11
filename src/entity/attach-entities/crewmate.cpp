@@ -1,6 +1,8 @@
 #include "crewmate.hpp"
 
 #include "world.hpp"
+#include <entity/root-entities/ship.hpp>
+#include "pathfinding.hpp"
 
 Crewmate::Crewmate(World* world, Id id, std::string_view name, Gender gender) :
     AttachEntity{world, id},
