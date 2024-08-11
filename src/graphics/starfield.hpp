@@ -1,11 +1,12 @@
 #pragma once
 
-#include <SFML/graphics.hpp>
+#include <SFML/Graphics.hpp>
 
 class Starfield : public sf::Drawable
 {
-    mutable sf::Shader m_starFieldShader = sf::Shader::loadFromFile(ASSETS_DIR "/shaders/starfield.frag", sf::Shader::Type::Fragment)
-                                       .value();
+    mutable sf::Shader m_starFieldShader = sf::Shader::loadFromFile(ASSETS_DIR "/shaders/starfield.frag",
+                                                                    sf::Shader::Type::Fragment)
+                                               .value();
     float m_starfieldTime{};
 
 public:

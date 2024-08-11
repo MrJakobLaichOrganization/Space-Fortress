@@ -79,5 +79,5 @@ private:
 
     Entity::Id m_nextEntityId{};
 
-    Starfield starfield;
+    Starfield m_starfield;
 };
