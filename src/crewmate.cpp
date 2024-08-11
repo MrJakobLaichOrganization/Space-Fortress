@@ -1,5 +1,6 @@
 #include "crewmate.hpp"
 
+#include "pathfinding.hpp"
 #include "ship.hpp"
 #include "world.hpp"
 
@@ -14,9 +15,6 @@ Crewmate::Crewmate(Id id, const World& world, std::string_view name, Gender gend
 
 void Crewmate::update(sf::Time deltaTime)
 {
-    if (m_position != m_targetPos && !m_steps.size())
-    {
-    }
 }
 
 Time Crewmate::getAge() const
@@ -34,8 +32,6 @@ void Crewmate::setMoveTarget(sf::Vector2u targetPos)
     Ship* ship;
     if ((ship = dynamic_cast<Ship*>(parent)))
     {
-        m_steps = m_world.generatePath(ship->grid,
-                                       static_cast<sf::Vector2i>(m_position),
-                                       static_cast<sf::Vector2i>(m_targetPos));
+        m_steps = generatePath(ship->grid, static_cast<sf::Vector2i>(m_position), static_cast<sf::Vector2i>(m_targetPos));
     }
 }
