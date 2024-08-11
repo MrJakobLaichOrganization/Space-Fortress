@@ -12,6 +12,7 @@
 
 #include <box2d/box2d.h>
 #include <utility>
+#include <queue>
 
 class World
 {
@@ -35,6 +36,8 @@ public:
     }
 
     void setDebugDraw(bool on);
+
+    [[nodiscard]] std::queue<sf::Vector2i> generatePath(const class BlockGrid &grid, sf::Vector2i start, sf::Vector2i end, std::size_t maxSteps = 100) const;
 
     /**
 	* @brief Creates an entity in the world

@@ -2,6 +2,7 @@
 
 #include "entity/attach-entities/crewmate.hpp"
 #include "entity/root-entities/ship.hpp"
+#include "block.hpp"
 
 #include <algorithm>
 #include <exception>
@@ -34,6 +35,8 @@ World::World(sf::RenderWindow& window, b2Vec2 gravity) : m_gravity(gravity)
     auto& crewmate = createEntity<Crewmate>("crewmate #1");
     crewmate.move({76.f, 94.f});
     firstShip.attachChild(&crewmate);
+
+    crewmate.setMoveTarget({2, 2});
 
     for (auto& entity : m_entities)
     {

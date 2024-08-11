@@ -1,9 +1,12 @@
 #pragma once
 
 #include "entity/attach-entity.hpp"
+#include <SFML/System/Vector2.hpp>
+
 #include "time.hpp"
 
 #include <string>
+#include <queue>
 
 class World;
 class Crewmate : public AttachEntity
@@ -45,7 +48,13 @@ public:
         return m_name;
     }
 
+    void setMoveTarget(sf::Vector2u targetPos);
+
 private:
+    sf::Vector2u m_position{};
+    sf::Vector2u m_targetPos{};
+    std::queue<sf::Vector2i> m_steps{}; // offset compared to the next block
+
     std::string m_name;
     Gender m_gender;
     Time m_birthTimestamp;
