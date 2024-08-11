@@ -3,6 +3,7 @@
 #include "box2d-debug.hpp"
 #include "entity/entity.hpp"
 #include "entity/root-entity.hpp"
+#include "graphics/starfield.hpp"
 #include "inputmanager.hpp"
 #include "time.hpp"
 
@@ -77,4 +78,6 @@ private:
     std::unordered_map<Entity::Id, Entity*> m_idToEntity;
 
     Entity::Id m_nextEntityId{};
+
+    Starfield starfield;
 };

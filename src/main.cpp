@@ -12,12 +12,7 @@ int main()
 
     InputManager inputManager;
 
-
     World world{window};
-
-    sf::Shader starFieldShader = sf::Shader::loadFromFile(ASSETS_DIR "/shaders/starfield.frag", sf::Shader::Type::Fragment)
-                                     .value();
-    float starfieldTime{};
 
     bool showDebug = false;
 
@@ -86,19 +81,6 @@ int main()
         inputManager.update();
 
         window.clear();
-
-        starfieldTime += delta.asSeconds();
-        const sf::Vector2f windowSize{window.getSize()};
-        window.setView(sf::View{windowSize / 2.f, windowSize});
-        sf::RectangleShape startfieldShape{windowSize};
-        startfieldShape.setTextureRect({{0, 0}, {1, 1}});
-        starFieldShader.setUniform("iResolution", windowSize);
-        starFieldShader.setUniform("iZoom", 0.005f / world.viewZoom);
-        starFieldShader.setUniform("iOffset", world.viewCenter / 100000.f);
-        starFieldShader.setUniform("iTime", starfieldTime);
-        sf::RenderStates states;
-        states.shader = &starFieldShader;
-        window.draw(startfieldShape, states);
 
         world.render(window);
 
