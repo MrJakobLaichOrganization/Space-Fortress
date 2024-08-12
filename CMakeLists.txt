@@ -61,7 +61,7 @@ unset(BUILD_SANDBOX)
 FetchContent_Declare(box2d
     SYSTEM 
     GIT_REPOSITORY https://github.com/erincatto/box2d.git
-    GIT_TAG main)
+    GIT_TAG v2.4.2)
 set(BOX2D_BUILD_UNIT_TESTS OFF CACHE BOOL "")
 set(BOX2D_BUILD_TESTBED OFF CACHE BOOL "")
 FetchContent_MakeAvailable(box2d)
