@@ -13,15 +13,15 @@ namespace
 struct PathNode
 {
     PathNode* parent;
-    sf::Vector2i pos;
+    sf::Vector2i location;
     float cost = std::numeric_limits<float>::max();
     bool operator==(const PathNode& node)
     {
-        return node.pos == pos;
+        return node.location == location;
     }
     bool operator==(const sf::Vector2i& position)
     {
-        return pos == position;
+        return location == position;
     }
 };
 
@@ -38,7 +38,7 @@ std::queue<sf::Vector2i> retracePath(const PathNode* start, const PathNode* end)
 
     while (tmpNode != start)
     {
-        tmpPath.push_back(tmpNode->pos - tmpNode->parent->pos);
+        tmpPath.push_back(tmpNode->location - tmpNode->parent->location);
         tmpNode = tmpNode->parent;
     }
     for (auto it = tmpPath.rbegin(); it != tmpPath.rend(); it++)
@@ -71,7 +71,7 @@ std::queue<sf::Vector2i> generatePath(const class BlockGrid& grid, sf::Vector2i 
         openTiles.push_back(PathNode{&traveledTiles.front(), position, getTileValue(position, end)});
     }
 
-    auto pos = openTiles.front().pos;
+    auto location = openTiles.front().location;
     while (maxSteps-- && openTiles.size())
     {
         std::size_t minIdx = 0;
@@ -84,30 +84,30 @@ std::queue<sf::Vector2i> generatePath(const class BlockGrid& grid, sf::Vector2i 
         }
 
         traveledTiles.push_back(openTiles[minIdx]);
-        pos = openTiles[minIdx].pos;
+        location = openTiles[minIdx].location;
         openTiles.erase(openTiles.begin() + minIdx);
 
-        if (pos == end)
+        if (location == end)
         {
             return retracePath(&traveledTiles.front(), &traveledTiles.back());
         }
 
         for (const auto& dir : directions)
         {
-            if (pos.x == 0 && dir.x < 0 || pos.y == 0 && dir.y < 0)
+            if (location.x == 0 && dir.x < 0 || location.y == 0 && dir.y < 0)
             {
                 continue;
             }
-            if (!isValid(pos + dir) ||
-                std::find(traveledTiles.begin(), traveledTiles.end(), pos + dir) != traveledTiles.end())
+            if (!isValid(location + dir) ||
+                std::find(traveledTiles.begin(), traveledTiles.end(), location + dir) != traveledTiles.end())
             {
                 continue;
             }
-            if (std::find(openTiles.begin(), openTiles.end(), pos + dir) != openTiles.end())
+            if (std::find(openTiles.begin(), openTiles.end(), location + dir) != openTiles.end())
             {
                 continue;
             }
-            openTiles.push_back(PathNode{&traveledTiles.back(), {pos + dir}, getTileValue(pos + dir, end)});
+            openTiles.push_back(PathNode{&traveledTiles.back(), {location + dir}, getTileValue(location + dir, end)});
         }
     }
 
