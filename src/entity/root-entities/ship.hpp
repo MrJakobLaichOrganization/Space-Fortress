@@ -2,6 +2,7 @@
 
 #include "block.hpp"
 #include "entity/attach-entities/crewmate.hpp"
+#include "entity/attach-entities/machine.hpp"
 #include "entity/entity.hpp"
 #include "graphics/tilemap.hpp"
 #include "resources.hpp"
@@ -11,6 +12,13 @@ class Ship : public RootEntity
 public:
     Tilemap tilemap{Resources::get().tilesTexture, {32, 32}, {32, 32}};
     BlockGrid grid{{32, 32}, &tilemap};
+    std::vector<std::unique_ptr<Machine>> machines;
+
+    template <typename T, typename... Args>
+    void addMachine(BlockGrid::Location location, Args&&... args)
+    {
+        machines.emplace_back(std::make_unique<T>(location, std::forward<Args>(args)...));
+    }
 
     Ship(class World* world, Id id) : RootEntity{world, id}
     {
@@ -182,7 +190,17 @@ public:
 
     void update(sf::Time delta) override
     {
+        for (auto& machine : machines)
+        {
+            machine->update(delta, *this);
+            tilemap.setTile(machine->location, machine->tileIdx);
+        }
 
         RootEntity::update(delta);
+    }
+
+    sf::Vector2f locationToPosition(BlockGrid::Location location)
+    {
+        return {location.x * 32.f, location.y * 32.f};
     }
 };
