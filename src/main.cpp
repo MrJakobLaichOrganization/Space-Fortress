@@ -12,7 +12,6 @@ int main()
 
     InputManager inputManager;
 
-
     World world{window};
 
     bool showDebug = false;
@@ -82,7 +81,9 @@ int main()
         inputManager.update();
 
         window.clear();
+
         world.render(window);
+
         window.display();
     }
 
