@@ -72,9 +72,9 @@ void World::update(sf::Time deltaTime)
         entity->update(deltaTime);
     }
 
-    ++m_currentTimestamp;
-
     m_starfield.update(deltaTime, viewCenter, viewZoom);
+
+    ++m_currentTimestamp;
 }
 
 void World::render(sf::RenderWindow& window)
