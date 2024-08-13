@@ -19,15 +19,15 @@ struct PathNode
     {
         return node.location == location;
     }
-    bool operator==(const sf::Vector2i& position)
+    bool operator==(const sf::Vector2i& location)
     {
-        return location == position;
+        return this.location == location;
     }
 };
 
-float getTileValue(sf::Vector2i pos, sf::Vector2i target)
+float getTileValue(sf::Vector2i location, sf::Vector2i target)
 {
-    return std::sqrt(static_cast<float>(pos.x) - target.x) + std::sqrt(static_cast<float>(pos.y) - target.y);
+    return std::sqrt(static_cast<float>(location.x) - target.x) + std::sqrt(static_cast<float>(location.y) - target.y);
 }
 
 std::queue<sf::Vector2i> retracePath(const PathNode* start, const PathNode* end)
@@ -64,11 +64,11 @@ std::queue<sf::Vector2i> generatePath(const class BlockGrid& grid, sf::Vector2i 
     // populate the directional tiles
     for (const auto& dir : directions)
     {
-        auto position = start + dir;
-        if (!isValid(position))
+        auto location = start + dir;
+        if (!isValid(location))
             continue;
 
-        openTiles.push_back(PathNode{&traveledTiles.front(), position, getTileValue(position, end)});
+        openTiles.push_back(PathNode{&traveledTiles.front(), location, getTileValue(location, end)});
     }
 
     auto location = openTiles.front().location;
