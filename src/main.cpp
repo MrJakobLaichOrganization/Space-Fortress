@@ -81,7 +81,9 @@ int main()
         inputManager.update();
 
         window.clear();
+
         world.render(window);
+
         window.display();
     }
 

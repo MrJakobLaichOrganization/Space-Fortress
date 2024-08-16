@@ -103,6 +103,8 @@ public:
         ar(m_blockArchetypes);
     }
 
+    [[nodiscard]] std::uint32_t calculateIndex(const sf::Vector2u& pos) const;
+
 private:
     BlockGrid() = default;
 

@@ -75,11 +75,15 @@ void World::update(sf::Time deltaTime)
         entity->update(deltaTime);
     }
 
+    m_starfield.update(deltaTime, viewCenter, viewZoom);
+
     ++m_currentTimestamp;
 }
 
 void World::render(sf::RenderWindow& window)
 {
+    m_starfield.draw(window, {});
+
     window.setView(sf::View(viewCenter, sf::Vector2f(window.getSize()) * viewZoom));
     for (auto& entity : m_rootEntities)
     {
