@@ -9,7 +9,7 @@
 class Machine
 {
 public:
-    Machine(BlockGrid::Location location) : location{location}
+    Machine(BlockGrid::Location location, Direction direction) : location{location}, direction{direction}
     {
     }
 

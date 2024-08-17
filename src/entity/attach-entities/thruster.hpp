@@ -9,10 +9,9 @@
 class Thruster : public Machine
 {
 public:
-    Thruster(BlockGrid::Location location) : Machine{location}
+    Thruster(BlockGrid::Location location, Direction direction) : Machine{location, direction}
     {
         tileIdx = 80;
-        direction = Direction::Down;
     }
 
     void update(sf::Time deltaTime, class Ship& ship) override

@@ -1,5 +1,8 @@
 #pragma once
 
+#include "grid.hpp"
+#include "units.hpp"
+
 #include <SFML/Graphics/Drawable.hpp>
 #include <SFML/Graphics/RenderStates.hpp>
 #include <SFML/Graphics/RenderTarget.hpp>
@@ -11,31 +14,54 @@
 
 #include <cstdint>
 
-class Tilemap : public sf::Drawable
+class TileSheet
 {
 public:
-    Tilemap(const sf::Texture& tx,
-            const sf::Vector2<std::uint8_t>& tileDims,
-            const sf::Vector2u& tileCount,
-            const sf::Vector2u& renderDims = {64, 64});
+    using TileIndex = std::uint32_t;
 
-    void setTile(std::uint32_t idx, std::uint32_t tileIdx);
-    void setTile(const sf::Vector2u& pos, std::uint32_t tileIdx);
+    TileSheet(const sf::Texture& texture, sf::Vector2u tileSize) : m_texture{texture}, m_tileSize{tileSize}
+    {
+    }
 
-    [[nodiscard]] sf::Vector2u getTilesetDims() const;
+    sf::FloatRect getTileRect(TileIndex tileIndex) const
+    {
+        sf::Vector2f tileSize{m_tileSize};
+        return {sf::Vector2f(tileIndex % (m_texture.getSize().x / m_tileSize.x) * m_tileSize.x,
+                             tileIndex / (m_texture.getSize().x / m_tileSize.x) * m_tileSize.y),
+                tileSize};
+    }
+
+    const sf::Texture& getTexture() const
+    {
+        return m_texture;
+    }
 
 private:
-    const sf::Texture& m_tx;
-    const float m_scale = 1.0f;
-    // Pixel sizes of individual tiles
-    sf::Vector2<std::uint8_t> m_tileDims;
-    // Tile size for rendering
-    sf::Vector2u m_renderDims;
-    // Integer indices which map to a rectangle in atlas
-    std::vector<std::uint32_t> m_tileIndices;
-    // How many tiles in tilemap
-    sf::Vector2u m_tileCount;
+    const sf::Texture& m_texture;
+    sf::Vector2u m_tileSize;
+};
 
+class TileRenderer : public sf::Drawable
+{
+public:
+    struct Tile
+    {
+        TileSheet::TileIndex index{};
+        Direction direction{};
+
+        bool operator==(const Tile&) const = default;
+    };
+
+    TileRenderer(const TileSheet& tileSheet, const sf::Vector2u& dimension, const sf::Vector2f& tileSize);
+
+    void setTile(std::uint32_t idx, Tile tile);
+    void setTile(const sf::Vector2u& pos, Tile tile);
+
+private:
+    const TileSheet& m_tileSheet;
+
+    sf::Vector2f m_tileSize;
+    Grid<Tile> m_grid;
     sf::VertexArray m_verts;
 
     void draw(sf::RenderTarget& target, sf::RenderStates states) const override;

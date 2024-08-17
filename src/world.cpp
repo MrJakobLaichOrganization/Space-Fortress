@@ -36,7 +36,8 @@ World::World(sf::RenderWindow& window, b2Vec2 gravity) : m_gravity(gravity)
     crewmate.move({76.f, 94.f});
     firstShip.attachChild(&crewmate);
 
-    firstShip.addMachine<Thruster>({2, 8});
+    firstShip.addMachine<Thruster>({2, 8}, Direction::Down);
+    firstShip.addMachine<Thruster>({7, 7}, Direction::Right);
 
     for (auto& entity : m_entities)
     {

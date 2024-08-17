@@ -2,11 +2,11 @@
 
 std::vector<BlockArchetype> BlockGrid::m_blockArchetypes{};
 
-BlockGrid::BlockGrid(sf::Vector2u dimensions, Tilemap* tilemap) : Grid(dimensions), m_tilemap{tilemap}
+BlockGrid::BlockGrid(sf::Vector2u dimensions, TileRenderer* tileRenderer) : Grid(dimensions), m_tileRenderer{tileRenderer}
 {
     for (std::size_t i = 0; i < getCount(); ++i)
     {
-        m_tilemap->setTile(i, m_blockArchetypes[0].tilemapIdx);
+        m_tileRenderer->setTile(i, {m_blockArchetypes[0].tilemapIdx});
     }
 }
 
@@ -14,9 +14,9 @@ void BlockGrid::setBlockType(BlockArchetypeIndex blockType, Index idx)
 {
     get(idx).blockAchetypeIdx = blockType;
 
-    if (m_tilemap)
+    if (m_tileRenderer)
     {
-        m_tilemap->setTile(idx, getBlockArchetype(idx).tilemapIdx);
+        m_tileRenderer->setTile(idx, {getBlockArchetype(idx).tilemapIdx});
     }
 }
 void BlockGrid::setBlockType(BlockArchetypeIndex blockType, Location pos)

@@ -1,5 +1,8 @@
 #pragma once
 
+#include <cstddef>
+#include <vector>
+
 template <typename T, typename LocationT = sf::Vector2u, typename IndexT = std::uint32_t>
 class Grid
 {

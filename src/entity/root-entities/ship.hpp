@@ -10,8 +10,11 @@
 class Ship : public RootEntity
 {
 public:
-    Tilemap tilemap{Resources::get().tilesTexture, {32, 32}, {32, 32}};
-    BlockGrid grid{{32, 32}, &tilemap};
+    static constexpr sf::Vector2f blockSize{64.f, 64.f};
+    static constexpr sf::Vector2u dimension{32, 32};
+
+    TileRenderer tileRenderer{Resources::get().tileSheet, dimension, blockSize};
+    BlockGrid grid{dimension, &tileRenderer};
     std::vector<std::unique_ptr<Machine>> machines;
 
     template <typename T, typename... Args>
@@ -47,7 +50,6 @@ public:
         grid.setBlockType(grid.getBlockArchetypeIdx("Wall_MR"), {6, 6});
 
         grid.setBlockType(grid.getBlockArchetypeIdx("DoorClosed"), {2, 0});
-
 
         b2BodyDef bodyDef;
         bodyDef.type = b2_dynamicBody;
@@ -153,7 +155,8 @@ public:
                     // If no bigger box still, make one small
                     if (leftPos == sf::Vector2u{rightPos.x, rightPos.y - 1})
                     {
-                        dynamicBox.SetAsBox(1.f / 2.f, 1.f / 2.f, {x + 0.5f, y + 0.5f}, 0.0f);
+                        const b2Vec2 boxSize = toBox2d(blockSize / 2.f);
+                        dynamicBox.SetAsBox(boxSize.x, boxSize.y, {x + 0.5f, y + 0.5f}, 0.0f);
                         body->CreateFixture(&fixtureDef);
                         continue;
                     }
@@ -163,15 +166,17 @@ public:
                 // If only moved horizontal
                 if (leftPos.y == rightPos.y)
                 {
-                    center.x = (rightPos.x + leftPos.x) / 2.f;
-                    center.y = y + 0.5f;
-                    dynamicBox.SetAsBox((rightPos.x - leftPos.x) / 2.f, 1.f / 2.f, center, 0.0f);
+                    const b2Vec2 boxSize = toBox2d(sf::Vector2f{(rightPos.x - leftPos.x) * blockSize.x, blockSize.y} / 2.f);
+                    const b2Vec2 center = toBox2d(
+                        sf::Vector2f{(rightPos.x + leftPos.x) * blockSize.x / 2.f, (y + 0.5f) * blockSize.y});
+                    dynamicBox.SetAsBox(boxSize.x, boxSize.y, center, 0.0f);
                 }
                 else
                 {
-                    center.y = (rightPos.y + leftPos.y) / 2.f;
-                    center.x = x + 0.5f;
-                    dynamicBox.SetAsBox(1.f / 2.f, (rightPos.y - leftPos.y) / 2.f, center, 0.0f);
+                    const b2Vec2 boxSize = toBox2d(sf::Vector2f{blockSize.x, (rightPos.y - leftPos.y) * blockSize.y} / 2.f);
+                    const b2Vec2 center = toBox2d(
+                        sf::Vector2f{(x + 0.5f) * blockSize.x, (rightPos.y + leftPos.y) * blockSize.y / 2.f});
+                    dynamicBox.SetAsBox(boxSize.x, boxSize.y, center, 0.0f);
                 }
                 body->CreateFixture(&fixtureDef);
             }
@@ -183,7 +188,7 @@ public:
         const auto originalStates = states;
 
         states.transform *= getTransform();
-        target.draw(tilemap, states);
+        target.draw(tileRenderer, states);
 
         RootEntity::draw(target, originalStates);
     }
@@ -193,7 +198,7 @@ public:
         for (auto& machine : machines)
         {
             machine->update(delta, *this);
-            tilemap.setTile(machine->location, machine->tileIdx);
+            tileRenderer.setTile(machine->location, {machine->tileIdx, machine->direction});
         }
 
         RootEntity::update(delta);
@@ -201,6 +206,6 @@ public:
 
     sf::Vector2f locationToPosition(BlockGrid::Location location)
     {
-        return {location.x * 32.f, location.y * 32.f};
+        return {location.x * blockSize.x, location.y * blockSize.y};
     }
 };

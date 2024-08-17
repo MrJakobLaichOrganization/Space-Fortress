@@ -52,7 +52,7 @@ public:
 
     /// @param dimensions - grid size in tile count
     /// @param tilemap - optional parameter, leave nullptr if not tilemap will be linked
-    BlockGrid(sf::Vector2u dimensions, Tilemap* tilemap = nullptr);
+    BlockGrid(sf::Vector2u dimensions, TileRenderer* m_tileRenderer = nullptr);
 
     /// @brief Sets block type in grid
     /// @param blockType - block archetype to set
@@ -88,12 +88,12 @@ public:
     }
 
     template <class Archive>
-    [[nodiscard]] static BlockGrid loadFromFile(Archive& ar, Tilemap* tilemap = nullptr)
+    [[nodiscard]] static BlockGrid loadFromFile(Archive& ar, TileRenderer* tileRenderer = nullptr)
     {
         BlockGrid returnVal;
 
         ar(returnVal);
-        returnVal.m_tilemap = tilemap;
+        returnVal.m_tileRenderer = tileRenderer;
 
         return returnVal;
     }
@@ -108,6 +108,6 @@ public:
 private:
     BlockGrid() = default;
 
-    Tilemap* m_tilemap = nullptr;
+    TileRenderer* m_tileRenderer = nullptr;
     static std::vector<BlockArchetype> m_blockArchetypes;
 };
