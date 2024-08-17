@@ -90,7 +90,7 @@ public:
     template <class Archive>
     [[nodiscard]] static BlockGrid loadFromFile(Archive& ar, TileRenderer* tileRenderer = nullptr)
     {
-        BlockGrid returnVal;
+        BlockGrid returnVal{{}};
 
         ar(returnVal);
         returnVal.m_tileRenderer = tileRenderer;
