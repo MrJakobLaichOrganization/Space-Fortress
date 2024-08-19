@@ -15,17 +15,17 @@ public:
     {
     }
 
-    Dimension getDimension() const
+    [[nodiscard]] Dimension getDimension() const
     {
         return m_dimension;
     }
 
-    std::size_t getCount() const
+    [[nodiscard]] std::size_t getCount() const
     {
         return m_data.size();
     }
 
-    Index locationToIndex(Location loc) const
+    [[nodiscard]] Index locationToIndex(Location loc) const
     {
         return loc.y * m_dimension.x + loc.x;
     }
@@ -35,22 +35,22 @@ public:
         m_data[locationToIndex(loc)] = t;
     }
 
-    T& get(Location loc)
+    [[nodiscard]] T& get(Location loc)
     {
         return m_data[locationToIndex(loc)];
     }
 
-    const T& get(Location loc) const
+    [[nodiscard]] const T& get(Location loc) const
     {
         return m_data[locationToIndex(loc)];
     }
 
-    T& get(Index index)
+    [[nodiscard]] T& get(Index index)
     {
         return m_data[index];
     }
 
-    const T& get(Index index) const
+    [[nodiscard]] const T& get(Index index) const
     {
         return m_data[index];
     }

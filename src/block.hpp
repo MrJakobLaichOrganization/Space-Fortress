@@ -106,7 +106,7 @@ public:
     [[nodiscard]] std::uint32_t calculateIndex(const sf::Vector2u& pos) const;
 
 private:
-    BlockGrid() = default;
+    BlockGrid() = delete;
 
     TileRenderer* m_tileRenderer = nullptr;
     static std::vector<BlockArchetype> m_blockArchetypes;
