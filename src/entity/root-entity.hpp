@@ -33,7 +33,7 @@ public:
     {
         if (body)
         {
-            body->SetTransform(toBox2d(getPosition() / meterToPixels), getRotation().asRadians());
+            body->SetTransform(toBox2d(getPosition()), getRotation().asRadians());
         }
     }
 
@@ -41,7 +41,7 @@ public:
     {
         if (body)
         {
-            setPosition(toSFML(body->GetPosition()) * meterToPixels);
+            setPosition(toSFML(body->GetPosition()));
             setRotation(sf::radians(body->GetAngle()));
         }
     }

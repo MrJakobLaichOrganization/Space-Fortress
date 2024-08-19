@@ -1,6 +1,7 @@
 #include "world.hpp"
 
 #include "entity/attach-entities/crewmate.hpp"
+#include "entity/attach-entities/thruster.hpp"
 #include "entity/root-entities/ship.hpp"
 
 #include <algorithm>
@@ -34,6 +35,8 @@ World::World(sf::RenderWindow& window, b2Vec2 gravity) : m_gravity(gravity)
     auto& crewmate = createEntity<Crewmate>("crewmate #1");
     crewmate.move({76.f, 94.f});
     firstShip.attachChild(&crewmate);
+
+    firstShip.addMachine<Thruster>({2, 8});
 
     for (auto& entity : m_entities)
     {

@@ -2,6 +2,7 @@
 
 #include "block.hpp"
 #include "entity/attach-entities/crewmate.hpp"
+#include "entity/attach-entities/machine.hpp"
 #include "entity/entity.hpp"
 #include "graphics/tilemap.hpp"
 #include "resources.hpp"
@@ -11,6 +12,13 @@ class Ship : public RootEntity
 public:
     Tilemap tilemap{Resources::get().tilesTexture, {32, 32}, {32, 32}};
     BlockGrid grid{{32, 32}, &tilemap};
+    std::vector<std::unique_ptr<Machine>> machines;
+
+    template <typename T, typename... Args>
+    void addMachine(BlockGrid::Location location, Args&&... args)
+    {
+        machines.emplace_back(std::make_unique<T>(location, std::forward<Args>(args)...));
+    }
 
     Ship(class World* world, Id id) : RootEntity{world, id}
     {
@@ -50,7 +58,7 @@ public:
 
     void updatePhysicFixtures()
     {
-        std::vector<std::uint8_t> solidTiles(grid.dims.y * grid.dims.x, 0);
+        Grid<std::uint8_t> solidTiles(grid.getDimension());
 
         b2PolygonShape dynamicBox;
 
@@ -61,24 +69,24 @@ public:
         fixtureDef.restitution = 0.5f;
 
         // Fill the solid tiles
-        for (std::uint32_t y = 0; y < grid.dims.y; ++y)
+        for (std::uint32_t y = 0; y < grid.getDimension().y; ++y)
         {
-            for (std::uint32_t x = 0; x < grid.dims.x; ++x)
+            for (std::uint32_t x = 0; x < grid.getDimension().x; ++x)
             {
-                solidTiles[grid.calculateIndex({x, y})] = grid.getBlockArchetype(sf::Vector2u(x, y)).solid;
+                solidTiles.set({x, y}, grid.getBlockArchetype(sf::Vector2u(x, y)).solid);
             }
         }
 
         // Create the box strips
-        for (std::uint32_t y = 0; y < grid.dims.y; ++y)
+        for (std::uint32_t y = 0; y < grid.getDimension().y; ++y)
         {
-            for (std::uint32_t x = 0; x < grid.dims.x; ++x)
+            for (std::uint32_t x = 0; x < grid.getDimension().x; ++x)
             {
-                if (!solidTiles[grid.calculateIndex({x, y})])
+                if (!solidTiles.get({x, y}))
                 {
                     continue;
                 }
-                solidTiles[grid.calculateIndex({x, y})] = 0;
+                solidTiles.set({x, y}, 0);
 
                 sf::Vector2u leftPos;
                 leftPos.x = x;
@@ -90,28 +98,28 @@ public:
                 // Go left
                 while (leftPos.x != 0 && leftPos.x - 1 > 0)
                 {
-                    const std::uint32_t idx = grid.calculateIndex(leftPos);
-                    if (idx >= solidTiles.size() || !solidTiles[idx])
+                    const auto idx = solidTiles.locationToIndex(leftPos);
+                    if (idx >= solidTiles.getCount() || !solidTiles.get(idx))
                     {
                         break;
                     }
 
                     leftPos.x--;
-                    solidTiles[grid.calculateIndex(leftPos)] = 0;
+                    solidTiles.set(leftPos, 0);
                 }
 
                 // Go right
                 do
                 {
-                    const std::uint32_t idx = grid.calculateIndex(rightPos);
-                    if (idx >= solidTiles.size() || !solidTiles[idx])
+                    const auto idx = solidTiles.locationToIndex(rightPos);
+                    if (idx >= solidTiles.getCount() || !solidTiles.get(idx))
                     {
                         break;
                     }
 
-                    solidTiles[grid.calculateIndex(rightPos)] = 0;
+                    solidTiles.set(rightPos, 0);
                     rightPos.x++;
-                } while (rightPos.x <= grid.dims.x);
+                } while (rightPos.x <= grid.getDimension().x);
 
                 // If no movement done, move vertically
                 if (leftPos == sf::Vector2u{rightPos.x - 1, rightPos.y})
@@ -121,26 +129,26 @@ public:
                     // Go up
                     while (leftPos.y > 0)
                     {
-                        const std::uint32_t idx = grid.calculateIndex(leftPos);
-                        if (idx >= solidTiles.size() || !solidTiles[idx])
+                        const auto idx = solidTiles.locationToIndex(leftPos);
+                        if (idx >= solidTiles.getCount() || !solidTiles.get(idx))
                         {
                             break;
                         }
-                        solidTiles[grid.calculateIndex(leftPos)] = 0;
+                        solidTiles.set(leftPos, 0);
                         leftPos.y--;
                     }
 
                     // Go down
                     do
                     {
-                        const std::uint32_t idx = grid.calculateIndex(rightPos);
-                        if (idx >= solidTiles.size() || !solidTiles[idx])
+                        const auto idx = solidTiles.locationToIndex(rightPos);
+                        if (idx >= solidTiles.getCount() || !solidTiles.get(idx))
                         {
                             break;
                         }
-                        solidTiles[grid.calculateIndex(rightPos)] = 0;
+                        solidTiles.set(rightPos, 0);
                         rightPos.y++;
-                    } while (rightPos.x < grid.dims.y);
+                    } while (rightPos.x < grid.getDimension().y);
 
                     // If no bigger box still, make one small
                     if (leftPos == sf::Vector2u{rightPos.x, rightPos.y - 1})
@@ -182,7 +190,17 @@ public:
 
     void update(sf::Time delta) override
     {
+        for (auto& machine : machines)
+        {
+            machine->update(delta, *this);
+            tilemap.setTile(machine->location, machine->tileIdx);
+        }
 
         RootEntity::update(delta);
+    }
+
+    sf::Vector2f locationToPosition(BlockGrid::Location location)
+    {
+        return {location.x * 32.f, location.y * 32.f};
     }
 };

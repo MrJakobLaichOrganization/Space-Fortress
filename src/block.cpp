@@ -2,43 +2,41 @@
 
 std::vector<BlockArchetype> BlockGrid::m_blockArchetypes{};
 
-BlockGrid::BlockGrid(const sf::Vector2u& dimensions, Tilemap* tilemap) : dims{dimensions}, m_tilemap{tilemap}
+BlockGrid::BlockGrid(sf::Vector2u dimensions, Tilemap* tilemap) : Grid(dimensions), m_tilemap{tilemap}
 {
-    m_blockData.resize(dims.x * dims.y);
-    for (std::size_t i = 0; i < m_blockData.size(); ++i)
+    for (std::size_t i = 0; i < getCount(); ++i)
     {
-        m_blockData[i].blockAchetypeIdx = 0;
         m_tilemap->setTile(i, m_blockArchetypes[0].tilemapIdx);
     }
 }
 
-void BlockGrid::setBlockType(std::uint32_t blockType, std::uint32_t idx)
+void BlockGrid::setBlockType(BlockArchetypeIndex blockType, Index idx)
 {
-    m_blockData[idx].blockAchetypeIdx = blockType;
+    get(idx).blockAchetypeIdx = blockType;
 
     if (m_tilemap)
     {
         m_tilemap->setTile(idx, getBlockArchetype(idx).tilemapIdx);
     }
 }
-void BlockGrid::setBlockType(std::uint32_t blockType, const sf::Vector2u& pos)
+void BlockGrid::setBlockType(BlockArchetypeIndex blockType, Location pos)
 {
-    setBlockType(blockType, pos.y * dims.x + pos.x);
+    setBlockType(blockType, locationToIndex(pos));
 }
-void BlockGrid::setBlockType(std::string_view archetypeName, const sf::Vector2u& pos)
+void BlockGrid::setBlockType(std::string_view archetypeName, Location pos)
 {
     setBlockType(getBlockArchetypeIdx(archetypeName), pos);
 }
 
-const BlockArchetype& BlockGrid::getBlockArchetype(std::uint32_t idx) const
+const BlockArchetype& BlockGrid::getBlockArchetype(Index idx) const
 {
-    return m_blockArchetypes[m_blockData[idx].blockAchetypeIdx];
+    return m_blockArchetypes[get(idx).blockAchetypeIdx];
 }
-const BlockArchetype& BlockGrid::getBlockArchetype(const sf::Vector2u& pos) const
+const BlockArchetype& BlockGrid::getBlockArchetype(Location pos) const
 {
-    return getBlockArchetype(calculateIndex(pos));
+    return getBlockArchetype(locationToIndex(pos));
 }
-std::uint32_t BlockGrid::getBlockArchetypeIdx(std::string_view name) const
+BlockGrid::Index BlockGrid::getBlockArchetypeIdx(std::string_view name) const
 {
     for (std::size_t i = 0; i < m_blockArchetypes.size(); ++i)
     {
@@ -48,27 +46,22 @@ std::uint32_t BlockGrid::getBlockArchetypeIdx(std::string_view name) const
         }
     }
 
-    return static_cast<std::uint32_t>(-1);
+    return static_cast<Index>(-1);
 }
 
-const BlockData& BlockGrid::getBlockData(std::uint32_t idx) const
+const BlockData& BlockGrid::getBlockData(Index idx) const
 {
-    return m_blockData[idx];
+    return get(idx);
 }
-const BlockData& BlockGrid::getBlockData(const sf::Vector2u& pos) const
+const BlockData& BlockGrid::getBlockData(Location pos) const
 {
-    return m_blockData[calculateIndex(pos)];
+    return get(pos);
 }
-BlockData& BlockGrid::getBlockData(std::uint32_t idx)
+BlockData& BlockGrid::getBlockData(Index idx)
 {
-    return m_blockData[idx];
+    return get(idx);
 }
-BlockData& BlockGrid::getBlockData(const sf::Vector2u& pos)
+BlockData& BlockGrid::getBlockData(Location pos)
 {
-    return m_blockData[calculateIndex(pos)];
-}
-
-std::uint32_t BlockGrid::calculateIndex(const sf::Vector2u& pos) const
-{
-    return pos.y * dims.x + pos.x;
+    return get(pos);
 }
