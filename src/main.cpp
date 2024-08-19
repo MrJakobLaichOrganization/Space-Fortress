@@ -1,3 +1,4 @@
+#include "graphics/fps-counter.hpp"
 #include "world.hpp"
 
 #include <SFML/Graphics/RenderWindow.hpp>
@@ -5,7 +6,7 @@
 int main()
 {
     sf::RenderWindow window(sf::VideoMode({800, 600}), "My window");
-    window.setVerticalSyncEnabled(true);
+    //window.setVerticalSyncEnabled(true);
 
     sf::Clock clock{};
     clock.start();
@@ -13,6 +14,8 @@ int main()
     InputManager inputManager;
 
     World world{window};
+
+    FpsCountrer fpsCounter;
 
     bool showDebug = false;
 
@@ -79,10 +82,12 @@ int main()
 
         world.update(delta);
         inputManager.update();
+        fpsCounter.update(delta);
 
         window.clear();
 
         world.render(window);
+        window.draw(fpsCounter);
 
         window.display();
     }
