@@ -2,7 +2,9 @@
 
 std::vector<BlockArchetype> BlockGrid::m_blockArchetypes{};
 
-BlockGrid::BlockGrid(sf::Vector2u dimensions, TileRenderer* tileRenderer) : Grid(dimensions), m_tileRenderer{tileRenderer}
+BlockGrid::BlockGrid(sf::Vector2u dimensions, TileRenderer* tileRenderer) :
+    Grid(dimensions),
+    m_tileRenderer{tileRenderer}
 {
     for (std::size_t i = 0; i < getCount(); ++i)
     {
