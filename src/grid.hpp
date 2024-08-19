@@ -1,5 +1,12 @@
 #pragma once
 
+#include <SFML/System/Vector2.hpp>
+
+#include <vector>
+
+#include <cstddef>
+#include <cstdint>
+
 template <typename T, typename LocationT = sf::Vector2u, typename IndexT = std::uint32_t>
 class Grid
 {
