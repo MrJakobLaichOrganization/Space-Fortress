@@ -52,7 +52,7 @@ public:
 
     /// @param dimensions - grid size in tile count
     /// @param tilemap - optional parameter, leave nullptr if not tilemap will be linked
-    BlockGrid(sf::Vector2u dimensions, TileRenderer* m_tileRenderer = nullptr);
+    BlockGrid(sf::Vector2u dimensions, TileRenderer* tileRenderer = nullptr);
 
     /// @brief Sets block type in grid
     /// @param blockType - block archetype to set
@@ -106,8 +106,6 @@ public:
     [[nodiscard]] std::uint32_t calculateIndex(const sf::Vector2u& pos) const;
 
 private:
-    BlockGrid() = delete;
-
     TileRenderer* m_tileRenderer = nullptr;
     static std::vector<BlockArchetype> m_blockArchetypes;
 };

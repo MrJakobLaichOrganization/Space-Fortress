@@ -4,6 +4,7 @@
 #include "entity/attach-entities/crewmate.hpp"
 #include "entity/attach-entities/machine.hpp"
 #include "entity/entity.hpp"
+#include "entity/root-entity.hpp"
 #include "graphics/tilemap.hpp"
 #include "resources.hpp"
 
@@ -162,7 +163,6 @@ public:
                     }
                 }
 
-                b2Vec2 center{};
                 // If only moved horizontal
                 if (leftPos.y == rightPos.y)
                 {

@@ -23,7 +23,7 @@ public:
     {
     }
 
-    sf::FloatRect getTileRect(TileIndex tileIndex) const
+    [[nodiscard]] sf::FloatRect getTileRect(TileIndex tileIndex) const
     {
         sf::Vector2f tileSize{m_tileSize};
         return {sf::Vector2f(tileIndex % (m_texture.getSize().x / m_tileSize.x) * m_tileSize.x,
@@ -31,7 +31,7 @@ public:
                 tileSize};
     }
 
-    const sf::Texture& getTexture() const
+    [[nodiscard]] const sf::Texture& getTexture() const
     {
         return m_texture;
     }

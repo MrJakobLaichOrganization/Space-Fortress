@@ -17,7 +17,7 @@ public:
 
     virtual void update(sf::Time deltaTime, class Ship& ship) = 0;
 
-    BlockGrid::Location location{};
+    BlockGrid::Location location;
     Direction direction{};
     std::uint32_t tileIdx{};
 
