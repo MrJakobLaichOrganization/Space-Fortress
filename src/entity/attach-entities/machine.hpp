@@ -13,6 +13,8 @@ public:
     {
     }
 
+    virtual ~Machine() = default;
+
     virtual void update(sf::Time deltaTime, class Ship& ship) = 0;
 
     BlockGrid::Location location;

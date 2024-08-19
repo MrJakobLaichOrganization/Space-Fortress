@@ -15,7 +15,7 @@ public:
         direction = Direction::Down;
     }
 
-    void update(sf::Time deltaTime, class Ship& ship) override
+    void update(sf::Time /* deltaTime */, class Ship& ship) override
     {
         const auto magnitude = 1000.f;
         const auto force = -sf::Vector2f(magnitude, directionToAngle(direction) + ship.getRotation());
