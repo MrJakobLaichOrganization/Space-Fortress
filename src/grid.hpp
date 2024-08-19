@@ -3,6 +3,8 @@
 #include <cstddef>
 #include <vector>
 
+#include <SFML/System/Vector2.hpp>
+
 template <typename T, typename LocationT = sf::Vector2u, typename IndexT = std::uint32_t>
 class Grid
 {
