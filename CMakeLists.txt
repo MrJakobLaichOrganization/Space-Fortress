@@ -15,7 +15,7 @@ if (POLICY CMP0141)
   set(CMAKE_MSVC_DEBUG_INFORMATION_FORMAT "$<IF:$<AND:$<C_COMPILER_ID:MSVC>,$<CXX_COMPILER_ID:MSVC>>,$<$<CONFIG:Debug,RelWithDebInfo>:EditAndContinue>,$<$<CONFIG:Debug,RelWithDebInfo>:ProgramDatabase>>")
 endif()
 
-option(BUILD_SHARED_LIBS "Build shared libraries" ON)
+option(BUILD_SHARED_LIBS "Build shared libraries" OFF)
 
 if(ENABLE_SANITIZERS)
     set(SFML_ENABLE_SANITIZERS ON)
@@ -61,9 +61,9 @@ unset(BUILD_SANDBOX)
 FetchContent_Declare(box2d
     SYSTEM 
     GIT_REPOSITORY https://github.com/erincatto/box2d.git
-    GIT_TAG main)
-set(BOX2D_BUILD_UNIT_TESTS OFF)
-set(BOX2D_BUILD_TESTBED OFF)
+    GIT_TAG v2.4.2)
+set(BOX2D_BUILD_UNIT_TESTS OFF CACHE BOOL "")
+set(BOX2D_BUILD_TESTBED OFF CACHE BOOL "")
 FetchContent_MakeAvailable(box2d)
 
 file(GLOB_RECURSE SRC_FILES "${PROJECT_SOURCE_DIR}/src/*.cpp")
@@ -75,8 +75,9 @@ set_property(TARGET Game PROPERTY CXX_STANDARD 20)
 target_include_directories(Game PRIVATE "./src/")
 
 target_compile_definitions(Game PRIVATE ASSETS_DIR="${PROJECT_SOURCE_DIR}/assets")
+target_compile_definitions(Game PRIVATE CONFIG_DIR="${PROJECT_SOURCE_DIR}/config")
 
-sfml_set_option(CLANG_TIDY_EXECUTABLE clang-tidy STRING "Override clang-tidy executable, requires minimum version 14")
+game_set_option(CLANG_TIDY_EXECUTABLE clang-tidy STRING "Override clang-tidy executable, requires minimum version 14")
 add_custom_target(tidy
     COMMAND ${CMAKE_COMMAND} -DCLANG_TIDY_EXECUTABLE=${CLANG_TIDY_EXECUTABLE} -DPROJECT_BINARY_DIR=${PROJECT_BINARY_DIR} -P ./cmake/Tidy.cmake
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR} VERBATIM)

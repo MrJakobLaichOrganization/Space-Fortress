@@ -16,6 +16,8 @@ defaults:
 
 jobs:
   build:
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name
+
     name: ${{ matrix.platform.name }} ${{ matrix.config.name }} ${{ matrix.type.name }}
     runs-on: ${{ matrix.platform.os }}
 
@@ -111,6 +113,8 @@ jobs:
       run: cmake --build build --config ${{ matrix.type.name == 'Debug' && 'Debug' || 'Release' }} --target Game
 
   format:
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name
+
     name: Formatting
     runs-on: ubuntu-22.04
         
@@ -128,6 +132,8 @@ jobs:
       run: git diff --exit-code
 
   tidy:
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name
+
     name: Analyzing on ${{ matrix.platform.name }}
     runs-on: ${{ matrix.platform.os }}
 
@@ -172,6 +178,8 @@ jobs:
       run: cmake --build build --target tidy
 
   sanitize:
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name
+
     name: Sanitizing on ${{ matrix.platform.name }}
     runs-on: ${{ matrix.platform.os }}
 

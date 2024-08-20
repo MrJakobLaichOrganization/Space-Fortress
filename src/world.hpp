@@ -1,7 +1,9 @@
 #pragma once
 
 #include "box2d-debug.hpp"
-#include "entity.hpp"
+#include "entity/entity.hpp"
+#include "entity/root-entity.hpp"
+#include "graphics/starfield.hpp"
 #include "inputmanager.hpp"
 #include "time.hpp"
 
@@ -41,10 +43,25 @@ public:
 	* @param Args - parameters you would put for T
 	*/
     template <EntityDerivation T, typename... Args>
-    T& addEntity(Args&&... args)
+    T& createEntity(Args&&... args)
     {
-        m_entities.push_back(std::make_unique<T>(std::forward<Args>(args)...));
-        return *static_cast<T*>(m_entities.back().get());
+        auto entity = std::make_unique<T>(this, m_nextEntityId++, std::forward<Args>(args)...);
+        const auto ptr = entity.get();
+
+        m_idToEntity.emplace(entity->id, ptr);
+        m_entities.push_back(std::move(entity));
+
+        if constexpr (std::is_base_of_v<RootEntity, T>)
+        {
+            m_rootEntities.push_back(ptr);
+        }
+
+        return *ptr;
+    }
+
+    b2World& getPhysicsWorld()
+    {
+        return *m_world;
     }
 
 private:
@@ -56,5 +73,11 @@ private:
     std::unique_ptr<PhysicsDebugDraw> m_debugDraw;
     bool m_drawDebugInfo = false;
 
+    std::vector<RootEntity*> m_rootEntities;
     std::vector<std::unique_ptr<Entity>> m_entities;
+    std::unordered_map<Entity::Id, Entity*> m_idToEntity;
+
+    Entity::Id m_nextEntityId{};
+
+    Starfield m_starfield;
 };

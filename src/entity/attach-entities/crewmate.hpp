@@ -1,12 +1,12 @@
 #pragma once
 
-#include "entity.hpp"
+#include "entity/attach-entity.hpp"
 #include "time.hpp"
 
 #include <string>
 
 class World;
-class Crewmate : public Entity
+class Crewmate : public AttachEntity
 {
 public:
     static constexpr std::uint64_t adultYear = 16; // Year at which they are adult
@@ -17,10 +17,19 @@ public:
         FEMALE
     };
 
-    Crewmate(const World& w, std::string_view name, Gender gender = Gender::MALE);
-    Crewmate(Crewmate&& other) noexcept;
+    Crewmate(class World* world, Id id, std::string_view name, Gender gender = Gender::MALE);
+    Crewmate(Crewmate&& other) noexcept = default;
 
     void update(sf::Time deltaTime) override;
+
+    void draw(sf::RenderTarget& target, sf::RenderStates states) const override
+    {
+        states.transform *= getTransform();
+
+        sf::CircleShape circle(16.f);
+        circle.setFillColor(sf::Color::Yellow);
+        target.draw(circle, states);
+    }
 
     bool isAdult() const;
 
@@ -40,5 +49,4 @@ private:
     std::string m_name;
     Gender m_gender;
     Time m_birthTimestamp;
-    const World& m_world;
 };
