@@ -73,6 +73,11 @@ public:
 
     void DrawSegment(const b2Vec2& p1, const b2Vec2& p2, const b2Color& color) override
     {
+        if (p2 == p1)
+        {
+            return;
+        }
+
         const auto line = (p2 - p1);
 
         sf::RectangleShape shape({line.Length() * meterToPixels, outlineWidth});

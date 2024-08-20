@@ -27,8 +27,15 @@ World::World(sf::RenderWindow& window, b2Vec2 gravity) : m_gravity(gravity)
     m_world = std::make_unique<b2World>(m_gravity);
     auto& firstShip = createEntity<Ship>();
     auto& secondShip = createEntity<Ship>();
-    firstShip.move({-250.f, 0.f});
+    firstShip.move({-150.f, 0.f});
     secondShip.move({250.f, 0.f});
+
+    for (int x = 0; x < 00; x++)
+    {
+        auto& ship = createEntity<Ship>();
+        ship.move({(x / 10) * 300.f, (x % 10) * 500.f});
+        ship.addMachine<Thruster>({2, 8}, Direction::Down);
+    }
 
     firstShip.rotate(sf::degrees(34.f));
 
@@ -36,8 +43,8 @@ World::World(sf::RenderWindow& window, b2Vec2 gravity) : m_gravity(gravity)
     crewmate.move({76.f, 94.f});
     firstShip.attachChild(&crewmate);
 
-    firstShip.addMachine<Thruster>({2, 8}, Direction::Down);
-    firstShip.addMachine<Thruster>({7, 7}, Direction::Right);
+    //firstShip.addMachine<Thruster>({2, 8}, Direction::Down);
+    //firstShip.addMachine<Thruster>({7, 7}, Direction::Right);
 
     for (auto& entity : m_entities)
     {
@@ -64,7 +71,8 @@ void World::update(sf::Time deltaTime)
         entity->prePhysics();
     }
 
-    m_world->Step(deltaTime.asSeconds(), m_velocityIterations, m_positionIterations);
+    for (int x = 0; x < 1; x++)
+        m_world->Step(deltaTime.asSeconds(), m_velocityIterations, m_positionIterations);
 
     for (auto& entity : m_rootEntities)
     {

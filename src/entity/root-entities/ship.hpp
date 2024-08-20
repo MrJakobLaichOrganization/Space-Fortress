@@ -28,11 +28,11 @@ public:
     {
         const auto floorTile = grid.getBlockArchetypeIdx("Floor");
 
-        grid.setBlockType(grid.getBlockArchetypeIdx("Wall_TL"), {0, 0});
-        grid.setBlockType(grid.getBlockArchetypeIdx("Wall_TR"), {6, 0});
+        //grid.setBlockType(grid.getBlockArchetypeIdx("Wall_TL"), {0, 0});
+        //grid.setBlockType(grid.getBlockArchetypeIdx("Wall_TR"), {6, 0});
 
-        grid.setBlockType(grid.getBlockArchetypeIdx("Wall_BL"), {0, 7});
-        grid.setBlockType(grid.getBlockArchetypeIdx("Wall_BR"), {6, 7});
+        //grid.setBlockType(grid.getBlockArchetypeIdx("Wall_BL"), {0, 7});
+        //grid.setBlockType(grid.getBlockArchetypeIdx("Wall_BR"), {6, 7});
 
         for (std::uint32_t x = 0; x < 5; x++)
         {
@@ -57,6 +57,7 @@ public:
         body = world->getPhysicsWorld().CreateBody(&bodyDef);
 
         updatePhysicFixtures();
+        updatePhysicFixturesv2();
     }
 
     void updatePhysicFixtures()
@@ -181,6 +182,128 @@ public:
                 body->CreateFixture(&fixtureDef);
             }
         }
+    }
+
+    void updatePhysicFixturesv2()
+    {
+        std::vector<b2Vec2> hull;
+
+        const auto isBlocked = [&](sf::Vector2i pos)
+        {
+            if (pos.x < 0 || pos.y < 0 || pos.x >= grid.getDimension().x || pos.y >= grid.getDimension().y)
+            {
+                return false;
+            }
+
+            return grid.getBlockArchetype(sf::Vector2u{pos}).solid;
+        };
+
+        const auto canMove = [&](sf::Vector2i pos, int d)
+        {
+            if (d == 0)
+            {
+                return !isBlocked({pos.x, pos.y - 1}) && isBlocked({pos.x - 1, pos.y - 1});
+            }
+            else if (d == 1)
+            {
+                return !isBlocked({pos.x, pos.y}) && isBlocked({pos.x, pos.y - 1});
+            }
+            else if (d == 2)
+            {
+                return isBlocked({pos.x, pos.y}) && !isBlocked({pos.x - 1, pos.y});
+            }
+            else if (d == 3)
+            {
+                return !isBlocked({pos.x - 1, pos.y - 1}) && isBlocked({pos.x - 1, pos.y});
+            }
+
+            return false;
+        };
+
+        const auto startBlock = [&]()
+        {
+            for (int y = 0; y < grid.getDimension().y; ++y)
+            {
+                for (int x = 0; x < grid.getDimension().x; ++x)
+                {
+                    if (isBlocked({x, y}))
+                    {
+                        return sf::Vector2i{x, y};
+                    }
+                }
+            }
+
+            return sf::Vector2i{};
+        }();
+
+        auto currentBlock = startBlock;
+
+        std::array<sf::Vector2i, 4> dirs{{
+            {0, -1},
+            {1, 0},
+            {0, 1},
+            {-1, 0},
+        }};
+
+        int dir = 1;
+
+        do
+        {
+            for (int x = 0; x < 4; x++)
+            {
+                if (canMove(currentBlock, dir))
+                {
+                    break;
+                }
+
+                dir = (dir + 1) % 4;
+            }
+
+            hull.push_back(toBox2d(locationToPosition({currentBlock})));
+            currentBlock += dirs[dir];
+        } while (currentBlock != startBlock);
+
+        while (body->GetFixtureList())
+        {
+        body->DestroyFixture(body->GetFixtureList());
+
+        }
+
+        b2ChainShape chain;
+        chain.CreateLoop(hull.data(), hull.size() - 1);
+
+        b2FixtureDef fixtureDef;
+        fixtureDef.shape = &chain;
+        fixtureDef.density = 1.0f;
+        fixtureDef.friction = 0.3f;
+        fixtureDef.restitution = 0.5f;
+        body->CreateFixture(&fixtureDef);
+
+        const auto blockSurface = toBox2d(blockSize).x * toBox2d(blockSize).y;
+        const auto blockMass = blockSurface * 10.f;
+
+        sf::Vector2f massCenter;
+        int massCount{};
+        float mass{};
+        for (int y = 0; y < grid.getDimension().y; ++y)
+        {
+            for (int x = 0; x < grid.getDimension().x; ++x)
+            {
+                if (isBlocked({x, y}))
+                {
+                    massCount++;
+                    mass += blockMass;
+                    massCenter += sf::Vector2f(x + 0.5f, y + 0.5f);
+                }
+            }
+        }
+
+        b2MassData massData;
+        massData.mass = mass;
+        massData.center = toBox2d(massCenter / static_cast<float>(massCount) * blockSize.x);
+        //massData.I = massData.mass * (0.5f * blockSurface + b2Dot(massData.center, massData.center));
+        massData.I = mass * mass;
+        body->SetMassData(&massData);
     }
 
     void draw(sf::RenderTarget& target, sf::RenderStates states) const override
