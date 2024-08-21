@@ -5,9 +5,8 @@
 #include <limits>
 #include <list>
 #include <vector>
-
 #include <cmath>
-
+#include <ranges>
 
 namespace
 {
@@ -43,9 +42,8 @@ std::queue<sf::Vector2i> retracePath(const PathNode* start, const PathNode* end)
         tmpPath.push_back(tmpNode->location - tmpNode->parent->location);
         tmpNode = tmpNode->parent;
     }
-    for (auto it = tmpPath.rbegin(); it != tmpPath.rend(); it++)
-    {
-        path.push(*it);
+    for (auto &it : std::ranges::reverse_view(tmpPath)){
+        path.push(it);
     }
     
     return path;
@@ -77,7 +75,7 @@ std::queue<sf::Vector2i> generatePath(const class BlockGrid& grid,
     }
 
     auto location = openTiles.front().location;
-    while (maxSteps-- && openTiles.size())
+    while (maxSteps-- && !openTiles.empty())
     {
         std::size_t minIdx = 0;
         for (std::size_t i = 1; i < openTiles.size(); ++i)

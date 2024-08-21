@@ -57,7 +57,7 @@ private:
     Gender m_gender;
     Time m_birthTimestamp;
 
-    static inline BlockGrid::Location posToGridLocation(sf::Vector2f pos, sf::Vector2u tileSize)
+    static BlockGrid::Location posToGridLocation(sf::Vector2f pos, sf::Vector2u tileSize)
     {
         return BlockGrid::Location{static_cast<std::uint32_t>(pos.x / tileSize.x),
                                    static_cast<std::uint32_t>(pos.y / tileSize.y)};
