@@ -2,6 +2,7 @@
 
 #include "world.hpp"
 #include "pathfinding.hpp"
+#include "entity/root-entities/ship.hpp"
 
 #include <iostream>
 
@@ -15,16 +16,11 @@ Crewmate::Crewmate(World* world, Id id, std::string_view name, Gender gender) :
 
 void Crewmate::update(sf::Time deltaTime)
 {
-    if (m_movementGrid)
-    {
-        // TODO: Remove the magic 64 number, we need to be able to fetch rendering dimensions
-        // Proposal: the grid class should be converting the pos to grid location
-        BlockGrid::Location gridLocation = posToGridLocation(getPosition(), {64, 64});
+    BlockGrid::Location gridLocation = posToGridLocation(getPosition(), static_cast<sf::Vector2u>(Ship::blockSize));
 
-        if (m_targetDest != gridLocation && !m_steps.size())
-        {
-            m_steps = generatePath(*m_movementGrid, gridLocation, m_targetDest);
-        }
+    if (m_targetDest != gridLocation && !m_steps.size())
+    {
+        m_steps = dynamic_cast<Ship*>(parent)->pathfind(gridLocation, m_targetDest);
     }
 }
 
