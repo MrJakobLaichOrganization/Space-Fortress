@@ -64,10 +64,9 @@ jobs:
     - name: Install Linux Dependencies and Tools
       if: runner.os == 'Linux'
       run: |
-        sudo apt-get update && sudo apt-get upgrade && sudo apt-get install xorg-dev libxrandr-dev libxcursor-dev libxi-dev libudev-dev libflac-dev libvorbis-dev libgl1-mesa-dev libegl1-mesa-dev libdrm-dev libgbm-dev xvfb fluxbox ccache gcovr
+        sudo apt-get update && sudo apt-get upgrade && sudo apt-get install xorg-dev libxrandr-dev libxcursor-dev libxi-dev libudev-dev libflac-dev libvorbis-dev libgl1-mesa-dev libegl1-mesa-dev libdrm-dev libgbm-dev xvfb fluxbox ccache gcovr llvm-18
         CLANG_VERSION=$(clang++ --version | sed -n 's/.*version \([0-9]\+\)\..*/\1/p')
         echo "CLANG_VERSION=$CLANG_VERSION" >> $GITHUB_ENV
-        sudo apt-get install ${{ matrix.platform.name == 'Linux Clang' && 'llvm-$CLANG_VERSION' || '' }}
 
     - name: Remove ALSA Library
       if: runner.os == 'Linux' && matrix.platform.name != 'Android'
