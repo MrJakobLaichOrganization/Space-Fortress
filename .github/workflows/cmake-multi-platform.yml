@@ -182,7 +182,7 @@ jobs:
         echo /usr/local/opt/llvm/bin >> $GITHUB_PATH
 
     - name: Configure
-      run: cmake --preset dev -DCMAKE_C_COMPILER=clang-18 -DCMAKE_CXX_COMPILER=clang++-18 -DCMAKE_UNITY_BUILD=ON ${{matrix.platform.flags}}
+      run: cmake --preset dev -DCMAKE_C_COMPILER=clang-15 -DCMAKE_CXX_COMPILER=clang++-15 -DCMAKE_UNITY_BUILD=ON ${{matrix.platform.flags}}
 
     - name: Analyze Code
       run: cmake --build build --target tidy
