@@ -131,7 +131,7 @@ jobs:
       if: runner.os == 'Linux'
       run: |
         sudo bash -c "$(wget -O - https://apt.llvm.org/llvm.sh)"
-        sudo apt-get install clang-format-18
+        sudo apt-get install clang-format-14
 
     - name: Format Code
       run: cmake -DCLANG_FORMAT_EXECUTABLE=clang-format-18 -P cmake/Format.cmake
@@ -178,7 +178,7 @@ jobs:
       if: runner.os == 'macOS'
       run: |
         brew update
-        brew install llvm || true
+        brew install llvm clang-format || true
         echo /usr/local/opt/llvm/bin >> $GITHUB_PATH
 
     - name: Configure
