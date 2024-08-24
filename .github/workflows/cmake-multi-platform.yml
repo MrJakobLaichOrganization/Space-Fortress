@@ -129,7 +129,7 @@ jobs:
 
     - name: Install Linux Dependencies
       if: runner.os == 'Linux'
-      run: 
+      run: |
         sudo bash -c "$(wget -O - https://apt.llvm.org/llvm.sh)"
         sudo apt-get install clang-format-18
 
@@ -170,7 +170,7 @@ jobs:
 
     - name: Install Linux Dependencies
       if: runner.os == 'Linux'
-      run:
+      run: |
         sudo bash -c "$(wget -O - https://apt.llvm.org/llvm.sh)"
         sudo apt-get update && sudo apt-get install libfreetype-dev libxrandr-dev libxcursor-dev libxi-dev libudev-dev libflac-dev libvorbis-dev libgl1-mesa-dev libegl1-mesa-dev libdrm-dev libgbm-dev clang-tidy-18
 
@@ -213,7 +213,7 @@ jobs:
 
     - name: Install Linux Dependencies
       if: runner.os == 'Linux'
-      run:
+      run: |
         sudo bash -c "$(wget -O - https://apt.llvm.org/llvm.sh)"
         sudo apt-get update && sudo apt-get install xorg-dev libxrandr-dev libxcursor-dev libxi-dev libudev-dev libflac-dev libvorbis-dev libgl1-mesa-dev libegl1-mesa-dev libdrm-dev libgbm-dev xvfb fluxbox && sudo apt-get remove -y libasound2
 
