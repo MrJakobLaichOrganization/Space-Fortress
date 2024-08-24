@@ -134,7 +134,7 @@ jobs:
         sudo apt-get install clang-format-14
 
     - name: Format Code
-      run: cmake -DCLANG_FORMAT_EXECUTABLE=clang-format-18 -P cmake/Format.cmake
+      run: cmake -DCLANG_FORMAT_EXECUTABLE=clang-format-14 -P cmake/Format.cmake
 
     - name: Check Formatting
       run: git diff --exit-code
@@ -178,7 +178,7 @@ jobs:
       if: runner.os == 'macOS'
       run: |
         brew update
-        brew install llvm clang-format || true
+        brew install llvm clang-format clang || true
         echo /usr/local/opt/llvm/bin >> $GITHUB_PATH
 
     - name: Configure
