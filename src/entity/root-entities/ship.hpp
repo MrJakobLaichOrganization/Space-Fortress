@@ -6,7 +6,9 @@
 #include "entity/entity.hpp"
 #include "entity/root-entity.hpp"
 #include "graphics/tilemap.hpp"
+#include "pathfinding.hpp"
 #include "resources.hpp"
+#include "world.hpp"
 
 class Ship : public RootEntity
 {
@@ -207,5 +209,10 @@ public:
     sf::Vector2f locationToPosition(BlockGrid::Location location)
     {
         return {location.x * blockSize.x, location.y * blockSize.y};
+    }
+
+    std::queue<sf::Vector2i> pathfind(BlockGrid::Location start, BlockGrid::Location end) const
+    {
+        return generatePath(grid, start, end);
     }
 };
