@@ -4,9 +4,10 @@
 
 #include <limits>
 #include <list>
-#include <vector>
-#include <cmath>
 #include <ranges>
+#include <vector>
+
+#include <cmath>
 
 namespace
 {
@@ -42,12 +43,12 @@ std::queue<sf::Vector2i> retracePath(const PathNode* start, const PathNode* end)
         tmpPath.push_back(tmpNode->location - tmpNode->parent->location);
         tmpNode = tmpNode->parent;
     }
-    //  NOLINTBEGIN
+    // NOLINTBEGIN
     for (auto it = tmpPath.rbegin(); it != tmpPath.rend(); it++)
     {
         path.push(*it);
     }
-    //  NOLINTEND
+    // NOLINTEND
     
     return path;
 }
@@ -107,8 +108,7 @@ std::queue<sf::Vector2i> generatePath(const class BlockGrid& grid,
 
             auto newLoc = location + dir;
 
-            if (!isValid(newLoc) ||
-                std::find(traveledTiles.begin(), traveledTiles.end(), newLoc) != traveledTiles.end())
+            if (!isValid(newLoc) || std::find(traveledTiles.begin(), traveledTiles.end(), newLoc) != traveledTiles.end())
             {
                 continue;
             }
@@ -116,7 +116,8 @@ std::queue<sf::Vector2i> generatePath(const class BlockGrid& grid,
             {
                 continue;
             }
-            openTiles.push_back(PathNode{&traveledTiles.back(), newLoc, getTileValue(newLoc, static_cast<sf::Vector2i>(end))});
+            openTiles.push_back(
+                PathNode{&traveledTiles.back(), newLoc, getTileValue(newLoc, static_cast<sf::Vector2i>(end))});
         }
     }
 

@@ -2,13 +2,14 @@
 
 #include <SFML/System/Vector2.hpp>
 
+#include "block.hpp"
+#include "units.hpp"
+
 #include <deque>
 #include <queue>
 #include <vector>
-#include <cstddef>
 
-#include "units.hpp"
-#include "block.hpp"
+#include <cstddef>
 
 /// @brief Returns steps to take
 /// @param grid - grid to use

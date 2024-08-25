@@ -1,13 +1,13 @@
 #pragma once
 
+#include "block.hpp"
 #include "entity/attach-entity.hpp"
 #include "time.hpp"
-#include "block.hpp"
 
 #include <SFML/System/Vector2.hpp>
 
-#include <string>
 #include <queue>
+#include <string>
 
 class World;
 class Crewmate : public AttachEntity

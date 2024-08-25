@@ -1,8 +1,8 @@
 #include "crewmate.hpp"
 
-#include "world.hpp"
-#include "pathfinding.hpp"
 #include "entity/root-entities/ship.hpp"
+#include "pathfinding.hpp"
+#include "world.hpp"
 
 #include <iostream>
 
@@ -14,7 +14,7 @@ Crewmate::Crewmate(World* world, Id id, std::string_view name, Gender gender) :
     m_birthTimestamp = world->getTime();
 }
 
-void Crewmate::update(sf::Time deltaTime)
+void Crewmate::update(sf::Time deltaTime) // NOLINT
 {
     const BlockGrid::Location gridLocation = posToGridLocation(getPosition(), static_cast<sf::Vector2u>(Ship::blockSize));
 
