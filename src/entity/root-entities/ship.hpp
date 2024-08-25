@@ -8,6 +8,7 @@
 #include "graphics/tilemap.hpp"
 #include "pathfinding.hpp"
 #include "resources.hpp"
+#include "world.hpp"
 
 class Ship : public RootEntity
 {
