@@ -42,8 +42,9 @@ std::queue<sf::Vector2i> retracePath(const PathNode* start, const PathNode* end)
         tmpPath.push_back(tmpNode->location - tmpNode->parent->location);
         tmpNode = tmpNode->parent;
     }
-    for (auto &it : std::ranges::reverse_view(tmpPath)){
-        path.push(it);
+    for (auto it = tmpPath.rbegin(); it != tmpPath.rend(); it++)
+    {
+        path.push(*it);
     }
     
     return path;
