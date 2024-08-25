@@ -42,10 +42,12 @@ std::queue<sf::Vector2i> retracePath(const PathNode* start, const PathNode* end)
         tmpPath.push_back(tmpNode->location - tmpNode->parent->location);
         tmpNode = tmpNode->parent;
     }
+    //  NOLINTBEGIN
     for (auto it = tmpPath.rbegin(); it != tmpPath.rend(); it++)
     {
         path.push(*it);
     }
+    //  NOLINTEND
     
     return path;
 }
