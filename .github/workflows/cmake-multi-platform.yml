@@ -181,8 +181,13 @@ jobs:
         brew install llvm || true
         echo /usr/local/opt/llvm/bin >> $GITHUB_PATH
 
-    - name: Configure
+    - name: Configure Linux & Windows
+      if: runner.os != 'macOS'
       run: cmake --preset dev -DCMAKE_C_COMPILER=clang-18 -DCMAKE_CXX_COMPILER=clang++-18 -DCMAKE_UNITY_BUILD=ON ${{matrix.platform.flags}}
+      
+    - name: Configure MacOS
+      if: runner.os == 'macOS'
+      run: cmake --preset dev -DCMAKE_C_COMPILER=clang-15 -DCMAKE_CXX_COMPILER=clang++-15 -DCMAKE_UNITY_BUILD=ON ${{matrix.platform.flags}}
 
     - name: Analyze Code
       run: cmake --build build --target tidy
