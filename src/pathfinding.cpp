@@ -37,13 +37,13 @@ float getTileValue(sf::Vector2i location, sf::Vector2i target)
            std::sqrt(std::abs(static_cast<float>(location.y) - target.y));
 }
 
-std::queue<BlockGrid::Location> retracePath(const PathNode* start, const PathNode* end)
+std::queue<BlockGrid::Location> retracePath(const PathNode& start, const PathNode& end)
 {
-    const PathNode* tmpNode = end;
+    const PathNode* tmpNode = &end;
     std::vector<BlockGrid::Location> tmpPath{};
     std::queue<BlockGrid::Location> path{};
 
-    while (tmpNode != start)
+    while (tmpNode != &start)
     {
         tmpPath.push_back(tmpNode->location - tmpNode->parent->location);
         tmpNode = tmpNode->parent;
@@ -58,18 +58,18 @@ std::queue<BlockGrid::Location> retracePath(const PathNode* start, const PathNod
     return path;
 }
 
-std::vector<BlockGrid::Location> makePath(const PathNode* start, const PathNode* end)
+std::vector<BlockGrid::Location> makePath(const PathNode& start, const PathNode& end)
 {
-    const PathNode* tmpNode = end;
+    const PathNode* tmpNode = &end;
     std::vector<BlockGrid::Location> path{};
 
-    while (tmpNode != start)
+    while (tmpNode != &start)
     {
         path.push_back(tmpNode->location);
         tmpNode = tmpNode->parent;
     }
 
-    path.push_back(start->location);
+    path.push_back(start.location);
 
     std::ranges::reverse(path);
 
@@ -86,8 +86,13 @@ std::vector<BlockGrid::Location> generatePath(const class BlockGrid& grid,
     std::list<PathNode> traveledTiles{};
     static const std::array<sf::Vector2i, 4> directions = {{{-1, 0}, {1, 0}, {0, -1}, {0, 1}}};
     auto isSolid = [&grid](sf::Vector2i loc)
-    { return grid.getBlockArchetype(grid.getBlockData(sf::Vector2u(loc.x, loc.y)).blockAchetypeIdx).solid; };
-    auto isValid = [&grid, &isSolid](sf::Vector2i loc) { return loc.x >= 0 && loc.y >= 0 && !isSolid(loc); };
+    { 
+        return grid.getBlockArchetype(grid.getBlockData(sf::Vector2u(loc.x, loc.y)).blockAchetypeIdx).solid; 
+    };
+    auto isValid = [&grid, &isSolid](sf::Vector2i loc) 
+    { 
+        return loc.x >= 0 && loc.y >= 0 && !isSolid(loc); 
+    };
 
     traveledTiles.push_back({nullptr, static_cast<BlockGrid::Location>(start), 0});
 
@@ -119,7 +124,7 @@ std::vector<BlockGrid::Location> generatePath(const class BlockGrid& grid,
 
         if (location == static_cast<BlockGrid::Location>(end))
         {
-            return makePath(&traveledTiles.front(), &traveledTiles.back());
+            return makePath(traveledTiles.front(), traveledTiles.back());
         }
 
         for (const auto& dir : directions)
