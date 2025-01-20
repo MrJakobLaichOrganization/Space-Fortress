@@ -53,7 +53,7 @@ void Crewmate::step(sf::Time deltaTime)
         updatePathfinding();
         return;
     }
-    
+
     const auto nextPosition = dynamic_cast<Ship*>(parent)->locationToPosition(nextStep) + Ship::blockSize / 2.f;
     move((nextPosition - getPosition()).normalized() * speed * deltaTime.asSeconds());
 }

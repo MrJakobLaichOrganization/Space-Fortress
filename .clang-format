@@ -37,7 +37,7 @@ AllowShortEnumsOnASingleLine: false
 AllowShortFunctionsOnASingleLine: None
 AllowShortIfStatementsOnASingleLine: Never
 AllowShortLoopsOnASingleLine: false
-AllowShortLambdasOnASingleLine: All
+AllowShortLambdasOnASingleLine: Inline
 
 # Break
 AlwaysBreakAfterReturnType: None

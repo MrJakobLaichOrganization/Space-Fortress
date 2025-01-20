@@ -2,11 +2,11 @@
 
 #include "block.hpp"
 
+#include <algorithm>
 #include <limits>
 #include <list>
 #include <ranges>
 #include <vector>
-#include <algorithm>
 
 #include <cmath>
 
@@ -54,7 +54,7 @@ std::queue<BlockGrid::Location> retracePath(const PathNode& start, const PathNod
         path.push(*it);
     }
     // NOLINTEND
-    
+
     return path;
 }
 
@@ -78,20 +78,20 @@ std::vector<BlockGrid::Location> makePath(const PathNode& start, const PathNode&
 } // namespace
 
 std::vector<BlockGrid::Location> generatePath(const class BlockGrid& grid,
-                                      BlockGrid::Location start,
-                                      BlockGrid::Location end,
-                                      std::size_t maxSteps)
+                                              BlockGrid::Location start,
+                                              BlockGrid::Location end,
+                                              std::size_t maxSteps)
 {
     std::deque<PathNode> openTiles{};
     std::list<PathNode> traveledTiles{};
     static const std::array<sf::Vector2i, 4> directions = {{{-1, 0}, {1, 0}, {0, -1}, {0, 1}}};
     auto isSolid = [&grid](sf::Vector2i loc)
-    { 
-        return grid.getBlockArchetype(grid.getBlockData(sf::Vector2u(loc.x, loc.y)).blockAchetypeIdx).solid; 
+    {
+        return grid.getBlockArchetype(grid.getBlockData(sf::Vector2u(loc.x, loc.y)).blockAchetypeIdx).solid;
     };
-    auto isValid = [&grid, &isSolid](sf::Vector2i loc) 
-    { 
-        return loc.x >= 0 && loc.y >= 0 && !isSolid(loc); 
+    auto isValid = [&grid, &isSolid](sf::Vector2i loc)
+    {
+        return loc.x >= 0 && loc.y >= 0 && !isSolid(loc);
     };
 
     traveledTiles.push_back({nullptr, static_cast<BlockGrid::Location>(start), 0});
@@ -103,7 +103,9 @@ std::vector<BlockGrid::Location> generatePath(const class BlockGrid& grid,
         if (!isValid(loc))
             continue;
 
-        openTiles.push_back(PathNode{&traveledTiles.front(), static_cast<BlockGrid::Location>(loc), getTileValue(loc, static_cast<sf::Vector2i>(end))});
+        openTiles.push_back(PathNode{&traveledTiles.front(),
+                                     static_cast<BlockGrid::Location>(loc),
+                                     getTileValue(loc, static_cast<sf::Vector2i>(end))});
     }
 
     auto location = openTiles.front().location;
@@ -144,8 +146,9 @@ std::vector<BlockGrid::Location> generatePath(const class BlockGrid& grid,
             {
                 continue;
             }
-            openTiles.push_back(
-                PathNode{&traveledTiles.back(), static_cast<BlockGrid::Location>(newLoc), getTileValue(newLoc, static_cast<sf::Vector2i>(end))});
+            openTiles.push_back(PathNode{&traveledTiles.back(),
+                                         static_cast<BlockGrid::Location>(newLoc),
+                                         getTileValue(newLoc, static_cast<sf::Vector2i>(end))});
         }
     }
 

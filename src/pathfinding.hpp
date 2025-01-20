@@ -1,9 +1,9 @@
 #pragma once
 
-#include <SFML/System/Vector2.hpp>
-
 #include "block.hpp"
 #include "units.hpp"
+
+#include <SFML/System/Vector2.hpp>
 
 #include <deque>
 #include <queue>
@@ -17,6 +17,6 @@
 /// @param end - destination
 /// @param maxSteps - maximal number of steps which can be taken (100 by default)
 std::vector<BlockGrid::Location> generatePath(const class BlockGrid& grid,
-                                      BlockGrid::Location start,
-                                      BlockGrid::Location end,
-                                      std::size_t maxSteps = 100);
+                                              BlockGrid::Location start,
+                                              BlockGrid::Location end,
+                                              std::size_t maxSteps = 100);
