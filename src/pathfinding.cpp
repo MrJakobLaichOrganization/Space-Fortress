@@ -6,6 +6,7 @@
 #include <list>
 #include <ranges>
 #include <vector>
+#include <algorithm>
 
 #include <cmath>
 
@@ -14,15 +15,19 @@ namespace
 struct PathNode
 {
     PathNode* parent;
-    sf::Vector2i location;
+    BlockGrid::Location location;
     float cost = std::numeric_limits<float>::max();
     bool operator==(const PathNode& node) const
     {
         return node.location == location;
     }
-    bool operator==(const sf::Vector2i& location) const
+    bool operator==(const BlockGrid::Location& location) const
     {
         return this->location == location;
+    }
+    bool operator==(const sf::Vector2i& location) const
+    {
+        return this->location == BlockGrid::Location(location);
     }
 };
 
@@ -32,11 +37,11 @@ float getTileValue(sf::Vector2i location, sf::Vector2i target)
            std::sqrt(std::abs(static_cast<float>(location.y) - target.y));
 }
 
-std::queue<sf::Vector2i> retracePath(const PathNode* start, const PathNode* end)
+std::queue<BlockGrid::Location> retracePath(const PathNode* start, const PathNode* end)
 {
     const PathNode* tmpNode = end;
-    std::vector<sf::Vector2i> tmpPath{};
-    std::queue<sf::Vector2i> path{};
+    std::vector<BlockGrid::Location> tmpPath{};
+    std::queue<BlockGrid::Location> path{};
 
     while (tmpNode != start)
     {
@@ -52,9 +57,27 @@ std::queue<sf::Vector2i> retracePath(const PathNode* start, const PathNode* end)
     
     return path;
 }
+
+std::vector<BlockGrid::Location> makePath(const PathNode* start, const PathNode* end)
+{
+    const PathNode* tmpNode = end;
+    std::vector<BlockGrid::Location> path{};
+
+    while (tmpNode != start)
+    {
+        path.push_back(tmpNode->location);
+        tmpNode = tmpNode->parent;
+    }
+
+    path.push_back(start->location);
+
+    std::ranges::reverse(path);
+
+    return path;
+}
 } // namespace
 
-std::queue<sf::Vector2i> generatePath(const class BlockGrid& grid,
+std::vector<BlockGrid::Location> generatePath(const class BlockGrid& grid,
                                       BlockGrid::Location start,
                                       BlockGrid::Location end,
                                       std::size_t maxSteps)
@@ -66,7 +89,7 @@ std::queue<sf::Vector2i> generatePath(const class BlockGrid& grid,
     { return grid.getBlockArchetype(grid.getBlockData(sf::Vector2u(loc.x, loc.y)).blockAchetypeIdx).solid; };
     auto isValid = [&grid, &isSolid](sf::Vector2i loc) { return loc.x >= 0 && loc.y >= 0 && !isSolid(loc); };
 
-    traveledTiles.push_back({nullptr, static_cast<sf::Vector2i>(start), 0});
+    traveledTiles.push_back({nullptr, static_cast<BlockGrid::Location>(start), 0});
 
     // populate the directional tiles
     for (const auto& dir : directions)
@@ -75,7 +98,7 @@ std::queue<sf::Vector2i> generatePath(const class BlockGrid& grid,
         if (!isValid(loc))
             continue;
 
-        openTiles.push_back(PathNode{&traveledTiles.front(), loc, getTileValue(loc, static_cast<sf::Vector2i>(end))});
+        openTiles.push_back(PathNode{&traveledTiles.front(), static_cast<BlockGrid::Location>(loc), getTileValue(loc, static_cast<sf::Vector2i>(end))});
     }
 
     auto location = openTiles.front().location;
@@ -94,9 +117,9 @@ std::queue<sf::Vector2i> generatePath(const class BlockGrid& grid,
         location = openTiles[minIdx].location;
         openTiles.erase(openTiles.begin() + minIdx);
 
-        if (location == static_cast<sf::Vector2i>(end))
+        if (location == static_cast<BlockGrid::Location>(end))
         {
-            return retracePath(&traveledTiles.front(), &traveledTiles.back());
+            return makePath(&traveledTiles.front(), &traveledTiles.back());
         }
 
         for (const auto& dir : directions)
@@ -106,7 +129,7 @@ std::queue<sf::Vector2i> generatePath(const class BlockGrid& grid,
                 continue;
             }
 
-            auto newLoc = location + dir;
+            auto newLoc = static_cast<sf::Vector2i>(location) + dir;
 
             if (!isValid(newLoc) || std::find(traveledTiles.begin(), traveledTiles.end(), newLoc) != traveledTiles.end())
             {
@@ -117,7 +140,7 @@ std::queue<sf::Vector2i> generatePath(const class BlockGrid& grid,
                 continue;
             }
             openTiles.push_back(
-                PathNode{&traveledTiles.back(), newLoc, getTileValue(newLoc, static_cast<sf::Vector2i>(end))});
+                PathNode{&traveledTiles.back(), static_cast<BlockGrid::Location>(newLoc), getTileValue(newLoc, static_cast<sf::Vector2i>(end))});
         }
     }
 

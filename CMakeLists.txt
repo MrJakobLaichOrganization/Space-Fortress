@@ -70,8 +70,8 @@ file(GLOB_RECURSE SRC_FILES "${PROJECT_SOURCE_DIR}/src/*.cpp")
 
 add_executable (Game ${SRC_FILES})
 target_link_libraries(Game PRIVATE sfml-graphics ImGui-SFML::ImGui-SFML cereal box2d)
-target_compile_features(Game PRIVATE cxx_std_20)
-set_property(TARGET Game PROPERTY CXX_STANDARD 20)
+target_compile_features(Game PRIVATE cxx_std_23)
+set_property(TARGET Game PROPERTY CXX_STANDARD 23)
 target_include_directories(Game PRIVATE "./src/")
 
 target_compile_definitions(Game PRIVATE ASSETS_DIR="${PROJECT_SOURCE_DIR}/assets")

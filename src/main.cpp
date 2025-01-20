@@ -21,7 +21,12 @@ int main()
 
     while (window.isOpen())
     {
-        const auto delta = clock.restart();
+        auto delta = clock.restart();
+        if (delta.asSeconds() > 0.1f)
+        {
+            delta = sf::seconds(0.1f);
+        }
+
         const auto computedViewSpeed = World::viewSpeed * world.viewZoom * delta.asSeconds();
 
         while (const auto event = window.pollEvent())
