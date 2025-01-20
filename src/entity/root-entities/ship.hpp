@@ -211,7 +211,7 @@ public:
         return {location.x * blockSize.x, location.y * blockSize.y};
     }
 
-    std::queue<sf::Vector2i> pathfind(BlockGrid::Location start, BlockGrid::Location end) const
+    std::vector<BlockGrid::Location> pathfind(BlockGrid::Location start, BlockGrid::Location end) const
     {
         return generatePath(grid, start, end);
     }

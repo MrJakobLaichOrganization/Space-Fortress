@@ -34,10 +34,11 @@ World::World(sf::RenderWindow& window, b2Vec2 gravity) : m_gravity(gravity)
 
     auto& crewmate = createEntity<Crewmate>("crewmate #1");
     crewmate.move({76.f, 94.f});
+    crewmate.targetLocation = {4, 6};
     firstShip.attachChild(&crewmate);
 
-    firstShip.addMachine<Thruster>({2, 8}, Direction::Down);
-    firstShip.addMachine<Thruster>({7, 7}, Direction::Right);
+    //firstShip.addMachine<Thruster>({2, 8}, Direction::Down);
+    //firstShip.addMachine<Thruster>({7, 7}, Direction::Right);
 
     for (auto& entity : m_entities)
     {
@@ -46,7 +47,7 @@ World::World(sf::RenderWindow& window, b2Vec2 gravity) : m_gravity(gravity)
         }
     }
 
-    firstShip.body->ApplyForce({1000.f, 0.f}, firstShip.body->GetWorldCenter(), true);
+    //firstShip.body->ApplyForce({1000.f, 0.f}, firstShip.body->GetWorldCenter(), true);
 
     m_debugDraw = std::make_unique<PhysicsDebugDraw>(&window);
     m_world->SetDebugDraw(m_debugDraw.get());

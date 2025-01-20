@@ -32,6 +32,7 @@ public:
 
         sf::CircleShape circle(16.f);
         circle.setFillColor(sf::Color::Yellow);
+        circle.setOrigin({8.f, 8.f});
         target.draw(circle, states);
     }
 
@@ -49,13 +50,18 @@ public:
         return m_name;
     }
 
+    BlockGrid::Location targetLocation;
+    float speed = 50.f;
+
 private:
-    std::queue<sf::Vector2i> m_steps;
-    BlockGrid::Location m_targetDest;
+    std::vector<BlockGrid::Location> m_steps;
 
     std::string m_name;
     Gender m_gender;
     Time m_birthTimestamp;
+
+    void step(sf::Time deltaTime);
+    void updatePathfinding();
 
     static BlockGrid::Location posToGridLocation(sf::Vector2f pos, sf::Vector2u tileSize)
     {
