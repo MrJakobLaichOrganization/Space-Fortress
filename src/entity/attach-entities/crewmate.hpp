@@ -50,7 +50,7 @@ public:
         return m_name;
     }
 
-    BlockGrid::Location targetLocation{};
+    BlockGrid::Location targetLocation;
     float speed = 50.f;
 
 private:
