@@ -44,8 +44,8 @@ public:
             grid.setBlockType(grid.getBlockArchetypeIdx("Wall_MR"), {6, x + 1});
             for (std::uint32_t y = 0; y < 5; y++)
             {
-                grid.setBlockType(floorTile, {x + 1, y + 2});
-                grid.setBlockType(floorTile, {x + 1, 1});
+                grid.setFloorType(floorTile, {x + 1, y + 2});
+                grid.setFloorType(floorTile, {x + 1, 1});
             }
         }
 
@@ -200,7 +200,7 @@ public:
         for (auto& machine : machines)
         {
             machine->update(delta, *this);
-            tileRenderer.setTile(machine->location, {machine->tileIdx, machine->direction});
+            tileRenderer.setTile(machine->location, {machine->tileIdx, 0, machine->direction}, false);
         }
 
         RootEntity::update(delta);
