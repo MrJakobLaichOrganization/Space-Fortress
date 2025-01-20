@@ -1,6 +1,10 @@
 #include "crewmate.hpp"
 
+#include "entity/root-entities/ship.hpp"
+#include "pathfinding.hpp"
 #include "world.hpp"
+
+#include <iostream>
 
 Crewmate::Crewmate(World* world, Id id, std::string_view name, Gender gender) :
     AttachEntity{world, id},
@@ -10,8 +14,14 @@ Crewmate::Crewmate(World* world, Id id, std::string_view name, Gender gender) :
     m_birthTimestamp = world->getTime();
 }
 
-void Crewmate::update(sf::Time deltaTime)
+void Crewmate::update(sf::Time deltaTime) // NOLINT
 {
+    const BlockGrid::Location gridLocation = posToGridLocation(getPosition(), static_cast<sf::Vector2u>(Ship::blockSize));
+
+    if (m_targetDest != gridLocation && m_steps.empty())
+    {
+        m_steps = dynamic_cast<Ship*>(parent)->pathfind(gridLocation, m_targetDest);
+    }
 }
 
 Time Crewmate::getAge() const

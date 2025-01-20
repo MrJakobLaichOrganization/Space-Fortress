@@ -100,12 +100,12 @@ public:
     static void loadArchetypes(cereal::JSONInputArchive& ar)
     {
         m_blockArchetypes.clear();
-        ar(m_blockArchetypes);
+        ar(m_blockArchetypes); // NOLINT
     }
 
     [[nodiscard]] std::uint32_t calculateIndex(const sf::Vector2u& pos) const;
 
 private:
     TileRenderer* m_tileRenderer = nullptr;
-    static std::vector<BlockArchetype> m_blockArchetypes;
+    static std::vector<BlockArchetype> m_blockArchetypes; // NOLINT
 };

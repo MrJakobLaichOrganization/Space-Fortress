@@ -1,8 +1,12 @@
 #pragma once
 
+#include "block.hpp"
 #include "entity/attach-entity.hpp"
 #include "time.hpp"
 
+#include <SFML/System/Vector2.hpp>
+
+#include <queue>
 #include <string>
 
 class World;
@@ -46,7 +50,16 @@ public:
     }
 
 private:
+    std::queue<sf::Vector2i> m_steps;
+    BlockGrid::Location m_targetDest;
+
     std::string m_name;
     Gender m_gender;
     Time m_birthTimestamp;
+
+    static BlockGrid::Location posToGridLocation(sf::Vector2f pos, sf::Vector2u tileSize)
+    {
+        return BlockGrid::Location{static_cast<std::uint32_t>(pos.x / tileSize.x),
+                                   static_cast<std::uint32_t>(pos.y / tileSize.y)};
+    }
 };
