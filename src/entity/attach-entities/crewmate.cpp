@@ -107,7 +107,7 @@ void Crewmate::work(sf::Time /*deltaTime*/)
     if ((m_currentTask.type == TaskType::None || m_currentTask.type == TaskType::Idle) && !parentShip->tasks.empty())
     {
         m_currentTask = parentShip->tasks[0];
-        
+
         parentShip->tasks.erase(parentShip->tasks.begin());
         parentShip->takenTasks.push_back(m_currentTask);
 
