@@ -1,5 +1,5 @@
-#include "b2_api.h"
-#include "b2_types.h"
+#include "box2d/b2_api.h"
+#include "box2d/b2_types.h"
 
 #include <stdarg.h>
 #include <stdint.h>
