@@ -152,7 +152,7 @@ std::vector<BlockGrid::Location> generatePath(const class BlockGrid& grid,
             {
                 continue;
             }
-            
+
             openTiles.push_back(PathNode{&traveledTiles.back(),
                                          static_cast<BlockGrid::Location>(newLoc),
                                          getTileValue(newLoc, static_cast<sf::Vector2i>(end))});

@@ -3,6 +3,7 @@
 #include "block.hpp"
 #include "entity/attach-entities/machine.hpp"
 #include "entity/entity.hpp"
+
 #include <vector>
 
 /// @brief Job for a workstation,
@@ -34,7 +35,7 @@ struct BillCompare
     }
 };
 
-class Workstation: public Machine
+class Workstation : public Machine
 {
 public:
     bool inUse{false};
@@ -81,6 +82,6 @@ public:
     }
 
 private:
-    std::uint16_t m_workSpeed = 5;    // How much ticks per work
+    std::uint16_t m_workSpeed = 5; // How much ticks per work
     std::uint16_t m_workCtr = 0;
 };
