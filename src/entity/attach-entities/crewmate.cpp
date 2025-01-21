@@ -61,7 +61,7 @@ void Crewmate::step(sf::Time deltaTime)
     move((nextPosition - getPosition()).normalized() * speed * deltaTime.asSeconds());
 }
 
-void Crewmate::work(sf::Time deltaTime)
+void Crewmate::work(sf::Time deltaTime) // NOLINT
 {
     static const sf::Vector2i dirOffsets[] = {
         {0, -1},
