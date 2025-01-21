@@ -65,6 +65,7 @@ private:
     Workstation* m_currentWorkstation{nullptr};
 
     void step(sf::Time deltaTime);
+    void work(sf::Time deltaTime);
     void updatePathfinding();
 
     static BlockGrid::Location posToGridLocation(sf::Vector2f pos, sf::Vector2u tileSize)

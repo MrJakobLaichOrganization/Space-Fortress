@@ -22,6 +22,7 @@ public:
     BlockGrid grid{dimension, &tileRenderer};
     std::vector<std::unique_ptr<Machine>> machines;
     std::vector<Task> tasks;
+    std::vector<Task> takenTasks;
 
     template <typename T, typename... Args>
     void addMachine(std::string_view archetypeName, BlockGrid::Location location, Args&&... args)
@@ -221,9 +222,10 @@ public:
 
         for (const auto& machine : machines)
         {
-            auto* tmp = dynamic_cast<Workstation*>(machine.get());
-            if (tmp)
+            if (auto* tmp = dynamic_cast<Workstation*>(machine.get()))
+            {
                 stations.push_back(tmp);
+            }
         }
 
         return stations;

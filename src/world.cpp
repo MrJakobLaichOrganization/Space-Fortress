@@ -97,21 +97,21 @@ void World::render(sf::RenderWindow& window)
     }
 }
 
-Entity* World::getEntity(Entity::Id id)
+Entity* World::findEntity(Entity::Id id)
 {
-    auto found = std::find_if(m_entities.begin(),
-                              m_entities.end(),
-                              [id](std::unique_ptr<Entity>& entity) { return entity && id == entity->id; });
-
-    return found == m_entities.end() ? nullptr : found->get();
+    if (!m_idToEntity.contains(id))
+    {
+        return nullptr;
+    }
+    return m_idToEntity.at(id);
 }
-const Entity* World::getEntity(Entity::Id id) const
+const Entity* World::findEntity(Entity::Id id) const
 {
-    auto found = std::find_if(m_entities.begin(),
-                              m_entities.end(),
-                              [id](const std::unique_ptr<Entity>& entity) { return entity && id == entity->id; });
-
-    return found == m_entities.end() ? nullptr : found->get();
+    if (!m_idToEntity.contains(id))
+    {
+        return nullptr;
+    }
+    return m_idToEntity.at(id);
 }
 
 void World::setDebugDraw(bool on)
