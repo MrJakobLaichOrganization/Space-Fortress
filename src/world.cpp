@@ -99,19 +99,13 @@ void World::render(sf::RenderWindow& window)
 
 Entity* World::findEntity(Entity::Id id)
 {
-    if (!m_idToEntity.contains(id))
-    {
-        return nullptr;
-    }
-    return m_idToEntity.at(id);
+    auto iter = m_idToEntity.find(id);
+    return iter == m_idToEntity.end() ? nullptr : m_idToEntity.at(id);
 }
 const Entity* World::findEntity(Entity::Id id) const
 {
-    if (!m_idToEntity.contains(id))
-    {
-        return nullptr;
-    }
-    return m_idToEntity.at(id);
+    auto iter = m_idToEntity.find(id);
+    return iter == m_idToEntity.end() ? nullptr : m_idToEntity.at(id);
 }
 
 void World::setDebugDraw(bool on)
