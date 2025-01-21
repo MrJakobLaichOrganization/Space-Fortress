@@ -1,5 +1,6 @@
 #pragma once
 
+#include "box2d/b2_fixture.h"
 #include "entity.hpp"
 #include "units.hpp"
 
@@ -7,8 +8,6 @@
 
 #include <concepts>
 #include <type_traits>
-
-#include "box2d/b2_fixture.h"
 
 class AttachEntity : public Entity
 {
