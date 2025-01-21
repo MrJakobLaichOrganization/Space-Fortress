@@ -82,17 +82,23 @@ std::vector<BlockGrid::Location> generatePath(const class BlockGrid& grid,
                                               BlockGrid::Location end,
                                               std::size_t maxSteps)
 {
+    static const std::array<sf::Vector2i, 4> directions = {{{-1, 0}, {1, 0}, {0, -1}, {0, 1}}};
     std::deque<PathNode> openTiles{};
     std::list<PathNode> traveledTiles{};
-    static const std::array<sf::Vector2i, 4> directions = {{{-1, 0}, {1, 0}, {0, -1}, {0, 1}}};
     auto isSolid = [&grid](sf::Vector2i loc)
     {
-        return grid.getBlockArchetype(grid.getBlockData(sf::Vector2u(loc.x, loc.y)).blockAchetypeIdx).solid;
+        return grid.getBlockArchetype(sf::Vector2u(loc.x, loc.y)).solid;;
     };
     auto isValid = [&grid, &isSolid](sf::Vector2i loc)
     {
         return loc.x >= 0 && loc.y >= 0 && !isSolid(loc);
     };
+
+    // if end location is bad
+    if (!isValid(sf::Vector2i(end.x, end.y)))
+    {
+        return {};
+    }
 
     traveledTiles.push_back({nullptr, static_cast<BlockGrid::Location>(start), 0});
 
@@ -146,6 +152,7 @@ std::vector<BlockGrid::Location> generatePath(const class BlockGrid& grid,
             {
                 continue;
             }
+            
             openTiles.push_back(PathNode{&traveledTiles.back(),
                                          static_cast<BlockGrid::Location>(newLoc),
                                          getTileValue(newLoc, static_cast<sf::Vector2i>(end))});

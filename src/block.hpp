@@ -37,7 +37,7 @@ struct BlockData
     template <class Archive>
     void serialize(Archive& ar)
     {
-        ar(blockAchetypeIdx);
+        ar(blockAchetypeIdx, floorAchetypeIdx);
     }
 };
 

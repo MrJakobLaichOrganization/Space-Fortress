@@ -59,6 +59,9 @@ public:
         return *ptr;
     }
 
+    Entity* getEntity(Entity::Id id);
+    const Entity* getEntity(Entity::Id id) const;
+
     b2World& getPhysicsWorld()
     {
         return *m_world;

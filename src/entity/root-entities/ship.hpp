@@ -3,12 +3,14 @@
 #include "block.hpp"
 #include "entity/attach-entities/crewmate.hpp"
 #include "entity/attach-entities/machine.hpp"
+#include "entity/attach-entities/work.hpp"
 #include "entity/entity.hpp"
 #include "entity/root-entity.hpp"
 #include "graphics/tilemap.hpp"
 #include "pathfinding.hpp"
 #include "resources.hpp"
 #include "world.hpp"
+#include "task.hpp"
 
 class Ship : public RootEntity
 {
@@ -19,11 +21,13 @@ public:
     TileRenderer tileRenderer{Resources::get().tileSheet, dimension, blockSize};
     BlockGrid grid{dimension, &tileRenderer};
     std::vector<std::unique_ptr<Machine>> machines;
+    std::vector<Task> tasks;
 
     template <typename T, typename... Args>
-    void addMachine(BlockGrid::Location location, Args&&... args)
+    void addMachine(std::string_view archetypeName, BlockGrid::Location location, Args&&... args)
     {
         machines.emplace_back(std::make_unique<T>(location, std::forward<Args>(args)...));
+        grid.setBlockType(grid.getBlockArchetypeIdx(archetypeName), location, machines.back()->direction);
     }
 
     Ship(class World* world, Id id) : RootEntity{world, id}
@@ -48,6 +52,11 @@ public:
                 grid.setFloorType(floorTile, {x + 1, 1});
             }
         }
+
+        // Debug purposes
+        addMachine<Workstation>("TablePapers", {3, 3}, Direction::Up, 29);
+        Workstation* station = static_cast<Workstation*>(machines.back().get());
+        station->bills.emplace_back(100);
 
         grid.setBlockType(grid.getBlockArchetypeIdx("Wall_ML"), {0, 6});
         grid.setBlockType(grid.getBlockArchetypeIdx("Wall_MR"), {6, 6});
@@ -200,13 +209,29 @@ public:
         for (auto& machine : machines)
         {
             machine->update(delta, *this);
-            tileRenderer.setTile(machine->location, {machine->tileIdx, 0, machine->direction}, false);
+            tileRenderer.setTile(machine->location, {0, machine->tileIdx, machine->direction}, false);
         }
 
         RootEntity::update(delta);
     }
 
-    sf::Vector2f locationToPosition(BlockGrid::Location location)
+    std::vector<Workstation*> getWorkstations() const
+    {
+        std::vector<Workstation*> stations;
+
+        for (auto& machine : machines)
+        {
+            Workstation* tmp;
+            if (tmp = dynamic_cast<Workstation*>(machine.get()))
+            {
+                stations.push_back(tmp);
+            }
+        }
+
+        return stations;
+    }
+
+    sf::Vector2f locationToPosition(BlockGrid::Location location) const
     {
         return {location.x * blockSize.x, location.y * blockSize.y};
     }

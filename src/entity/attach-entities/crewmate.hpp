@@ -3,6 +3,8 @@
 #include "block.hpp"
 #include "entity/attach-entity.hpp"
 #include "time.hpp"
+#include "task.hpp"
+#include "entity/attach-entities/work.hpp"
 
 #include <SFML/System/Vector2.hpp>
 
@@ -59,6 +61,8 @@ private:
     std::string m_name;
     Gender m_gender;
     Time m_birthTimestamp;
+    Task currentTask;
+    Workstation* currentWorkstation;
 
     void step(sf::Time deltaTime);
     void updatePathfinding();

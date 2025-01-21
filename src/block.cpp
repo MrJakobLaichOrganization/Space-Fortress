@@ -6,10 +6,11 @@ BlockGrid::BlockGrid(sf::Vector2u dimensions, TileRenderer* tileRenderer) :
     Grid(dimensions),
     m_tileRenderer{tileRenderer}
 {
+    const auto airIdx = m_blockArchetypes[0].tilemapIdx;
     for (std::size_t i = 0; i < getCount(); ++i)
     {
-        m_tileRenderer->setTile(i, {14, m_blockArchetypes[0].tilemapIdx}, false);
-        m_tileRenderer->setTile(i, {14, 14}, true);
+        m_tileRenderer->setTile(i, {airIdx, airIdx}, false);
+        m_tileRenderer->setTile(i, {airIdx, airIdx}, true);
     }
 }
 
@@ -33,11 +34,11 @@ void BlockGrid::setBlockType(std::string_view archetypeName, Location pos, Direc
 
 void BlockGrid::setFloorType(BlockArchetypeIndex blockType, Index idx)
 {
-    get(idx).blockAchetypeIdx = blockType;
+    get(idx).floorAchetypeIdx = blockType;
 
     if (m_tileRenderer)
     {
-        m_tileRenderer->setTile(idx, {getBlockArchetype(idx).tilemapIdx}, true);
+        m_tileRenderer->setTile(idx, {getFloorArchetype(idx).tilemapIdx}, true);
     }
 }
 void BlockGrid::setFloorType(BlockArchetypeIndex blockType, Location pos)
