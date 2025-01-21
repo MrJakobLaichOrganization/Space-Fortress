@@ -31,14 +31,14 @@ void Crewmate::step(sf::Time deltaTime)
     bool taskAdded = true;
     Ship* parentShip = dynamic_cast<Ship*>(parent);
 
-    if ((currentTask.type == TaskType::None || currentTask.type == TaskType::Idle) && parentShip->tasks.size())
+    if ((m_currentTask.type == TaskType::None || m_currentTask.type == TaskType::Idle) && !parentShip->tasks.empty())
     {
-        currentTask = parentShip->tasks[0];
+        m_currentTask = parentShip->tasks[0];
         parentShip->tasks.erase(parentShip->tasks.begin());
 
-        targetLocation = currentTask.position;
+        targetLocation = m_currentTask.position;
     }
-    else if (currentTask.type == TaskType::None || currentTask.type == TaskType::Idle)
+    else if (m_currentTask.type == TaskType::None || m_currentTask.type == TaskType::Idle)
     {
         for (auto *workstation : parentShip->getWorkstations())
         {
@@ -47,17 +47,17 @@ void Crewmate::step(sf::Time deltaTime)
 
             workstation->entityUsing = id;
             workstation->inUse = true;
-            this->currentWorkstation = workstation;
-            this->currentTask.type = TaskType::Work;
-            currentTask.position = static_cast<sf::Vector2u>(sf::Vector2i(workstation->location) + dirOffsets[static_cast<std::uint8_t>(workstation->workStandDir)]);
+            this->m_currentWorkstation = workstation;
+            this->m_currentTask.type = TaskType::Work;
+            m_currentTask.position = static_cast<sf::Vector2u>(sf::Vector2i(workstation->location) + dirOffsets[static_cast<std::uint8_t>(workstation->workStandDir)]);
         }
-        if (currentTask.type == TaskType::None)
+        if (m_currentTask.type == TaskType::None)
         {
-            currentTask.type = TaskType::Idle;
-            currentTask.position = {gridLocation.x + 1, gridLocation.y + 1};
+            m_currentTask.type = TaskType::Idle;
+            m_currentTask.position = {gridLocation.x + 1, gridLocation.y + 1};
         }
 
-        targetLocation = currentTask.position;
+        targetLocation = m_currentTask.position;
     }
     else
     {
@@ -66,22 +66,23 @@ void Crewmate::step(sf::Time deltaTime)
 
     if (targetLocation == gridLocation)
     {
-        switch (currentTask.type)
+        switch (m_currentTask.type)
         {
             case TaskType::Idle:
-                currentTask.type = TaskType::None;
+                m_currentTask.type = TaskType::None;
                 break;
             case TaskType::Work:
             {
-                Bill& currentBill = currentWorkstation->bills.front();
-                if (currentWorkstation->doWork())
+                if (m_currentWorkstation->doWork())
                 {
-                    currentTask.type = TaskType::None;
-                    currentWorkstation->inUse = false;
+                    m_currentTask.type = TaskType::None;
+                    m_currentWorkstation->inUse = false;
                 }
 
                 break;
             }
+            default:
+                break;
         }
         return;
     }
@@ -90,7 +91,7 @@ void Crewmate::step(sf::Time deltaTime)
     {
         updatePathfinding();
 
-        while (m_steps.empty() && currentTask.type == TaskType::Idle && targetLocation.y < 31)
+        while (m_steps.empty() && m_currentTask.type == TaskType::Idle && targetLocation.y < 31)
         {
             updatePathfinding();
             targetLocation.y++;

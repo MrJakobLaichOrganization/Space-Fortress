@@ -8,13 +8,12 @@
 /// @brief Job for a workstation,
 struct Bill
 {
-    std::uint16_t workDone;
+    std::uint16_t workDone{0};
     std::uint16_t workMax;
     /// @brief Priority: 1 - lowest, 9 - highest
     std::uint8_t priority;
 
     Bill(std::uint16_t maxWork = std::numeric_limits<std::uint16_t>::max(), std::uint8_t prio = 5) :
-        workDone(0),
         workMax(maxWork),
         priority(prio)
     {
@@ -59,12 +58,12 @@ public:
         if (bills.empty())
             return false;
 
-        workCtr++;
-        if (workCtr < workSpeed)
+        m_workCtr++;
+        if (m_workCtr < m_workSpeed)
             return false;
 
         bills[0].workDone++;
-        workCtr = 0;
+        m_workCtr = 0;
         if (bills[0].workDone >= bills[0].workMax)
         {
             bills.erase(bills.begin());
@@ -80,6 +79,6 @@ public:
     }
 
     private:
-        std::uint16_t workSpeed = 5;    // How much ticks per work
-        std::uint16_t workCtr = 0;
+        std::uint16_t m_workSpeed = 5;    // How much ticks per work
+        std::uint16_t m_workCtr = 0;
 };

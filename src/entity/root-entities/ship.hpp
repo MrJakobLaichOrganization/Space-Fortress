@@ -221,11 +221,9 @@ public:
 
         for (auto& machine : machines)
         {
-            Workstation* tmp;
-            if (tmp = dynamic_cast<Workstation*>(machine.get()))
-            {
+            Workstation* tmp = dynamic_cast<Workstation*>(machine.get());
+            if (tmp)
                 stations.push_back(tmp);
-            }
         }
 
         return stations;

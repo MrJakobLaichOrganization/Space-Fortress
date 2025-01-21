@@ -61,8 +61,8 @@ private:
     std::string m_name;
     Gender m_gender;
     Time m_birthTimestamp;
-    Task currentTask;
-    Workstation* currentWorkstation;
+    Task m_currentTask;
+    Workstation* m_currentWorkstation;
 
     void step(sf::Time deltaTime);
     void updatePathfinding();
