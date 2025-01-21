@@ -65,6 +65,9 @@ void World::update(sf::Time deltaTime, InputManager& inputManager)
 {
     viewZoom = std::clamp(viewZoom, minZoom, maxZoom);
 
+    rootEntityUnderMouse = 0;
+    attachEntityUnderMouse = 0;
+
     for (auto& entity : m_rootEntities)
     {
         entity->prePhysics();
@@ -77,13 +80,24 @@ void World::update(sf::Time deltaTime, InputManager& inputManager)
         entity->postPhysics();
     }
 
-    rootEntityUnderMouse = 0;
-
     if (const auto bodyUnderMouse = Box2dUtils::findBodyAtPoint(*m_world, toBox2d(inputManager.worldMousePos)))
     {
         if (auto* rootEntity = dynamic_cast<RootEntity*>(bodyUnderMouse->GetUserData()))
         {
             rootEntityUnderMouse = rootEntity->id;
+
+            const auto entityLocalMouse = rootEntity->getInverseTransform() * inputManager.worldMousePos;
+            for (const auto* child : rootEntity->children)
+            {
+                auto bounds = child->localBounds;
+                bounds.position += child->getPosition();
+
+                if (bounds.contains(entityLocalMouse))
+                {
+                    attachEntityUnderMouse = child->id;
+                    break;
+                }
+            }
         }
     }
 
@@ -128,6 +142,11 @@ void World::showDebugMenu()
     if (rootEntityUnderMouse)
     {
         ImGui::Text("Root Entity: %d", rootEntityUnderMouse);
+    }
+
+    if (attachEntityUnderMouse)
+    {
+        ImGui::Text("Attach Entity: %d", attachEntityUnderMouse);
     }
 
     ImGui::End();

@@ -8,10 +8,13 @@
 #include <concepts>
 #include <type_traits>
 
+#include "box2d/b2_fixture.h"
+
 class AttachEntity : public Entity
 {
 public:
     class RootEntity* parent{};
+    sf::FloatRect localBounds;
 
     AttachEntity(class World* world, Id id) : Entity{world, id}
     {

@@ -12,6 +12,7 @@ Crewmate::Crewmate(World* world, Id id, std::string_view name, Gender gender) :
     m_gender(gender)
 {
     m_birthTimestamp = world->getTime();
+    localBounds = {sf::Vector2f{-16.f, -16.f}, sf::Vector2f{32.f, 32.f}};
 }
 
 void Crewmate::update(sf::Time deltaTime) // NOLINT

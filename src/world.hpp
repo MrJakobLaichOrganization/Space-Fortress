@@ -87,6 +87,7 @@ private:
     Entity::Id m_nextEntityId = 1;
 
     Entity::Id rootEntityUnderMouse{};
+    Entity::Id attachEntityUnderMouse{};
 
     Starfield m_starfield;
 };
