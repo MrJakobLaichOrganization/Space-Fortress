@@ -97,6 +97,17 @@ void World::render(sf::RenderWindow& window)
     }
 }
 
+Entity* World::findEntity(Entity::Id id)
+{
+    auto iter = m_idToEntity.find(id);
+    return iter == m_idToEntity.end() ? nullptr : iter->second;
+}
+const Entity* World::findEntity(Entity::Id id) const
+{
+    auto iter = m_idToEntity.find(id);
+    return iter == m_idToEntity.end() ? nullptr : iter->second;
+}
+
 void World::setDebugDraw(bool on)
 {
     m_drawDebugInfo = on;

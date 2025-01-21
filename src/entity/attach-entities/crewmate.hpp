@@ -1,7 +1,9 @@
 #pragma once
 
 #include "block.hpp"
+#include "entity/attach-entities/work.hpp"
 #include "entity/attach-entity.hpp"
+#include "task.hpp"
 #include "time.hpp"
 
 #include <SFML/System/Vector2.hpp>
@@ -59,8 +61,11 @@ private:
     std::string m_name;
     Gender m_gender;
     Time m_birthTimestamp;
+    Task m_currentTask;
+    Workstation* m_currentWorkstation{nullptr};
 
     void step(sf::Time deltaTime);
+    void work(sf::Time deltaTime);
     void updatePathfinding();
 
     static BlockGrid::Location posToGridLocation(sf::Vector2f pos, sf::Vector2u tileSize)

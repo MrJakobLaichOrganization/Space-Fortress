@@ -31,11 +31,13 @@ struct BlockData
 {
     // block archetype
     std::uint32_t blockAchetypeIdx{};
+    // floor archetype
+    std::uint32_t floorAchetypeIdx{};
 
     template <class Archive>
     void serialize(Archive& ar)
     {
-        ar(blockAchetypeIdx);
+        ar(blockAchetypeIdx, floorAchetypeIdx);
     }
 };
 
@@ -57,18 +59,36 @@ public:
     /// @brief Sets block type in grid
     /// @param blockType - block archetype to set
     /// @param idx - index of the block in array
-    void setBlockType(BlockArchetypeIndex blockType, Index idx);
+    void setBlockType(BlockArchetypeIndex blockType, Index idx, Direction dir = Direction::Up);
     /// @brief
     /// @param blockType - block archetype to set
     /// @param pos - position relative to the top left
-    void setBlockType(BlockArchetypeIndex blockType, Location pos);
+    void setBlockType(BlockArchetypeIndex blockType, Location pos, Direction dir = Direction::Up);
     /// @brief
     /// @param blockType - block archetype name to set
     /// @param pos - position relative to the top left
-    void setBlockType(std::string_view archetypeName, Location pos);
+    void setBlockType(std::string_view archetypeName, Location pos, Direction dir = Direction::Up);
+
+    /// @brief Sets floor type in grid
+    /// @param blockType - block archetype to set
+    /// @param idx - index of the block in array
+    void setFloorType(BlockArchetypeIndex blockType, Index idx);
+    /// @brief
+    /// @param blockType - floor archetype to set
+    /// @param pos - position relative to the top left
+    void setFloorType(BlockArchetypeIndex blockType, Location pos);
+    /// @brief
+    /// @param blockType - floor archetype name to set
+    /// @param pos - position relative to the top left
+    void setFloorType(std::string_view archetypeName, Location pos);
+
     [[nodiscard]] const BlockArchetype& getBlockArchetype(Index idx) const;
     [[nodiscard]] const BlockArchetype& getBlockArchetype(Location pos) const;
     [[nodiscard]] BlockArchetypeIndex getBlockArchetypeIdx(std::string_view name) const;
+
+    [[nodiscard]] const BlockArchetype& getFloorArchetype(Index idx) const;
+    [[nodiscard]] const BlockArchetype& getFloorArchetype(Location pos) const;
+    [[nodiscard]] BlockArchetypeIndex getFloorArchetypeIdx(std::string_view name) const;
 
     [[nodiscard]] const BlockData& getBlockData(Index idx) const;
     [[nodiscard]] const BlockData& getBlockData(Location pos) const;

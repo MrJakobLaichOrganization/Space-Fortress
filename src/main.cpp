@@ -6,7 +6,7 @@
 int main()
 {
     sf::RenderWindow window(sf::VideoMode({800, 600}), "My window");
-    //window.setVerticalSyncEnabled(true);
+    window.setVerticalSyncEnabled(true);
 
     sf::Clock clock{};
     clock.start();

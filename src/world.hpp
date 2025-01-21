@@ -59,6 +59,15 @@ public:
         return *ptr;
     }
 
+    /// @brief Tries to find entity
+    /// @param id - id of the entity
+    /// @return ptr to the entity or nullptr if not found
+    Entity* findEntity(Entity::Id id);
+    /// @brief Tries to find entity
+    /// @param id - id of the entity
+    /// @return ptr to the entity or nullptr if not found
+    const Entity* findEntity(Entity::Id id) const;
+
     b2World& getPhysicsWorld()
     {
         return *m_world;

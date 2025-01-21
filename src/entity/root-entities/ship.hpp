@@ -3,11 +3,13 @@
 #include "block.hpp"
 #include "entity/attach-entities/crewmate.hpp"
 #include "entity/attach-entities/machine.hpp"
+#include "entity/attach-entities/work.hpp"
 #include "entity/entity.hpp"
 #include "entity/root-entity.hpp"
 #include "graphics/tilemap.hpp"
 #include "pathfinding.hpp"
 #include "resources.hpp"
+#include "task.hpp"
 #include "world.hpp"
 
 class Ship : public RootEntity
@@ -19,11 +21,14 @@ public:
     TileRenderer tileRenderer{Resources::get().tileSheet, dimension, blockSize};
     BlockGrid grid{dimension, &tileRenderer};
     std::vector<std::unique_ptr<Machine>> machines;
+    std::vector<Task> tasks;
+    std::vector<Task> takenTasks;
 
     template <typename T, typename... Args>
-    void addMachine(BlockGrid::Location location, Args&&... args)
+    void addMachine(std::string_view archetypeName, BlockGrid::Location location, Args&&... args)
     {
         machines.emplace_back(std::make_unique<T>(location, std::forward<Args>(args)...));
+        grid.setBlockType(grid.getBlockArchetypeIdx(archetypeName), location, machines.back()->direction);
     }
 
     Ship(class World* world, Id id) : RootEntity{world, id}
@@ -44,10 +49,15 @@ public:
             grid.setBlockType(grid.getBlockArchetypeIdx("Wall_MR"), {6, x + 1});
             for (std::uint32_t y = 0; y < 5; y++)
             {
-                grid.setBlockType(floorTile, {x + 1, y + 2});
-                grid.setBlockType(floorTile, {x + 1, 1});
+                grid.setFloorType(floorTile, {x + 1, y + 2});
+                grid.setFloorType(floorTile, {x + 1, 1});
             }
         }
+
+        // Debug purposes
+        addMachine<Workstation>("TablePapers", {3, 3}, Direction::Up, 29);
+        auto* station = static_cast<Workstation*>(machines.back().get());
+        station->bills.emplace_back(100);
 
         grid.setBlockType(grid.getBlockArchetypeIdx("Wall_ML"), {0, 6});
         grid.setBlockType(grid.getBlockArchetypeIdx("Wall_MR"), {6, 6});
@@ -200,13 +210,28 @@ public:
         for (auto& machine : machines)
         {
             machine->update(delta, *this);
-            tileRenderer.setTile(machine->location, {machine->tileIdx, machine->direction});
+            tileRenderer.setTile(machine->location, {0, machine->tileIdx, machine->direction}, false);
         }
 
         RootEntity::update(delta);
     }
 
-    sf::Vector2f locationToPosition(BlockGrid::Location location)
+    std::vector<Workstation*> getWorkstations() const
+    {
+        std::vector<Workstation*> stations;
+
+        for (const auto& machine : machines)
+        {
+            if (auto* tmp = dynamic_cast<Workstation*>(machine.get()))
+            {
+                stations.push_back(tmp);
+            }
+        }
+
+        return stations;
+    }
+
+    sf::Vector2f locationToPosition(BlockGrid::Location location) const
     {
         return {location.x * blockSize.x, location.y * blockSize.y};
     }
