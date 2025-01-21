@@ -49,10 +49,10 @@ void TileRenderer::setTile(std::uint32_t idx, Tile tile, bool floor)
     if (floor)
     {
         vert = &m_vertsFloor[(pos.y * m_grid.getDimension().x + pos.x) * 6];
-    }    
+    }
     else
     {
-       vert = &m_verts[(pos.y * m_grid.getDimension().x + pos.x) * 6];
+        vert = &m_verts[(pos.y * m_grid.getDimension().x + pos.x) * 6];
     }
     vert[0].position = sf::Vector2f(pos.x * m_tileSize.x, pos.y * m_tileSize.y);
     vert[1].position = sf::Vector2f((pos.x + 1) * m_tileSize.x, pos.y * m_tileSize.y);
