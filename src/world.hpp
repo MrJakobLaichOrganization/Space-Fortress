@@ -28,7 +28,7 @@ public:
 
     void update(sf::Time deltaTime);
     void render(sf::RenderWindow& window);
-
+    void showDebugMenu();
 
     [[nodiscard]] Time getTime() const
     {

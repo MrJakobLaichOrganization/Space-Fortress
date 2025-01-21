@@ -3,10 +3,20 @@
 
 #include <SFML/Graphics/RenderWindow.hpp>
 
+#include <imgui-SFML.h>
+#include <imgui.h>
+#include <iostream>
+
 int main()
 {
     sf::RenderWindow window(sf::VideoMode({800, 600}), "My window");
     //window.setVerticalSyncEnabled(true);
+
+    if (!ImGui::SFML::Init(window))
+    {
+        std::cerr << "Could not initialize ImGui";
+        return -1;
+    }
 
     sf::Clock clock{};
     clock.start();
@@ -37,9 +47,14 @@ int main()
                 break;
             }
 
+            ImGui::SFML::ProcessEvent(window, *event);
+
             if (const auto* e = event->getIf<sf::Event::KeyPressed>())
             {
-                inputManager.onKeyPress(e->scancode);
+                if (!ImGui::GetIO().WantCaptureKeyboard)
+                {
+                    inputManager.onKeyPress(e->scancode);
+                }
             }
             else if (const auto* e = event->getIf<sf::Event::KeyReleased>())
             {
@@ -85,6 +100,8 @@ int main()
             world.setDebugDraw(showDebug);
         }
 
+        ImGui::SFML::Update(window, delta);
+
         world.update(delta);
         inputManager.update();
         fpsCounter.update(delta);
@@ -93,6 +110,8 @@ int main()
 
         world.render(window);
         window.draw(fpsCounter);
+
+        ImGui::SFML::Render(window);
 
         window.display();
     }

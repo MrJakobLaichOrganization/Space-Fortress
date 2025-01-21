@@ -7,6 +7,9 @@
 #include <algorithm>
 #include <exception>
 #include <fstream>
+#include <format>
+#include <imgui-SFML.h>
+#include <imgui.h>
 
 #include <cereal/archives/json.hpp>
 
@@ -95,6 +98,22 @@ void World::render(sf::RenderWindow& window)
     {
         m_world->DebugDraw();
     }
+
+    showDebugMenu();
+}
+
+void World::showDebugMenu()
+{
+    ImGui::Begin("Debug Menu");
+
+    const auto mousePos = ImGui::GetMousePos();
+    const auto mouseText = std::format("x: {} - y: {}", mousePos.x, mousePos.y);
+    auto windowWidth = ImGui::GetWindowSize().x;
+    auto textWidth = ImGui::CalcTextSize(mouseText.c_str()).x;
+    ImGui::SetCursorPosX(windowWidth - textWidth - 10);
+    ImGui::Text(mouseText.c_str());
+
+    ImGui::End();
 }
 
 void World::setDebugDraw(bool on)
