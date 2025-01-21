@@ -1,4 +1,5 @@
 #include "graphics/fps-counter.hpp"
+#include "inputmanager.hpp"
 #include "world.hpp"
 
 #include <SFML/Graphics/RenderWindow.hpp>
@@ -60,6 +61,33 @@ int main()
             {
                 inputManager.onKeyRelease(e->scancode);
             }
+            else if (const auto* e = event->getIf<sf::Event::MouseMoved>())
+            {
+                inputManager.screenMousePos = sf::Vector2f(e->position);
+                inputManager.worldMousePos = window.mapPixelToCoords(e->position, world.makeView(window));
+            }
+            else if (const auto* e = event->getIf<sf::Event::MouseButtonPressed>())
+            {
+                if (e->button == sf::Mouse::Button::Left)
+                {
+                    inputManager.leftMouseButonDown = true;
+                }
+                else if (e->button == sf::Mouse::Button::Right)
+                {
+                    inputManager.rightMouseButonDown = true;
+                }
+            }
+            else if (const auto* e = event->getIf<sf::Event::MouseButtonReleased>())
+            {
+                if (e->button == sf::Mouse::Button::Left)
+                {
+                    inputManager.leftMouseButonDown = false;
+                }
+                else if (e->button == sf::Mouse::Button::Right)
+                {
+                    inputManager.rightMouseButonDown = false;
+                }
+            }
             else if (const auto* e = event->getIf<sf::Event::MouseWheelScrolled>())
             {
                 const auto ratio = e->delta < 0 ? 1.1f : 0.9f;
@@ -102,8 +130,8 @@ int main()
 
         ImGui::SFML::Update(window, delta);
 
-        world.update(delta);
         inputManager.update();
+        world.update(delta, inputManager);
         fpsCounter.update(delta);
 
         window.clear();

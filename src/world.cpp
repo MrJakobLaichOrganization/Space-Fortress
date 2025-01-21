@@ -1,13 +1,15 @@
 #include "world.hpp"
 
+#include "box2d-utils.hpp"
 #include "entity/attach-entities/crewmate.hpp"
 #include "entity/attach-entities/thruster.hpp"
 #include "entity/root-entities/ship.hpp"
+#include "inputmanager.hpp"
 
 #include <algorithm>
 #include <exception>
-#include <fstream>
 #include <format>
+#include <fstream>
 #include <imgui-SFML.h>
 #include <imgui.h>
 
@@ -59,7 +61,7 @@ World::World(sf::RenderWindow& window, b2Vec2 gravity) : m_gravity(gravity)
         b2Draw::e_shapeBit | b2Draw::e_jointBit | b2Draw::e_aabbBit | b2Draw::e_pairBit | b2Draw::e_centerOfMassBit);
 }
 
-void World::update(sf::Time deltaTime)
+void World::update(sf::Time deltaTime, InputManager& inputManager)
 {
     viewZoom = std::clamp(viewZoom, minZoom, maxZoom);
 
@@ -73,6 +75,16 @@ void World::update(sf::Time deltaTime)
     for (auto& entity : m_rootEntities)
     {
         entity->postPhysics();
+    }
+
+    rootEntityUnderMouse = 0;
+
+    if (const auto bodyUnderMouse = Box2dUtils::findBodyAtPoint(*m_world, toBox2d(inputManager.worldMousePos)))
+    {
+        if (auto* rootEntity = dynamic_cast<RootEntity*>(bodyUnderMouse->GetUserData()))
+        {
+            rootEntityUnderMouse = rootEntity->id;
+        }
     }
 
     for (auto& entity : m_rootEntities)
@@ -89,7 +101,7 @@ void World::render(sf::RenderWindow& window)
 {
     m_starfield.draw(window, {});
 
-    window.setView(sf::View(viewCenter, sf::Vector2f(window.getSize()) * viewZoom));
+    window.setView(makeView(window));
     for (auto& entity : m_rootEntities)
     {
         window.draw(*entity);
@@ -113,7 +125,17 @@ void World::showDebugMenu()
     ImGui::SetCursorPosX(windowWidth - textWidth - 10);
     ImGui::Text(mouseText.c_str());
 
+    if (rootEntityUnderMouse)
+    {
+        ImGui::Text("Root Entity: %d", rootEntityUnderMouse);
+    }
+
     ImGui::End();
+}
+
+sf::View World::makeView(const sf::RenderWindow& window) const
+{
+    return sf::View(viewCenter, sf::Vector2f(window.getSize()) * viewZoom);
 }
 
 void World::setDebugDraw(bool on)
