@@ -1,8 +1,8 @@
 #pragma once
 
 #include "block.hpp"
-#include "entity/entity.hpp"
 #include "entity/attach-entities/machine.hpp"
+#include "entity/entity.hpp"
 #include <vector>
 
 /// @brief Job for a workstation,
@@ -19,7 +19,7 @@ struct Bill
     {
     }
 
-    template<typename Archive>
+    template <typename Archive>
     void add(Archive& ar)
     {
         ar(workDone, workMax, priority);
@@ -34,7 +34,8 @@ struct BillCompare
     }
 };
 
-class Workstation: public Machine {
+class Workstation: public Machine
+{
 public:
     bool inUse{false};
     Entity::Id entityUsing{0};
@@ -42,7 +43,8 @@ public:
     Direction workStandDir;
 
     Workstation(BlockGrid::Location location, Direction direction, std::uint32_t tileIdx, Direction workDir = Direction::Down) :
-        workStandDir(workDir), Machine(location, direction)
+        workStandDir(workDir),
+        Machine(location, direction)
     {
         this->tileIdx = tileIdx;
     }
@@ -78,7 +80,7 @@ public:
         ar(location, direction, tileIdx, inUse, entityUsing, bills);
     }
 
-    private:
-        std::uint16_t m_workSpeed = 5;    // How much ticks per work
-        std::uint16_t m_workCtr = 0;
+private:
+    std::uint16_t m_workSpeed = 5;    // How much ticks per work
+    std::uint16_t m_workCtr = 0;
 };

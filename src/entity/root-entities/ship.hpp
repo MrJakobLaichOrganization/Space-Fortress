@@ -9,8 +9,8 @@
 #include "graphics/tilemap.hpp"
 #include "pathfinding.hpp"
 #include "resources.hpp"
-#include "world.hpp"
 #include "task.hpp"
+#include "world.hpp"
 
 class Ship : public RootEntity
 {
@@ -55,7 +55,7 @@ public:
 
         // Debug purposes
         addMachine<Workstation>("TablePapers", {3, 3}, Direction::Up, 29);
-        Workstation* station = static_cast<Workstation*>(machines.back().get());
+        auto* station = static_cast<Workstation*>(machines.back().get());
         station->bills.emplace_back(100);
 
         grid.setBlockType(grid.getBlockArchetypeIdx("Wall_ML"), {0, 6});
@@ -219,9 +219,9 @@ public:
     {
         std::vector<Workstation*> stations;
 
-        for (auto& machine : machines)
+        for (const auto& machine : machines)
         {
-            Workstation* tmp = dynamic_cast<Workstation*>(machine.get());
+            auto* tmp = dynamic_cast<Workstation*>(machine.get());
             if (tmp)
                 stations.push_back(tmp);
         }

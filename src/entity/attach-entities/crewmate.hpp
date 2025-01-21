@@ -1,10 +1,10 @@
 #pragma once
 
 #include "block.hpp"
-#include "entity/attach-entity.hpp"
-#include "time.hpp"
-#include "task.hpp"
 #include "entity/attach-entities/work.hpp"
+#include "entity/attach-entity.hpp"
+#include "task.hpp"
+#include "time.hpp"
 
 #include <SFML/System/Vector2.hpp>
 
@@ -62,7 +62,7 @@ private:
     Gender m_gender;
     Time m_birthTimestamp;
     Task m_currentTask;
-    Workstation* m_currentWorkstation;
+    Workstation* m_currentWorkstation{nullptr};
 
     void step(sf::Time deltaTime);
     void updatePathfinding();

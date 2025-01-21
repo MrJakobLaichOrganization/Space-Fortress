@@ -87,7 +87,7 @@ std::vector<BlockGrid::Location> generatePath(const class BlockGrid& grid,
     std::list<PathNode> traveledTiles{};
     auto isSolid = [&grid](sf::Vector2i loc)
     {
-        return grid.getBlockArchetype(sf::Vector2u(loc.x, loc.y)).solid;;
+        return grid.getBlockArchetype(sf::Vector2u(loc.x, loc.y)).solid;
     };
     auto isValid = [&grid, &isSolid](sf::Vector2i loc)
     {

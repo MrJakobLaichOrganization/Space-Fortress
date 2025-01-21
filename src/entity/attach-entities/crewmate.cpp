@@ -40,7 +40,7 @@ void Crewmate::step(sf::Time deltaTime)
     }
     else if (m_currentTask.type == TaskType::None || m_currentTask.type == TaskType::Idle)
     {
-        for (auto *workstation : parentShip->getWorkstations())
+        for (auto* workstation : parentShip->getWorkstations())
         {
             if (workstation->inUse || workstation->bills.empty())
                 continue;

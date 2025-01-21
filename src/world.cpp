@@ -100,8 +100,8 @@ void World::render(sf::RenderWindow& window)
 Entity* World::getEntity(Entity::Id id)
 {
     auto found = std::find_if(m_entities.begin(),
-                            m_entities.end(),
-                            [id](std::unique_ptr<Entity>& entity) { return entity && id == entity->id; });
+                              m_entities.end(),
+                              [id](std::unique_ptr<Entity>& entity) { return entity && id == entity->id; });
 
     return found == m_entities.end() ? nullptr : found->get();
 }
