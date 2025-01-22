@@ -32,9 +32,9 @@ public:
     {
         states.transform *= getTransform();
 
-        sf::CircleShape circle(16.f);
+        sf::CircleShape circle(localBounds.size.x / 2.f);
         circle.setFillColor(sf::Color::Yellow);
-        circle.setOrigin({8.f, 8.f});
+        circle.setOrigin(-localBounds.position);
         target.draw(circle, states);
     }
 

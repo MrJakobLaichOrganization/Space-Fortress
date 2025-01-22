@@ -66,6 +66,7 @@ public:
 
         b2BodyDef bodyDef;
         bodyDef.type = b2_dynamicBody;
+        bodyDef.userData = {this};
         body = world->getPhysicsWorld().CreateBody(&bodyDef);
 
         updatePhysicFixtures();
@@ -88,7 +89,7 @@ public:
         {
             for (std::uint32_t x = 0; x < grid.getDimension().x; ++x)
             {
-                solidTiles.set({x, y}, grid.getBlockArchetype(sf::Vector2u(x, y)).solid);
+                solidTiles.set({x, y}, grid.getBlockData(sf::Vector2u(x, y)).blockAchetypeIdx);
             }
         }
 
@@ -103,93 +104,97 @@ public:
                 }
                 solidTiles.set({x, y}, 0);
 
-                sf::Vector2u leftPos;
-                leftPos.x = x;
-                leftPos.y = y;
-                sf::Vector2u rightPos;
-                rightPos.x = x + 1;
-                rightPos.y = y;
+                uint32_t left = x;
+                uint32_t right = x;
+                uint32_t top = y;
+                uint32_t bottom = y;
 
                 // Go left
-                while (leftPos.x != 0 && leftPos.x - 1 > 0)
+                while (solidTiles.isValid({left - 1, y}))
                 {
-                    const auto idx = solidTiles.locationToIndex(leftPos);
-                    if (idx >= solidTiles.getCount() || !solidTiles.get(idx))
+                    if (!solidTiles.get({left - 1, y}))
                     {
                         break;
                     }
 
-                    leftPos.x--;
-                    solidTiles.set(leftPos, 0);
+                    left--;
+                    solidTiles.set({left, y}, 0);
                 }
 
                 // Go right
-                do
+                while (solidTiles.isValid({right + 1, y}))
                 {
-                    const auto idx = solidTiles.locationToIndex(rightPos);
-                    if (idx >= solidTiles.getCount() || !solidTiles.get(idx))
+                    if (!solidTiles.get({right + 1, y}))
                     {
                         break;
                     }
 
-                    solidTiles.set(rightPos, 0);
-                    rightPos.x++;
-                } while (rightPos.x <= grid.getDimension().x);
+                    right++;
+                    solidTiles.set({right, y}, 0);
+                }
 
-                // If no movement done, move vertically
-                if (leftPos == sf::Vector2u{rightPos.x - 1, rightPos.y})
+                // Go up
+                while (top > 0)
                 {
-                    rightPos.x -= 1;
-                    rightPos.y++;
-                    // Go up
-                    while (leftPos.y > 0)
+                    bool valid = true;
+                    for (std::uint32_t testX = left; testX <= right; testX++)
                     {
-                        const auto idx = solidTiles.locationToIndex(leftPos);
-                        if (idx >= solidTiles.getCount() || !solidTiles.get(idx))
+                        if (!solidTiles.get({testX, top - 1u}))
                         {
+                            valid = false;
                             break;
                         }
-                        solidTiles.set(leftPos, 0);
-                        leftPos.y--;
                     }
 
-                    // Go down
-                    do
+                    if (valid)
                     {
-                        const auto idx = solidTiles.locationToIndex(rightPos);
-                        if (idx >= solidTiles.getCount() || !solidTiles.get(idx))
+                        top--;
+                        for (std::uint32_t testX = left; testX <= right; testX++)
                         {
-                            break;
+                            solidTiles.set({testX, top}, 0);
                         }
-                        solidTiles.set(rightPos, 0);
-                        rightPos.y++;
-                    } while (rightPos.x < grid.getDimension().y);
-
-                    // If no bigger box still, make one small
-                    if (leftPos == sf::Vector2u{rightPos.x, rightPos.y - 1})
+                    }
+                    else
                     {
-                        const b2Vec2 boxSize = toBox2d(blockSize / 2.f);
-                        dynamicBox.SetAsBox(boxSize.x, boxSize.y, {x + 0.5f, y + 0.5f}, 0.0f);
-                        body->CreateFixture(&fixtureDef);
-                        continue;
+                        break;
                     }
                 }
 
-                // If only moved horizontal
-                if (leftPos.y == rightPos.y)
+                // Go down
+                while (bottom + 1 < solidTiles.getDimension().y)
                 {
-                    const b2Vec2 boxSize = toBox2d(sf::Vector2f{(rightPos.x - leftPos.x) * blockSize.x, blockSize.y} / 2.f);
-                    const b2Vec2 center = toBox2d(
-                        sf::Vector2f{(rightPos.x + leftPos.x) * blockSize.x / 2.f, (y + 0.5f) * blockSize.y});
-                    dynamicBox.SetAsBox(boxSize.x, boxSize.y, center, 0.0f);
+                    bool valid = true;
+                    for (std::uint32_t testX = left; testX <= right; testX++)
+                    {
+                        if (!solidTiles.get({testX, bottom + 1}))
+                        {
+                            valid = false;
+                            break;
+                        }
+                    }
+
+                    if (valid)
+                    {
+                        bottom++;
+                        for (std::uint32_t testX = left; testX <= right; testX++)
+                        {
+                            solidTiles.set({testX, bottom}, 0);
+                        }
+                    }
+                    else
+                    {
+                        break;
+                    }
                 }
-                else
-                {
-                    const b2Vec2 boxSize = toBox2d(sf::Vector2f{blockSize.x, (rightPos.y - leftPos.y) * blockSize.y} / 2.f);
-                    const b2Vec2 center = toBox2d(
-                        sf::Vector2f{(x + 0.5f) * blockSize.x, (rightPos.y + leftPos.y) * blockSize.y / 2.f});
-                    dynamicBox.SetAsBox(boxSize.x, boxSize.y, center, 0.0f);
-                }
+
+                right++;
+                bottom++;
+
+                const float boxSize = toBox2d(blockSize).x;
+                dynamicBox.SetAsBox((right - left) * boxSize / 2.f,
+                                    (bottom - top) * boxSize / 2.f,
+                                    b2Vec2{(left + (right - left) / 2.f) * boxSize, (top + (bottom - top) / 2.f) * boxSize},
+                                    0.0f);
                 body->CreateFixture(&fixtureDef);
             }
         }

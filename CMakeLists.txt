@@ -76,6 +76,7 @@ target_include_directories(Game PRIVATE "./src/")
 
 target_compile_definitions(Game PRIVATE ASSETS_DIR="${PROJECT_SOURCE_DIR}/assets")
 target_compile_definitions(Game PRIVATE CONFIG_DIR="${PROJECT_SOURCE_DIR}/config")
+target_compile_definitions(Game PUBLIC B2_USER_SETTINGS)
 
 game_set_option(CLANG_TIDY_EXECUTABLE clang-tidy STRING "Override clang-tidy executable, requires minimum version 14")
 add_custom_target(tidy

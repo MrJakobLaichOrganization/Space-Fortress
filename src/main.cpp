@@ -1,12 +1,23 @@
 #include "graphics/fps-counter.hpp"
+#include "inputmanager.hpp"
 #include "world.hpp"
 
 #include <SFML/Graphics/RenderWindow.hpp>
+
+#include <imgui-SFML.h>
+#include <imgui.h>
+#include <iostream>
 
 int main()
 {
     sf::RenderWindow window(sf::VideoMode({800, 600}), "My window");
     window.setVerticalSyncEnabled(true);
+
+    if (!ImGui::SFML::Init(window))
+    {
+        std::cerr << "Could not initialize ImGui";
+        return -1;
+    }
 
     sf::Clock clock{};
     clock.start();
@@ -37,13 +48,45 @@ int main()
                 break;
             }
 
+            ImGui::SFML::ProcessEvent(window, *event);
+
             if (const auto* e = event->getIf<sf::Event::KeyPressed>())
             {
-                inputManager.onKeyPress(e->scancode);
+                if (!ImGui::GetIO().WantCaptureKeyboard)
+                {
+                    inputManager.onKeyPress(e->scancode);
+                }
             }
             else if (const auto* e = event->getIf<sf::Event::KeyReleased>())
             {
                 inputManager.onKeyRelease(e->scancode);
+            }
+            else if (const auto* e = event->getIf<sf::Event::MouseMoved>())
+            {
+                inputManager.screenMousePos = sf::Vector2f(e->position);
+                inputManager.worldMousePos = window.mapPixelToCoords(e->position, world.makeView(window));
+            }
+            else if (const auto* e = event->getIf<sf::Event::MouseButtonPressed>())
+            {
+                if (e->button == sf::Mouse::Button::Left)
+                {
+                    inputManager.leftMouseButonDown = true;
+                }
+                else if (e->button == sf::Mouse::Button::Right)
+                {
+                    inputManager.rightMouseButonDown = true;
+                }
+            }
+            else if (const auto* e = event->getIf<sf::Event::MouseButtonReleased>())
+            {
+                if (e->button == sf::Mouse::Button::Left)
+                {
+                    inputManager.leftMouseButonDown = false;
+                }
+                else if (e->button == sf::Mouse::Button::Right)
+                {
+                    inputManager.rightMouseButonDown = false;
+                }
             }
             else if (const auto* e = event->getIf<sf::Event::MouseWheelScrolled>())
             {
@@ -85,14 +128,18 @@ int main()
             world.setDebugDraw(showDebug);
         }
 
-        world.update(delta);
+        ImGui::SFML::Update(window, delta);
+
         inputManager.update();
+        world.update(delta, inputManager);
         fpsCounter.update(delta);
 
         window.clear();
 
         world.render(window);
         window.draw(fpsCounter);
+
+        ImGui::SFML::Render(window);
 
         window.display();
     }

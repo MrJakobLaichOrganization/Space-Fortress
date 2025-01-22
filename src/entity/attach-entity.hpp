@@ -1,5 +1,6 @@
 #pragma once
 
+#include "box2d/b2_fixture.h"
 #include "entity.hpp"
 #include "units.hpp"
 
@@ -12,6 +13,7 @@ class AttachEntity : public Entity
 {
 public:
     class RootEntity* parent{};
+    sf::FloatRect localBounds;
 
     AttachEntity(class World* world, Id id) : Entity{world, id}
     {

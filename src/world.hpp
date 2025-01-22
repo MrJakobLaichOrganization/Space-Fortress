@@ -4,15 +4,20 @@
 #include "entity/entity.hpp"
 #include "entity/root-entity.hpp"
 #include "graphics/starfield.hpp"
-#include "inputmanager.hpp"
 #include "time.hpp"
 
 #include <SFML/Graphics/RenderWindow.hpp>
 
-#include <SFML/Window/Event.hpp>
+#include <SFML/System/Time.hpp>
+#include <SFML/System/Vector2.hpp>
 
-#include <box2d/box2d.h>
-#include <utility>
+#include <box2d/b2_math.h>
+#include <box2d/b2_types.h>
+#include <box2d/b2_world.h>
+#include <memory>
+#include <type_traits>
+#include <unordered_map>
+#include <vector>
 
 class World
 {
@@ -26,9 +31,11 @@ public:
     World(sf::RenderWindow& wind, b2Vec2 gravity = b2Vec2{0, 0});
     ~World() = default;
 
-    void update(sf::Time deltaTime);
+    void update(sf::Time deltaTime, class InputManager& inputManager);
     void render(sf::RenderWindow& window);
+    void showDebugMenu() const;
 
+    sf::View makeView(const sf::RenderWindow& window) const;
 
     [[nodiscard]] Time getTime() const
     {
@@ -73,6 +80,9 @@ public:
         return *m_world;
     }
 
+    Entity::Id rootEntityUnderMouse{};
+    Entity::Id attachEntityUnderMouse{};
+
 private:
     b2Vec2 m_gravity{0, 0};
     std::unique_ptr<b2World> m_world;
@@ -86,7 +96,7 @@ private:
     std::vector<std::unique_ptr<Entity>> m_entities;
     std::unordered_map<Entity::Id, Entity*> m_idToEntity;
 
-    Entity::Id m_nextEntityId{};
+    Entity::Id m_nextEntityId = 1;
 
     Starfield m_starfield;
 };

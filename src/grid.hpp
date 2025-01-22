@@ -59,6 +59,11 @@ public:
         return m_data[index];
     }
 
+    [[nodiscard]] bool isValid(Location loc) const
+    {
+        return loc.x >= 0 && loc.x < m_dimension.x && loc.y >= 0 && loc.y < m_dimension.y;
+    }
+
     template <class Archive>
     void save(Archive& ar) const
     {

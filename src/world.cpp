@@ -1,12 +1,17 @@
 #include "world.hpp"
 
+#include "box2d-utils.hpp"
 #include "entity/attach-entities/crewmate.hpp"
 #include "entity/attach-entities/thruster.hpp"
 #include "entity/root-entities/ship.hpp"
+#include "inputmanager.hpp"
 
 #include <algorithm>
 #include <exception>
+#include <format>
 #include <fstream>
+#include <imgui-SFML.h>
+#include <imgui.h>
 
 #include <cereal/archives/json.hpp>
 
@@ -56,9 +61,12 @@ World::World(sf::RenderWindow& window, b2Vec2 gravity) : m_gravity(gravity)
         b2Draw::e_shapeBit | b2Draw::e_jointBit | b2Draw::e_aabbBit | b2Draw::e_pairBit | b2Draw::e_centerOfMassBit);
 }
 
-void World::update(sf::Time deltaTime)
+void World::update(sf::Time deltaTime, InputManager& inputManager)
 {
     viewZoom = std::clamp(viewZoom, minZoom, maxZoom);
+
+    rootEntityUnderMouse = 0;
+    attachEntityUnderMouse = 0;
 
     for (auto& entity : m_rootEntities)
     {
@@ -70,6 +78,27 @@ void World::update(sf::Time deltaTime)
     for (auto& entity : m_rootEntities)
     {
         entity->postPhysics();
+    }
+
+    if (const auto bodyUnderMouse = Box2dUtils::findBodyAtPoint(*m_world, toBox2d(inputManager.worldMousePos)))
+    {
+        if (auto* rootEntity = dynamic_cast<RootEntity*>(bodyUnderMouse->GetUserData().entity))
+        {
+            rootEntityUnderMouse = rootEntity->id;
+
+            const auto entityLocalMouse = rootEntity->getInverseTransform() * inputManager.worldMousePos;
+            for (const auto* child : rootEntity->children)
+            {
+                auto bounds = child->localBounds;
+                bounds.position += child->getPosition();
+
+                if (bounds.contains(entityLocalMouse))
+                {
+                    attachEntityUnderMouse = child->id;
+                    break;
+                }
+            }
+        }
     }
 
     for (auto& entity : m_rootEntities)
@@ -86,7 +115,7 @@ void World::render(sf::RenderWindow& window)
 {
     m_starfield.draw(window, {});
 
-    window.setView(sf::View(viewCenter, sf::Vector2f(window.getSize()) * viewZoom));
+    window.setView(makeView(window));
     for (auto& entity : m_rootEntities)
     {
         window.draw(*entity);
@@ -95,6 +124,37 @@ void World::render(sf::RenderWindow& window)
     {
         m_world->DebugDraw();
     }
+
+    showDebugMenu();
+}
+
+void World::showDebugMenu() const
+{
+    ImGui::Begin("Debug Menu");
+
+    const auto mousePos = ImGui::GetMousePos();
+    const auto mouseText = std::format("x: {} - y: {}", mousePos.x, mousePos.y);
+    auto windowWidth = ImGui::GetWindowSize().x;
+    auto textWidth = ImGui::CalcTextSize(mouseText.c_str()).x;
+    ImGui::SetCursorPosX(windowWidth - textWidth - 10);
+    ImGui::Text("%s", mouseText.c_str());
+
+    if (rootEntityUnderMouse)
+    {
+        ImGui::Text("%s", std::format("Root Entity: {}", rootEntityUnderMouse).c_str());
+    }
+
+    if (attachEntityUnderMouse)
+    {
+        ImGui::Text("%s", std::format("Attach Entity: {}", attachEntityUnderMouse).c_str());
+    }
+
+    ImGui::End();
+}
+
+sf::View World::makeView(const sf::RenderWindow& window) const
+{
+    return {viewCenter, sf::Vector2f(window.getSize()) * viewZoom};
 }
 
 Entity* World::findEntity(Entity::Id id)
