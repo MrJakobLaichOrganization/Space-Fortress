@@ -56,7 +56,7 @@ public:
 
         b2BodyDef bodyDef;
         bodyDef.type = b2_dynamicBody;
-        bodyDef.userData = this;
+        bodyDef.userData = {this};
         body = world->getPhysicsWorld().CreateBody(&bodyDef);
 
         updatePhysicFixtures();

@@ -82,7 +82,7 @@ void World::update(sf::Time deltaTime, InputManager& inputManager)
 
     if (const auto bodyUnderMouse = Box2dUtils::findBodyAtPoint(*m_world, toBox2d(inputManager.worldMousePos)))
     {
-        if (auto* rootEntity = dynamic_cast<RootEntity*>(bodyUnderMouse->GetUserData()))
+        if (auto* rootEntity = dynamic_cast<RootEntity*>(bodyUnderMouse->GetUserData().entity))
         {
             rootEntityUnderMouse = rootEntity->id;
 

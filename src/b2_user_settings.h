@@ -30,7 +30,10 @@ struct B2_API b2BodyUserData
 };
 */
 
-using b2BodyUserData = class Entity*;
+struct B2_API b2BodyUserData
+{
+    class Entity* entity{};
+};
 
 /// You can define this to inject whatever data you want in b2Fixture
 struct B2_API b2FixtureUserData
