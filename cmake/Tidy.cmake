@@ -22,7 +22,7 @@ endif()
 # Find Python and run-clang-tidy script
 find_package(Python 3 REQUIRED)
 
-set(RUN_CLANG_TIDY "${CMAKE_CURRENT_SOURCE_DIR}/../run_clang_tidy")
+set(RUN_CLANG_TIDY "${CMAKE_CURRENT_SOURCE_DIR}/run_clang_tidy")
 message(STATUS "run-clang-tidy path: ${RUN_CLANG_TIDY}")
 
 # Run
