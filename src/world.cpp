@@ -141,12 +141,12 @@ void World::showDebugMenu() const
 
     if (rootEntityUnderMouse)
     {
-        ImGui::Text("Root Entity: %ld", rootEntityUnderMouse);
+        ImGui::Text("%s", std::format("Root Entity: {}", rootEntityUnderMouse).c_str());
     }
 
     if (attachEntityUnderMouse)
     {
-        ImGui::Text("Attach Entity: %ld", attachEntityUnderMouse);
+        ImGui::Text("%s", std::format("Attach Entity: {}", attachEntityUnderMouse).c_str());
     }
 
     ImGui::End();

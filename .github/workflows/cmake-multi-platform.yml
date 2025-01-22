@@ -169,6 +169,9 @@ jobs:
       run: |
         brew update
         brew install llvm || true
+        ln -s "$(brew --prefix llvm)/bin/clang-format" "/usr/local/bin/clang-format"
+        ln -s "$(brew --prefix llvm)/bin/clang-tidy" "/usr/local/bin/clang-tidy"
+        ln -s "$(brew --prefix llvm)/bin/clang-apply-replacements" "/usr/local/bin/clang-apply-replacements"
         echo /usr/local/opt/llvm/bin >> $GITHUB_PATH
 
     - name: Configure
