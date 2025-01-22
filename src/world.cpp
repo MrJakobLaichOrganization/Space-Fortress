@@ -128,7 +128,7 @@ void World::render(sf::RenderWindow& window)
     showDebugMenu();
 }
 
-void World::showDebugMenu()
+void World::showDebugMenu() const
 {
     ImGui::Begin("Debug Menu");
 
@@ -137,16 +137,16 @@ void World::showDebugMenu()
     auto windowWidth = ImGui::GetWindowSize().x;
     auto textWidth = ImGui::CalcTextSize(mouseText.c_str()).x;
     ImGui::SetCursorPosX(windowWidth - textWidth - 10);
-    ImGui::Text(mouseText.c_str());
+    ImGui::Text("%s", mouseText.c_str());
 
     if (rootEntityUnderMouse)
     {
-        ImGui::Text("Root Entity: %d", rootEntityUnderMouse);
+        ImGui::Text("Root Entity: %ld", rootEntityUnderMouse);
     }
 
     if (attachEntityUnderMouse)
     {
-        ImGui::Text("Attach Entity: %d", attachEntityUnderMouse);
+        ImGui::Text("Attach Entity: %ld", attachEntityUnderMouse);
     }
 
     ImGui::End();
@@ -154,7 +154,7 @@ void World::showDebugMenu()
 
 sf::View World::makeView(const sf::RenderWindow& window) const
 {
-    return sf::View(viewCenter, sf::Vector2f(window.getSize()) * viewZoom);
+    return {viewCenter, sf::Vector2f(window.getSize()) * viewZoom};
 }
 
 void World::setDebugDraw(bool on)

@@ -33,7 +33,7 @@ public:
 
     void update(sf::Time deltaTime, class InputManager& inputManager);
     void render(sf::RenderWindow& window);
-    void showDebugMenu();
+    void showDebugMenu() const;
 
     sf::View makeView(const sf::RenderWindow& window) const;
 
@@ -71,6 +71,9 @@ public:
         return *m_world;
     }
 
+    Entity::Id rootEntityUnderMouse{};
+    Entity::Id attachEntityUnderMouse{};
+
 private:
     b2Vec2 m_gravity{0, 0};
     std::unique_ptr<b2World> m_world;
@@ -85,9 +88,6 @@ private:
     std::unordered_map<Entity::Id, Entity*> m_idToEntity;
 
     Entity::Id m_nextEntityId = 1;
-
-    Entity::Id rootEntityUnderMouse{};
-    Entity::Id attachEntityUnderMouse{};
 
     Starfield m_starfield;
 };

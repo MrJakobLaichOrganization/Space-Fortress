@@ -9,9 +9,10 @@ inline b2Body* findBodyAtPoint(b2World& world, b2Vec2 position)
 {
     struct QueryCallback : public b2QueryCallback
     {
-        b2Vec2 position;
+        b2Vec2 position{};
         b2Body* body{};
-        virtual bool ReportFixture(b2Fixture* fixture)
+
+        bool ReportFixture(b2Fixture* fixture) override
         {
             if (fixture->TestPoint(position))
             {
