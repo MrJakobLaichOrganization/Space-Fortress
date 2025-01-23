@@ -89,7 +89,8 @@ public:
         {
             for (std::uint32_t x = 0; x < grid.getDimension().x; ++x)
             {
-                solidTiles.set({x, y}, grid.getBlockData(sf::Vector2u(x, y)).blockAchetypeIdx);
+                const auto& blockData = grid.getBlockData(sf::Vector2u(x, y));
+                solidTiles.set({x, y}, blockData.blockAchetypeIdx || blockData.floorAchetypeIdx);
             }
         }
 
