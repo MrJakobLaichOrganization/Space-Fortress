@@ -25,6 +25,7 @@ public:
 
     Crewmate(class World* world, Id id, std::string_view name, Gender gender = Gender::MALE);
     Crewmate(Crewmate&& other) noexcept = default;
+    ~Crewmate();
 
     void update(sf::Time deltaTime) override;
 
@@ -38,13 +39,13 @@ public:
         target.draw(circle, states);
     }
 
-    bool isAdult() const;
+    void clearWorkstation();
 
+    bool isAdult() const;
     Time getBirthTimeStamp() const
     {
         return m_birthTimestamp;
     }
-
     Time getAge() const;
 
     const std::string& getName() const

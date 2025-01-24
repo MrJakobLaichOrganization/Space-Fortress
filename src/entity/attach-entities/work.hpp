@@ -3,6 +3,7 @@
 #include "block.hpp"
 #include "entity/attach-entities/machine.hpp"
 #include "entity/entity.hpp"
+#include "world.hpp"
 
 #include <vector>
 
@@ -38,17 +39,17 @@ struct BillCompare
 class Workstation : public Machine
 {
 public:
+    World* parentWorld{nullptr};
     bool inUse{false};
     Entity::Id entityUsing{0};
     std::vector<Bill> bills;
     Direction workStandDir;
 
-    Workstation(BlockGrid::Location location, Direction direction, std::uint32_t tileIdx, Direction workDir = Direction::Down) :
-        workStandDir(workDir),
-        Machine(location, direction)
-    {
-        this->tileIdx = tileIdx;
-    }
+    Workstation(BlockGrid::Location location,
+                World* world,
+                Direction direction,
+                Direction workDir = Direction::Down);
+    ~Workstation();
 
     void update(sf::Time deltaTime, class Ship& ship) override
     {
@@ -56,24 +57,7 @@ public:
 
     /// @brief Does work on the current bill
     /// @return finished the bill
-    bool doWork()
-    {
-        if (bills.empty())
-            return false;
-
-        m_workCtr++;
-        if (m_workCtr < m_workSpeed)
-            return false;
-
-        bills[0].workDone++;
-        m_workCtr = 0;
-        if (bills[0].workDone >= bills[0].workMax)
-        {
-            bills.erase(bills.begin());
-            return true;
-        }
-        return false;
-    }
+    bool doWork();
 
     template <typename Archive>
     void add(Archive& ar)

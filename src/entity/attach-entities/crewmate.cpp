@@ -13,6 +13,13 @@ Crewmate::Crewmate(World* world, Id id, std::string_view name, Gender gender) :
 {
     m_birthTimestamp = world->getTime();
 }
+Crewmate::~Crewmate()
+{
+    if (m_currentWorkstation)
+    {
+        m_currentWorkstation->inUse = false;
+    }
+}
 
 void Crewmate::update(sf::Time deltaTime) // NOLINT
 {
@@ -141,6 +148,20 @@ void Crewmate::updatePathfinding()
 {
     const BlockGrid::Location gridLocation = posToGridLocation(getPosition(), static_cast<sf::Vector2u>(Ship::blockSize));
     m_steps = dynamic_cast<Ship*>(parent)->pathfind(gridLocation, targetLocation);
+}
+void Crewmate::clearWorkstation()
+{
+    if (!m_currentWorkstation)
+    {
+        return;
+    }
+
+    if (m_currentTask.type == TaskType::Work)
+    {
+        m_currentTask.type = TaskType::None;
+        m_currentWorkstation = nullptr;
+        m_steps.clear();
+    }
 }
 
 Time Crewmate::getAge() const
