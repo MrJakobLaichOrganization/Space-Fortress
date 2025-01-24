@@ -50,12 +50,12 @@ public:
     }
 
     template <typename T, typename... Args>
-    T &addTileEntity(std::string_view archetypeName, BlockGrid::Location location, Args&&... args)
+    T& addTileEntity(std::string_view archetypeName, BlockGrid::Location location, Args&&... args)
     {
         auto& tileEntity = world->createEntity<T>(location,
-                                                        &grid,
-                                                        grid.getBlockArchetypeIdx(archetypeName),
-                                                        std::forward<Args>(args)...);
+                                                  &grid,
+                                                  grid.getBlockArchetypeIdx(archetypeName),
+                                                  std::forward<Args>(args)...);
         tileEntities.push_back(std::make_pair(tileEntity.id, location));
         return tileEntity;
     }
@@ -98,7 +98,7 @@ public:
 
         // Debug purposes
         //addMachine<Workstation>("TablePapers", {3, 3}, world, Direction::Up);
-        Workstation &station = addTileEntity<Workstation>("TablePapers", {3, 3});
+        auto& station = addTileEntity<Workstation>("TablePapers", {3, 3});
         station.bills.emplace_back(100);
 
         addTileEntity<Chest>("Chest", {4, 4}, Direction::Up, 100);
@@ -264,7 +264,7 @@ public:
     {
         std::vector<Workstation*> stations;
 
-        for (const auto& tileEntity: tileEntities)
+        for (const auto& tileEntity : tileEntities)
         {
             if (auto* tmp = dynamic_cast<Workstation*>(world->findEntity(tileEntity.first)))
             {

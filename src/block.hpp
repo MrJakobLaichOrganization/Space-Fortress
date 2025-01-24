@@ -15,7 +15,7 @@
 
 struct BlockArchetype
 {
-    static constexpr std::uint32_t AirIndex = 0;
+    static constexpr std::uint32_t airIndex = 0;
     std::string name;
     std::string description;
     // index of the tile in tilesheet

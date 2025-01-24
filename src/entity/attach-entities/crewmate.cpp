@@ -132,7 +132,8 @@ void Crewmate::work(sf::Time /*deltaTime*/)
             this->m_currentWorkstation = workstation;
             this->m_currentTask.type = TaskType::Work;
             m_currentTask.position = static_cast<sf::Vector2u>(
-                sf::Vector2i(workstation->getLocation()) + dirOffsets[static_cast<std::uint8_t>(workstation->workStandDir)]);
+                sf::Vector2i(workstation->getLocation()) +
+                dirOffsets[static_cast<std::uint8_t>(workstation->workStandDir)]);
         }
         if (m_currentTask.type == TaskType::None)
         {

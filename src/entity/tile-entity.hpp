@@ -13,10 +13,10 @@ public:
     {
         setArchetypeIdx(idx);
     }
-    virtual ~TileEntity();
+    virtual ~TileEntity() override;
 
     void setArchetypeIdx(BlockArchetypeIndex idx);
-    
+
     [[nodiscard]] BlockGrid::Location getLocation() const
     {
         return m_location;

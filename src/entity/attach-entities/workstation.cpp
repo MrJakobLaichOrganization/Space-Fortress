@@ -7,16 +7,15 @@ Workstation::Workstation(World* world,
                          BlockGrid::Location location,
                          BlockGrid* grid,
                          BlockArchetypeIndex idx,
-                         Direction direction,
+                         Direction /*direction*/
+                         ,
                          Direction workDir) :
     parentWorld(world),
     workStandDir(workDir),
     TileEntity(world, id, location, grid, idx)
 {
 }
-Workstation::~Workstation()
-{
-}
+Workstation::~Workstation() = default;
 
 bool Workstation::doWork()
 {

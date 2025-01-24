@@ -1,6 +1,7 @@
 #include "inventory.hpp"
 
 #include "item/item.hpp"
+
 #include <ranges>
 
 Inventory::Inventory(std::uint64_t capacity) : m_capacity{capacity}
@@ -9,7 +10,7 @@ Inventory::Inventory(std::uint64_t capacity) : m_capacity{capacity}
 
 [[nodiscard]] bool Inventory::contains(Item::Id itemID) const
 {
-    for (const auto& slot : m_items)
+    for (const auto& slot : m_items) // NOLINT
     {
         if (slot.item == itemID)
         {
@@ -20,7 +21,7 @@ Inventory::Inventory(std::uint64_t capacity) : m_capacity{capacity}
 }
 std::uint32_t Inventory::getAmount(Item::Id itemID) const
 {
-    for (const auto& slot : m_items)
+    for (const auto& slot : m_items) // NOLINT
     {
         if (slot.item != itemID)
         {

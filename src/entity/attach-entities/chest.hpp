@@ -9,7 +9,7 @@ public:
           BlockGrid::Location location,
           BlockGrid* grid,
           BlockArchetypeIndex idx,
-          Direction direction = Direction::Up,
+          Direction /*direction*/ = Direction::Up,
           std::size_t capacity = 100) :
         m_inv(capacity),
         TileEntity(world, id, location, grid, idx)
