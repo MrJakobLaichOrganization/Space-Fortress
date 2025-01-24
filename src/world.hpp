@@ -24,7 +24,7 @@ public:
     float viewZoom = 1.5f;
 
     World(sf::RenderWindow& wind, b2Vec2 gravity = b2Vec2{0, 0});
-    ~World() = default;
+    ~World();
 
     void update(sf::Time deltaTime);
     void render(sf::RenderWindow& window);
@@ -67,6 +67,7 @@ public:
     /// @param id - id of the entity
     /// @return ptr to the entity or nullptr if not found
     const Entity* findEntity(Entity::Id id) const;
+    void destroyEntity(Entity::Id id);
 
     b2World& getPhysicsWorld()
     {

@@ -55,6 +55,12 @@ World::World(sf::RenderWindow& window, b2Vec2 gravity) : m_gravity(gravity)
     m_debugDraw->AppendFlags(
         b2Draw::e_shapeBit | b2Draw::e_jointBit | b2Draw::e_aabbBit | b2Draw::e_pairBit | b2Draw::e_centerOfMassBit);
 }
+World::~World()
+{
+    // Need to destroy entities before workstation
+    m_entities.clear();
+    m_idToEntity.clear();
+}
 
 void World::update(sf::Time deltaTime)
 {
@@ -106,6 +112,16 @@ const Entity* World::findEntity(Entity::Id id) const
 {
     auto iter = m_idToEntity.find(id);
     return iter == m_idToEntity.end() ? nullptr : iter->second;
+}
+void World::destroyEntity(Entity::Id id)
+{
+    auto iter = m_idToEntity.find(id);
+    if (iter == m_idToEntity.end())
+    {
+        return;
+    }
+
+    m_idToEntity.erase(iter);
 }
 
 void World::setDebugDraw(bool on)
