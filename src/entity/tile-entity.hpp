@@ -13,7 +13,7 @@ public:
     {
         setArchetypeIdx(idx);
     }
-    virtual ~TileEntity() override;
+    ~TileEntity() override;
 
     void setArchetypeIdx(BlockArchetypeIndex idx);
 
