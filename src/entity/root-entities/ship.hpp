@@ -4,6 +4,8 @@
 #include "entity/attach-entities/crewmate.hpp"
 #include "entity/attach-entities/machine.hpp"
 #include "entity/attach-entities/work.hpp"
+//DEBUGGING
+#include "entity/attach-entities/chest.hpp"
 #include "entity/entity.hpp"
 #include "entity/root-entity.hpp"
 #include "graphics/tilemap.hpp"
@@ -29,6 +31,23 @@ public:
     {
         machines.emplace_back(std::make_unique<T>(location, std::forward<Args>(args)...));
         grid.setBlockType(grid.getBlockArchetypeIdx(archetypeName), location, machines.back()->direction);
+        machines.back()->tileIdx = grid.getBlockArchetype(location).tilemapIdx;
+    }
+    void removeMachine(BlockGrid::Location location)
+    {
+        auto machineIter = std::find_if(machines.begin(),
+                                        machines.end(),
+                                        [&location](const std::unique_ptr<Machine>& machine)
+                                        { return machine->location == location; });
+
+        if (machineIter == machines.end())
+        {
+            return;
+        }
+
+        // Remove the machine and its tile
+        machines.erase(machineIter);
+        grid.setBlockType(grid.getBlockArchetypeIdx("Air"), location);
     }
 
     Ship(class World* world, Id id) : RootEntity{world, id}
@@ -55,9 +74,11 @@ public:
         }
 
         // Debug purposes
-        addMachine<Workstation>("TablePapers", {3, 3}, Direction::Up, 29);
+        addMachine<Workstation>("TablePapers", {3, 3}, world, Direction::Up);
         auto* station = static_cast<Workstation*>(machines.back().get());
         station->bills.emplace_back(100);
+
+        addMachine<Chest>("Chest", {4, 4}, 100);
 
         grid.setBlockType(grid.getBlockArchetypeIdx("Wall_ML"), {0, 6});
         grid.setBlockType(grid.getBlockArchetypeIdx("Wall_MR"), {6, 6});
