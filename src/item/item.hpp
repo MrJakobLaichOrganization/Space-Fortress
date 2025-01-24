@@ -34,5 +34,5 @@ public:
     /// @brief Tries to find item
     /// @param id - id of the wanted item
     /// @return pointer to the item, nullptr if not found
-    static [[nodiscard]] const Item* findItem(Item::Id id);
+    [[nodiscard]] static const Item* findItem(Item::Id id);
 };

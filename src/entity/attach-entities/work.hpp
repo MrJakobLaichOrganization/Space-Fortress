@@ -45,10 +45,7 @@ public:
     std::vector<Bill> bills;
     Direction workStandDir;
 
-    Workstation(BlockGrid::Location location,
-                World* world,
-                Direction direction,
-                Direction workDir = Direction::Down);
+    Workstation(BlockGrid::Location location, World* world, Direction direction, Direction workDir = Direction::Down);
     ~Workstation();
 
     void update(sf::Time deltaTime, class Ship& ship) override

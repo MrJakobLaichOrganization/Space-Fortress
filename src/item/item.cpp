@@ -11,7 +11,7 @@ Item::Id ItemDatabase::registerItem(std::string_view name, std::string_view desc
 
     return nextItemID - 1;
 }
-[[nodiscard]] const Item* ItemDatabase::findItem(Item::Id id)
+const Item* ItemDatabase::findItem(Item::Id id)
 {
     auto iter = items.find(id);
     return iter == items.end() ? nullptr : &iter->second;
