@@ -5,7 +5,7 @@ Item::Id ItemDatabase::nextItemID{};
 
 Item::Id ItemDatabase::registerItem(std::string_view name, std::string_view description, std::uint32_t weight)
 {
-    items.emplace(std::make_pair(nextItemID, Item(nextItemID, name, description, weight)));
+    items.insert(std::make_pair(nextItemID, Item(nextItemID, name, description, weight)));
 
     nextItemID++;
 
