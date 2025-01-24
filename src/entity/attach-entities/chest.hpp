@@ -15,11 +15,11 @@ public:
     {
     }
 
-    Inventory& getInventory()
+    [[nodiscard]] Inventory& getInventory()
     {
         return m_inv;
     }
-    const Inventory& getInventory() const
+    [[nodiscard]] const Inventory& getInventory() const
     {
         return m_inv;
     }

@@ -1,6 +1,7 @@
 #include "inventory.hpp"
 
 #include "item/item.hpp"
+#include <ranges>
 
 Inventory::Inventory(std::uint64_t capacity) : m_capacity{capacity}
 {
@@ -8,7 +9,7 @@ Inventory::Inventory(std::uint64_t capacity) : m_capacity{capacity}
 
 [[nodiscard]] bool Inventory::contains(Item::Id itemID) const
 {
-    for (auto& slot : m_items)
+    for (const auto& slot : m_items)
     {
         if (slot.item == itemID)
         {
@@ -19,7 +20,7 @@ Inventory::Inventory(std::uint64_t capacity) : m_capacity{capacity}
 }
 std::uint32_t Inventory::getAmount(Item::Id itemID) const
 {
-    for (auto& slot : m_items)
+    for (const auto& slot : m_items)
     {
         if (slot.item != itemID)
         {
@@ -31,20 +32,20 @@ std::uint32_t Inventory::getAmount(Item::Id itemID) const
 }
 std::uint32_t Inventory::add(Item::Id itemID, std::uint32_t amt)
 {
-    auto* itm = ItemDatabase::findItem(itemID);
+    const auto* itm = ItemDatabase::findItem(itemID);
     if (!itm)
     {
         return amt;
     }
 
-    std::uint32_t totalWeight = itm->weight * amt;
-    std::uint64_t spaceLeft = m_capacity - m_currWeight;
+    const std::uint32_t totalWeight = itm->weight * amt;
+    const std::uint64_t spaceLeft = m_capacity - m_currWeight;
     if (totalWeight > spaceLeft)
     {
         return amt;
     }
 
-    std::uint32_t toAdd = static_cast<std::uint32_t>(std::min<std::uint64_t>(amt, spaceLeft));
+    const std::uint32_t toAdd = static_cast<std::uint32_t>(std::min<std::uint64_t>(amt, spaceLeft));
 
     for (auto& itmSlot : m_items)
     {
@@ -68,7 +69,7 @@ std::uint32_t Inventory::remove(Item::Id itemID, std::uint32_t amt)
         return 0;
     }
 
-    std::uint32_t toRemove = std::min(itmSlot->count, amt);
+    const std::uint32_t toRemove = std::min(itmSlot->count, amt);
     itmSlot->count -= toRemove;
     if (itmSlot->count == 0)
     {

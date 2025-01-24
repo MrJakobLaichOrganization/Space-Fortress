@@ -18,7 +18,7 @@ public:
     /// @brief Gets the amount of items of the type in inventory
     /// @param itemID id of the item
     /// @return amount of items in inventory
-    std::uint32_t getAmount(Item::Id itemID) const;
+    [[nodiscard]] std::uint32_t getAmount(Item::Id itemID) const;
     /// @brief Adds items to inventory
     /// @param itemID - ID of the item to add
     /// @param amt - amount of items to add

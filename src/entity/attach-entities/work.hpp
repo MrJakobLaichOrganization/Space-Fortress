@@ -46,7 +46,7 @@ public:
     Direction workStandDir;
 
     Workstation(BlockGrid::Location location, World* world, Direction direction, Direction workDir = Direction::Down);
-    ~Workstation();
+    ~Workstation() override;
 
     void update(sf::Time deltaTime, class Ship& ship) override
     {

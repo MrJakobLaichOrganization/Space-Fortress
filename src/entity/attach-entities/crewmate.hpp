@@ -25,7 +25,7 @@ public:
 
     Crewmate(class World* world, Id id, std::string_view name, Gender gender = Gender::MALE);
     Crewmate(Crewmate&& other) noexcept = default;
-    ~Crewmate();
+    ~Crewmate() override;
 
     void update(sf::Time deltaTime) override;
 

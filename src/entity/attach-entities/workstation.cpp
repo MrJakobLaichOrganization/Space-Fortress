@@ -10,14 +10,6 @@ Workstation::Workstation(BlockGrid::Location location, World* world, Direction d
 }
 Workstation::~Workstation()
 {
-    if (!inUse)
-    {
-        return;
-    }
-    if (auto* entity = dynamic_cast<Crewmate*>(parentWorld->findEntity(entityUsing)))
-    {
-        entity->clearWorkstation();
-    }
 }
 
 bool Workstation::doWork()
