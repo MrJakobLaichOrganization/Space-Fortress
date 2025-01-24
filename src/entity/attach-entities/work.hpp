@@ -1,8 +1,8 @@
 #pragma once
 
 #include "block.hpp"
-#include "entity/attach-entities/machine.hpp"
 #include "entity/entity.hpp"
+#include "entity/tile-entity.hpp"
 #include "world.hpp"
 
 #include <vector>
@@ -36,7 +36,7 @@ struct BillCompare
     }
 };
 
-class Workstation : public Machine
+class Workstation : public TileEntity
 {
 public:
     World* parentWorld{nullptr};
@@ -45,12 +45,14 @@ public:
     std::vector<Bill> bills;
     Direction workStandDir;
 
-    Workstation(BlockGrid::Location location, World* world, Direction direction, Direction workDir = Direction::Down);
+    Workstation(World* world,
+                Entity::Id id,
+                BlockGrid::Location location,
+                BlockGrid* grid,
+                BlockArchetypeIndex idx,
+                Direction dir = Direction::Up,
+                Direction workDir = Direction::Down);
     ~Workstation() override;
-
-    void update(sf::Time deltaTime, class Ship& ship) override
-    {
-    }
 
     /// @brief Does work on the current bill
     /// @return finished the bill
@@ -59,7 +61,7 @@ public:
     template <typename Archive>
     void add(Archive& ar)
     {
-        ar(location, direction, tileIdx, inUse, entityUsing, bills);
+        ar(m_location, workStandDir, inUse, entityUsing, bills);
     }
 
 private:

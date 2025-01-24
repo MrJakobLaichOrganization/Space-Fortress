@@ -1,17 +1,18 @@
-#include "entity/attach-entities/machine.hpp"
-#include "entity/attach-entity.hpp"
+#include "entity/tile-entity.hpp"
 #include "item/inventory.hpp"
 
-class Chest : public Machine
+class Chest : public TileEntity
 {
 public:
-    Chest(BlockGrid::Location location, std::size_t capacity, Direction direction = Direction::Up) :
+    Chest(class World* world,
+          Id id,
+          BlockGrid::Location location,
+          BlockGrid* grid,
+          BlockArchetypeIndex idx,
+          Direction direction = Direction::Up,
+          std::size_t capacity = 100) :
         m_inv(capacity),
-        Machine(location, direction)
-    {
-    }
-
-    void update(sf::Time, class Ship&) override
+        TileEntity(world, id, location, grid, idx)
     {
     }
 

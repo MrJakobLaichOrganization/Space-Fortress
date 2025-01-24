@@ -31,6 +31,19 @@ void BlockGrid::setBlockType(std::string_view archetypeName, Location pos, Direc
 {
     setBlockType(getBlockArchetypeIdx(archetypeName), pos, dir);
 }
+void BlockGrid::clearBlockType(Index idx)
+{
+    get(idx).blockAchetypeIdx = BlockArchetype::AirIndex;
+
+    if (m_tileRenderer)
+    {
+        m_tileRenderer->setTile(idx, {0, getBlockArchetype(idx).tilemapIdx, Direction::Up}, false);
+    }
+}
+void BlockGrid::clearBlockType(Location loc)
+{
+    clearBlockType(locationToIndex(loc));
+}
 
 void BlockGrid::setFloorType(BlockArchetypeIndex blockType, Index idx)
 {

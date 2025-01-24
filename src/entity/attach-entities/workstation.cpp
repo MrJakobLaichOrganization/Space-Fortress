@@ -2,10 +2,16 @@
 #include "entity/attach-entity.hpp"
 #include "work.hpp"
 
-Workstation::Workstation(BlockGrid::Location location, World* world, Direction direction, Direction workDir) :
+Workstation::Workstation(World* world,
+                         Entity::Id id,
+                         BlockGrid::Location location,
+                         BlockGrid* grid,
+                         BlockArchetypeIndex idx,
+                         Direction direction,
+                         Direction workDir) :
     parentWorld(world),
     workStandDir(workDir),
-    Machine(location, direction)
+    TileEntity(world, id, location, grid, idx)
 {
 }
 Workstation::~Workstation()
