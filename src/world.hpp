@@ -24,7 +24,7 @@ public:
     float viewZoom = 1.5f;
 
     World(sf::RenderWindow& wind, b2Vec2 gravity = b2Vec2{0, 0});
-    ~World();
+    ~World() = default;
 
     void update(sf::Time deltaTime);
     void render(sf::RenderWindow& window);
@@ -84,8 +84,8 @@ private:
     bool m_drawDebugInfo = false;
 
     std::vector<RootEntity*> m_rootEntities;
-    std::vector<std::unique_ptr<Entity>> m_entities;
     std::unordered_map<Entity::Id, Entity*> m_idToEntity;
+    std::vector<std::unique_ptr<Entity>> m_entities;
 
     Entity::Id m_nextEntityId{};
 

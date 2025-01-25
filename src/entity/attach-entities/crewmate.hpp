@@ -63,7 +63,7 @@ private:
     Gender m_gender;
     Time m_birthTimestamp;
     Task m_currentTask;
-    Workstation* m_currentWorkstation{nullptr};
+    Entity::Id m_currentWorkstation{Entity::invalidID};
 
     void step(sf::Time deltaTime);
     void work(sf::Time deltaTime);

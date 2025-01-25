@@ -10,12 +10,21 @@ Workstation::Workstation(World* world,
                          Direction /*direction*/
                          ,
                          Direction workDir) :
-    parentWorld(world),
     workStandDir(workDir),
     TileEntity(world, id, location, grid, idx)
 {
 }
-Workstation::~Workstation() = default;
+Workstation::~Workstation()
+{
+    if (!inUse)
+    {
+        return;
+    }
+    if (auto* entity = dynamic_cast<Crewmate*>(world->findEntity(entityUsing)))
+    {
+        entity->clearWorkstation();
+    }
+}
 
 bool Workstation::doWork()
 {

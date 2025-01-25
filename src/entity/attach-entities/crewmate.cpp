@@ -15,10 +15,7 @@ Crewmate::Crewmate(World* world, Id id, std::string_view name, Gender gender) :
 }
 Crewmate::~Crewmate()
 {
-    if (m_currentWorkstation)
-    {
-        m_currentWorkstation->inUse = false;
-    }
+    clearWorkstation();
 }
 
 void Crewmate::update(sf::Time deltaTime) // NOLINT
@@ -88,10 +85,17 @@ void Crewmate::work(sf::Time /*deltaTime*/)
                 break;
             case TaskType::Work:
             {
-                if (m_currentWorkstation->doWork())
+                // If workstation invalid for some reason
+                if (m_currentWorkstation == Entity::invalidID)
                 {
                     m_currentTask.type = TaskType::None;
-                    m_currentWorkstation->inUse = false;
+                    break;
+                }
+                Workstation* workstation = static_cast<Workstation*>(world->findEntity(m_currentWorkstation));
+                if (workstation->doWork())
+                {
+                    m_currentTask.type = TaskType::None;
+                    workstation->inUse = false;
                     for (std::size_t i = 0; i < parentShip->takenTasks.size(); ++i)
                     {
                         if (parentShip->takenTasks[i] != m_currentTask)
@@ -125,12 +129,14 @@ void Crewmate::work(sf::Time /*deltaTime*/)
         for (auto* workstation : parentShip->getWorkstations())
         {
             if (workstation->inUse || workstation->bills.empty())
+            {
                 continue;
+            }
 
             workstation->entityUsing = id;
             workstation->inUse = true;
-            this->m_currentWorkstation = workstation;
-            this->m_currentTask.type = TaskType::Work;
+            m_currentWorkstation = workstation->id;
+            m_currentTask.type = TaskType::Work;
             m_currentTask.position = static_cast<sf::Vector2u>(
                 sf::Vector2i(workstation->getLocation()) +
                 dirOffsets[static_cast<std::uint8_t>(workstation->workStandDir)]);
@@ -152,15 +158,21 @@ void Crewmate::updatePathfinding()
 }
 void Crewmate::clearWorkstation()
 {
-    if (!m_currentWorkstation)
+    if (m_currentWorkstation == Entity::invalidID)
     {
         return;
     }
 
     if (m_currentTask.type == TaskType::Work)
     {
+        auto workstation = static_cast<Workstation*>(world->findEntity(m_currentWorkstation));
+        if (workstation)
+        {
+            workstation->inUse = false;
+        }
+
+        m_currentWorkstation = Entity::invalidID;
         m_currentTask.type = TaskType::None;
-        m_currentWorkstation = nullptr;
         m_steps.clear();
     }
 }

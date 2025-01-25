@@ -39,7 +39,6 @@ struct BillCompare
 class Workstation : public TileEntity
 {
 public:
-    World* parentWorld{nullptr};
     bool inUse{false};
     Entity::Id entityUsing{0};
     std::vector<Bill> bills;

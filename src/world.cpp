@@ -55,7 +55,6 @@ World::World(sf::RenderWindow& window, b2Vec2 gravity) : m_gravity(gravity)
     m_debugDraw->AppendFlags(
         b2Draw::e_shapeBit | b2Draw::e_jointBit | b2Draw::e_aabbBit | b2Draw::e_pairBit | b2Draw::e_centerOfMassBit);
 }
-World::~World() = default;
 
 void World::update(sf::Time deltaTime)
 {
