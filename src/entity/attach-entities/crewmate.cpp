@@ -91,7 +91,7 @@ void Crewmate::work(sf::Time /*deltaTime*/)
                     m_currentTask.type = TaskType::None;
                     break;
                 }
-                Workstation* workstation = static_cast<Workstation*>(world->findEntity(m_currentWorkstation));
+                auto* workstation = static_cast<Workstation*>(world->findEntity(m_currentWorkstation));
                 if (workstation->doWork())
                 {
                     m_currentTask.type = TaskType::None;
@@ -165,7 +165,7 @@ void Crewmate::clearWorkstation()
 
     if (m_currentTask.type == TaskType::Work)
     {
-        auto workstation = static_cast<Workstation*>(world->findEntity(m_currentWorkstation));
+        auto* workstation = static_cast<Workstation*>(world->findEntity(m_currentWorkstation));
         if (workstation)
         {
             workstation->inUse = false;
