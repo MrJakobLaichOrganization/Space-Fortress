@@ -1,8 +1,9 @@
 #pragma once
 
 #include "block.hpp"
-#include "entity/attach-entities/machine.hpp"
 #include "entity/entity.hpp"
+#include "entity/tile-entity.hpp"
+#include "world.hpp"
 
 #include <vector>
 
@@ -35,7 +36,7 @@ struct BillCompare
     }
 };
 
-class Workstation : public Machine
+class Workstation : public TileEntity
 {
 public:
     bool inUse{false};
@@ -43,42 +44,23 @@ public:
     std::vector<Bill> bills;
     Direction workStandDir;
 
-    Workstation(BlockGrid::Location location, Direction direction, std::uint32_t tileIdx, Direction workDir = Direction::Down) :
-        workStandDir(workDir),
-        Machine(location, direction)
-    {
-        this->tileIdx = tileIdx;
-    }
-
-    void update(sf::Time deltaTime, class Ship& ship) override
-    {
-    }
+    Workstation(World* world,
+                Entity::Id id,
+                BlockGrid::Location location,
+                BlockGrid* grid,
+                BlockArchetypeIndex idx,
+                Direction dir = Direction::Up,
+                Direction workDir = Direction::Down);
+    ~Workstation() override;
 
     /// @brief Does work on the current bill
     /// @return finished the bill
-    bool doWork()
-    {
-        if (bills.empty())
-            return false;
-
-        m_workCtr++;
-        if (m_workCtr < m_workSpeed)
-            return false;
-
-        bills[0].workDone++;
-        m_workCtr = 0;
-        if (bills[0].workDone >= bills[0].workMax)
-        {
-            bills.erase(bills.begin());
-            return true;
-        }
-        return false;
-    }
+    bool doWork();
 
     template <typename Archive>
     void add(Archive& ar)
     {
-        ar(location, direction, tileIdx, inUse, entityUsing, bills);
+        ar(m_location, workStandDir, inUse, entityUsing, bills);
     }
 
 private:

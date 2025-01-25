@@ -74,6 +74,7 @@ public:
     /// @param id - id of the entity
     /// @return ptr to the entity or nullptr if not found
     const Entity* findEntity(Entity::Id id) const;
+    void destroyEntity(Entity::Id id);
 
     b2World& getPhysicsWorld()
     {
@@ -93,8 +94,8 @@ private:
     bool m_drawDebugInfo = false;
 
     std::vector<RootEntity*> m_rootEntities;
-    std::vector<std::unique_ptr<Entity>> m_entities;
     std::unordered_map<Entity::Id, Entity*> m_idToEntity;
+    std::vector<std::unique_ptr<Entity>> m_entities;
 
     Entity::Id m_nextEntityId = 1;
 

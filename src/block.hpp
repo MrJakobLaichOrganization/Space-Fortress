@@ -15,6 +15,7 @@
 
 struct BlockArchetype
 {
+    static constexpr std::uint32_t airIndex = 0;
     std::string name;
     std::string description;
     // index of the tile in tilesheet
@@ -68,6 +69,13 @@ public:
     /// @param blockType - block archetype name to set
     /// @param pos - position relative to the top left
     void setBlockType(std::string_view archetypeName, Location pos, Direction dir = Direction::Up);
+
+    /// @brief Clears the block from location
+    /// @param idx block grid index
+    void clearBlockType(Index idx);
+    /// @brief Clears the block from location
+    /// @param loc grid location of block
+    void clearBlockType(Location loc);
 
     /// @brief Sets floor type in grid
     /// @param blockType - block archetype to set

@@ -101,6 +101,12 @@
             "description": "",
             "tilemap_index": 16,
             "is_solid": false
+        },
+        {
+            "name": "Chest",
+            "description": "",
+            "tilemap_index": 33,
+            "is_solid": true
         }
     ]
 }
