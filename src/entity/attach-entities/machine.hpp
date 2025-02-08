@@ -6,6 +6,7 @@
 
 #include <string>
 
+/// @brief [WARNING] Make sure location is always first ctor param in derived class
 class Machine
 {
 public:

@@ -11,6 +11,7 @@ class Entity : public sf::Transformable, public sf::Drawable
 {
 public:
     using Id = std::int64_t;
+    static constexpr Id invalidID = 0;
 
     Id id;
     class World* world;

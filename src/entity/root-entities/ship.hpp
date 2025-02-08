@@ -4,6 +4,8 @@
 #include "entity/attach-entities/crewmate.hpp"
 #include "entity/attach-entities/machine.hpp"
 #include "entity/attach-entities/work.hpp"
+//DEBUGGING
+#include "entity/attach-entities/chest.hpp"
 #include "entity/entity.hpp"
 #include "entity/root-entity.hpp"
 #include "graphics/tilemap.hpp"
@@ -23,12 +25,52 @@ public:
     std::vector<std::unique_ptr<Machine>> machines;
     std::vector<Task> tasks;
     std::vector<Task> takenTasks;
+    std::vector<std::pair<Entity::Id, BlockGrid::Location>> tileEntities;
 
     template <typename T, typename... Args>
     void addMachine(std::string_view archetypeName, BlockGrid::Location location, Args&&... args)
     {
         machines.emplace_back(std::make_unique<T>(location, std::forward<Args>(args)...));
         grid.setBlockType(grid.getBlockArchetypeIdx(archetypeName), location, machines.back()->direction);
+    }
+    void removeMachine(BlockGrid::Location location)
+    {
+        auto machineIter = std::find_if(machines.begin(),
+                                        machines.end(),
+                                        [&location](const std::unique_ptr<Machine>& machine)
+                                        { return machine->location == location; });
+
+        if (machineIter == machines.end())
+        {
+            return;
+        }
+
+        // Remove the machine and its tile
+        machines.erase(machineIter);
+    }
+
+    template <typename T, typename... Args>
+    T& addTileEntity(std::string_view archetypeName, BlockGrid::Location location, Args&&... args)
+    {
+        auto& tileEntity = world->createEntity<T>(location,
+                                                  &grid,
+                                                  grid.getBlockArchetypeIdx(archetypeName),
+                                                  std::forward<Args>(args)...);
+        tileEntities.push_back(std::make_pair(tileEntity.id, location));
+        return tileEntity;
+    }
+    void removeTileEntity(BlockGrid::Location location)
+    {
+        const auto iter = std::find_if(tileEntities.begin(),
+                                       tileEntities.end(),
+                                       [&location](const auto& entityPair) { return entityPair.second == location; });
+        if (iter == tileEntities.end())
+        {
+            return;
+        }
+
+        world->destroyEntity(iter->first);
+        tileEntities.erase(iter);
     }
 
     Ship(class World* world, Id id) : RootEntity{world, id}
@@ -55,9 +97,11 @@ public:
         }
 
         // Debug purposes
-        addMachine<Workstation>("TablePapers", {3, 3}, Direction::Up, 29);
-        auto* station = static_cast<Workstation*>(machines.back().get());
-        station->bills.emplace_back(100);
+        //addMachine<Workstation>("TablePapers", {3, 3}, world, Direction::Up);
+        auto& station = addTileEntity<Workstation>("TablePapers", {3, 3});
+        station.bills.emplace_back(100);
+
+        addTileEntity<Chest>("Chest", {4, 4}, Direction::Up, 100);
 
         grid.setBlockType(grid.getBlockArchetypeIdx("Wall_ML"), {0, 6});
         grid.setBlockType(grid.getBlockArchetypeIdx("Wall_MR"), {6, 6});
@@ -226,9 +270,9 @@ public:
     {
         std::vector<Workstation*> stations;
 
-        for (const auto& machine : machines)
+        for (const auto& tileEntity : tileEntities)
         {
-            if (auto* tmp = dynamic_cast<Workstation*>(machine.get()))
+            if (auto* tmp = dynamic_cast<Workstation*>(world->findEntity(tileEntity.first)))
             {
                 stations.push_back(tmp);
             }

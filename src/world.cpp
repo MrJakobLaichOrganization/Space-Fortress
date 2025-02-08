@@ -167,6 +167,16 @@ const Entity* World::findEntity(Entity::Id id) const
     auto iter = m_idToEntity.find(id);
     return iter == m_idToEntity.end() ? nullptr : iter->second;
 }
+void World::destroyEntity(Entity::Id id)
+{
+    auto iter = m_idToEntity.find(id);
+    if (iter == m_idToEntity.end())
+    {
+        return;
+    }
+
+    m_idToEntity.erase(iter);
+}
 
 void World::setDebugDraw(bool on)
 {
