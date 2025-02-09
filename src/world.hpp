@@ -66,19 +66,31 @@ public:
         return *ptr;
     }
 
-    template <typename T = Entity, class Self>
-    T* findEntity(this Self& self, Entity::Id id)
+    template <typename T = Entity>
+    T* findEntity(Entity::Id id)
     {
-        auto iter = self.m_idToEntity.find(id);
-        return iter == self.m_idToEntity.end() ? nullptr : dynamic_cast<T*>(iter->second);
+        auto iter = m_idToEntity.find(id);
+        return iter == m_idToEntity.end() ? nullptr : dynamic_cast<T*>(iter->second);
     }
 
-    template <typename T = Entity, class Self>
-    T& getEntity(this Self& self, Entity::Id id)
+    template <typename T = Entity>
+    T& getEntity(Entity::Id id)
     {
-        auto ptr = self.findEntity(id);
+        auto ptr = findEntity(id);
         assert(ptr);
         return *ptr;
+    }
+
+    template <typename T = Entity>
+    const T* findEntity(Entity::Id id) const
+    {
+        return const_cast<World*>(this)->findEntity(id);
+    }
+
+    template <typename T = Entity>
+    const T& getEntity(Entity::Id id) const
+    {
+        return const_cast<World*>(this)->getEntity(id);
     }
 
     void destroyEntity(Entity::Id id);
