@@ -35,11 +35,7 @@ struct BlockData
     // floor archetype
     std::uint32_t floorAchetypeIdx{};
 
-    template <class Archive>
-    void serialize(Archive& ar)
-    {
-        ar(blockAchetypeIdx, floorAchetypeIdx);
-    }
+    class Entity* entity{};
 };
 
 using BlockArchetypeIndex = std::uint32_t;
@@ -55,7 +51,7 @@ public:
 
     /// @param dimensions - grid size in tile count
     /// @param tilemap - optional parameter, leave nullptr if not tilemap will be linked
-    BlockGrid(sf::Vector2u dimensions, TileRenderer* tileRenderer = nullptr);
+    BlockGrid(sf::Vector2u dimensions, TileRenderer* floorRenderer = nullptr, TileRenderer* wallRenderer = nullptr);
 
     /// @brief Sets block type in grid
     /// @param blockType - block archetype to set
@@ -115,16 +111,6 @@ public:
         Grid::load(ar);
     }
 
-    template <class Archive>
-    [[nodiscard]] static BlockGrid loadFromFile(Archive& ar, TileRenderer* tileRenderer = nullptr)
-    {
-        BlockGrid returnVal{{}};
-
-        ar(returnVal);
-        returnVal.m_tileRenderer = tileRenderer;
-
-        return returnVal;
-    }
     static void loadArchetypes(cereal::JSONInputArchive& ar)
     {
         m_blockArchetypes.clear();
@@ -134,6 +120,7 @@ public:
     [[nodiscard]] std::uint32_t calculateIndex(const sf::Vector2u& pos) const;
 
 private:
-    TileRenderer* m_tileRenderer = nullptr;
+    TileRenderer* m_mainRenderer = nullptr;
+    TileRenderer* m_floorRenderer = nullptr;
     static std::vector<BlockArchetype> m_blockArchetypes; // NOLINT
 };

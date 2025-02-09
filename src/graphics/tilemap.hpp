@@ -46,7 +46,6 @@ class TileRenderer : public sf::Drawable
 public:
     struct Tile
     {
-        TileSheet::TileIndex floorIndex{};
         TileSheet::TileIndex index{};
         Direction direction{};
 
@@ -55,8 +54,8 @@ public:
 
     TileRenderer(const TileSheet& tileSheet, const sf::Vector2u& dimension, const sf::Vector2f& tileSize);
 
-    void setTile(std::uint32_t idx, Tile tile, bool floor = true);
-    void setTile(const sf::Vector2u& pos, Tile tile, bool floor = true);
+    void setTile(std::uint32_t idx, Tile tile);
+    void setTile(const sf::Vector2u& pos, Tile tile);
 
 private:
     const TileSheet& m_tileSheet;
@@ -64,7 +63,6 @@ private:
     sf::Vector2f m_tileSize;
     Grid<Tile> m_grid;
     sf::VertexArray m_verts;
-    sf::VertexArray m_vertsFloor;
 
     void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 };

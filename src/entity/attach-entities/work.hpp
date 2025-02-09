@@ -1,8 +1,8 @@
 #pragma once
 
 #include "block.hpp"
+#include "entity/attach-entities/tile-entity.hpp"
 #include "entity/entity.hpp"
-#include "entity/tile-entity.hpp"
 #include "world.hpp"
 
 #include <vector>
@@ -19,12 +19,6 @@ struct Bill
         workMax(maxWork),
         priority(prio)
     {
-    }
-
-    template <typename Archive>
-    void add(Archive& ar)
-    {
-        ar(workDone, workMax, priority);
     }
 };
 // For future work priority
@@ -47,10 +41,10 @@ public:
     Workstation(World* world,
                 Entity::Id id,
                 BlockGrid::Location location,
+                Direction direction,
                 BlockGrid* grid,
                 BlockArchetypeIndex idx,
-                Direction dir = Direction::Up,
-                Direction workDir = Direction::Down);
+                Direction workDir = Direction::Up);
     ~Workstation() override;
 
     /// @brief Does work on the current bill
