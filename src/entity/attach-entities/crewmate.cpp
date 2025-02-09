@@ -92,20 +92,22 @@ void Crewmate::work(sf::Time /*deltaTime*/)
                     m_currentTask.type = TaskType::None;
                     break;
                 }
-                auto* workstation = static_cast<Workstation*>(world->findEntity(m_currentWorkstation));
-                if (workstation->doWork())
+                if (auto* workstation = world->findEntity<Workstation>(m_currentWorkstation))
                 {
-                    m_currentTask.type = TaskType::None;
-                    workstation->inUse = false;
-                    for (std::size_t i = 0; i < parentShip->takenTasks.size(); ++i)
+                    if (workstation->doWork())
                     {
-                        if (parentShip->takenTasks[i] != m_currentTask)
+                        m_currentTask.type = TaskType::None;
+                        workstation->inUse = false;
+                        for (std::size_t i = 0; i < parentShip->takenTasks.size(); ++i)
                         {
-                            continue;
-                        }
+                            if (parentShip->takenTasks[i] != m_currentTask)
+                            {
+                                continue;
+                            }
 
-                        parentShip->takenTasks.erase(parentShip->takenTasks.begin() + i);
-                        break;
+                            parentShip->takenTasks.erase(parentShip->takenTasks.begin() + i);
+                            break;
+                        }
                     }
                 }
 
@@ -166,8 +168,7 @@ void Crewmate::clearWorkstation()
 
     if (m_currentTask.type == TaskType::Work)
     {
-        auto* workstation = static_cast<Workstation*>(world->findEntity(m_currentWorkstation));
-        if (workstation)
+        if (auto* workstation = world->findEntity<Workstation>(m_currentWorkstation))
         {
             workstation->inUse = false;
         }

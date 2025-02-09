@@ -2,7 +2,6 @@
 
 #include "block.hpp"
 #include "entity/attach-entities/crewmate.hpp"
-#include "entity/attach-entities/machine.hpp"
 #include "entity/attach-entities/work.hpp"
 //DEBUGGING
 #include "entity/attach-entities/chest.hpp"
@@ -17,60 +16,34 @@
 class Ship : public RootEntity
 {
 public:
+    enum class Layer
+    {
+        Floor,
+        Main,
+        Count
+    };
+
     static constexpr sf::Vector2f blockSize{64.f, 64.f};
     static constexpr sf::Vector2u dimension{32, 32};
 
-    TileRenderer tileRenderer{Resources::get().tileSheet, dimension, blockSize};
-    BlockGrid grid{dimension, &tileRenderer};
-    std::vector<std::unique_ptr<Machine>> machines;
+    std::array<TileRenderer, static_cast<int>(Layer::Count)> tileRenderers{
+        {{Resources::get().tileSheet, dimension, blockSize}, {Resources::get().tileSheet, dimension, blockSize}}};
+
+    BlockGrid grid{dimension, &tileRenderers[static_cast<int>(Layer::Floor)], &tileRenderers[static_cast<int>(Layer::Main)]};
+
     std::vector<Task> tasks;
     std::vector<Task> takenTasks;
-    std::vector<std::pair<Entity::Id, BlockGrid::Location>> tileEntities;
 
     template <typename T, typename... Args>
-    void addMachine(std::string_view archetypeName, BlockGrid::Location location, Args&&... args)
-    {
-        machines.emplace_back(std::make_unique<T>(location, std::forward<Args>(args)...));
-        grid.setBlockType(grid.getBlockArchetypeIdx(archetypeName), location, machines.back()->direction);
-    }
-    void removeMachine(BlockGrid::Location location)
-    {
-        auto machineIter = std::find_if(machines.begin(),
-                                        machines.end(),
-                                        [&location](const std::unique_ptr<Machine>& machine)
-                                        { return machine->location == location; });
-
-        if (machineIter == machines.end())
-        {
-            return;
-        }
-
-        // Remove the machine and its tile
-        machines.erase(machineIter);
-    }
-
-    template <typename T, typename... Args>
-    T& addTileEntity(std::string_view archetypeName, BlockGrid::Location location, Args&&... args)
+    T& addTileEntity(std::string_view archetypeName, BlockGrid::Location location, Direction direction, Args&&... args)
     {
         auto& tileEntity = world->createEntity<T>(location,
+                                                  direction,
                                                   &grid,
                                                   grid.getBlockArchetypeIdx(archetypeName),
                                                   std::forward<Args>(args)...);
-        tileEntities.push_back(std::make_pair(tileEntity.id, location));
+        attachChild(&tileEntity);
         return tileEntity;
-    }
-    void removeTileEntity(BlockGrid::Location location)
-    {
-        const auto iter = std::find_if(tileEntities.begin(),
-                                       tileEntities.end(),
-                                       [&location](const auto& entityPair) { return entityPair.second == location; });
-        if (iter == tileEntities.end())
-        {
-            return;
-        }
-
-        world->destroyEntity(iter->first);
-        tileEntities.erase(iter);
     }
 
     Ship(class World* world, Id id) : RootEntity{world, id}
@@ -97,8 +70,7 @@ public:
         }
 
         // Debug purposes
-        //addMachine<Workstation>("TablePapers", {3, 3}, world, Direction::Up);
-        auto& station = addTileEntity<Workstation>("TablePapers", {3, 3});
+        auto& station = addTileEntity<Workstation>("TablePapers", {3, 3}, Direction::Up);
         station.bills.emplace_back(100);
 
         addTileEntity<Chest>("Chest", {4, 4}, Direction::Up, 100);
@@ -250,19 +222,17 @@ public:
         const auto originalStates = states;
 
         states.transform *= getTransform();
-        target.draw(tileRenderer, states);
+
+        for (int x = 0; x < static_cast<int>(Layer::Count); x++)
+        {
+            target.draw(tileRenderers[x], states);
+        }
 
         RootEntity::draw(target, originalStates);
     }
 
     void update(sf::Time delta) override
     {
-        for (auto& machine : machines)
-        {
-            machine->update(delta, *this);
-            tileRenderer.setTile(machine->location, {0, machine->tileIdx, machine->direction}, false);
-        }
-
         RootEntity::update(delta);
     }
 
@@ -270,11 +240,11 @@ public:
     {
         std::vector<Workstation*> stations;
 
-        for (const auto& tileEntity : tileEntities)
+        for (const auto& child : children)
         {
-            if (auto* tmp = dynamic_cast<Workstation*>(world->findEntity(tileEntity.first)))
+            if (auto* station = dynamic_cast<Workstation*>(child))
             {
-                stations.push_back(tmp);
+                stations.push_back(station);
             }
         }
 

@@ -5,13 +5,12 @@
 Workstation::Workstation(World* world,
                          Entity::Id id,
                          BlockGrid::Location location,
+                         Direction direction,
                          BlockGrid* grid,
                          BlockArchetypeIndex idx,
-                         Direction /*direction*/
-                         ,
                          Direction workDir) :
     workStandDir(workDir),
-    TileEntity(world, id, location, grid, idx)
+    TileEntity(world, id, location, direction, grid, idx)
 {
 }
 Workstation::~Workstation()
@@ -20,7 +19,8 @@ Workstation::~Workstation()
     {
         return;
     }
-    if (auto* entity = dynamic_cast<Crewmate*>(world->findEntity(entityUsing)))
+
+    if (auto* entity = world->findEntity<Crewmate>(entityUsing))
     {
         entity->clearWorkstation();
     }

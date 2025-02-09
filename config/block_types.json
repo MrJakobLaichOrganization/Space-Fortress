@@ -7,6 +7,12 @@
             "is_solid": false
         },
         {
+            "name": "Thruster",
+            "description": "",
+            "tilemap_index": 80,
+            "is_solid": true
+        },
+        {
             "name": "Wall_TL",
             "description": "",
             "tilemap_index": 3,

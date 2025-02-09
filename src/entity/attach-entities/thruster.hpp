@@ -1,23 +1,24 @@
 #pragma once
 
-#include "entity/attach-entities/machine.hpp"
 #include "entity/root-entities/ship.hpp"
 #include "time.hpp"
 
 #include <string>
 
-class Thruster : public Machine
+class Thruster : public TileEntity
 {
 public:
-    Thruster(BlockGrid::Location location, Direction direction) : Machine{location, direction}
+    Thruster(World* world, Entity::Id id, BlockGrid::Location location, Direction direction, BlockGrid* grid, BlockArchetypeIndex idx) :
+        TileEntity(world, id, location, direction, grid, idx)
     {
-        tileIdx = 80;
+        //tileIdx = 80;
     }
 
-    void update(sf::Time /* deltaTime */, class Ship& ship) override
+    void update(sf::Time /* deltaTime */) override
     {
+        auto& ship = *static_cast<Ship*>(parent);
         const auto magnitude = 1000.f;
-        const auto force = -sf::Vector2f(magnitude, directionToAngle(direction) + ship.getRotation());
-        ship.body->ApplyForce(toBox2d(force), toBox2d(ship.getTransform() * ship.locationToPosition(location)), true);
+        const auto force = -sf::Vector2f(magnitude, directionToAngle(m_direction) + ship.getRotation());
+        ship.body->ApplyForce(toBox2d(force), toBox2d(ship.getTransform() * ship.locationToPosition(m_location)), true);
     }
 };

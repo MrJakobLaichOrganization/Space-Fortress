@@ -66,14 +66,21 @@ public:
         return *ptr;
     }
 
-    /// @brief Tries to find entity
-    /// @param id - id of the entity
-    /// @return ptr to the entity or nullptr if not found
-    Entity* findEntity(Entity::Id id);
-    /// @brief Tries to find entity
-    /// @param id - id of the entity
-    /// @return ptr to the entity or nullptr if not found
-    const Entity* findEntity(Entity::Id id) const;
+    template <typename T = Entity, class Self>
+    T* findEntity(this Self& self, Entity::Id id)
+    {
+        auto iter = self.m_idToEntity.find(id);
+        return iter == self.m_idToEntity.end() ? nullptr : dynamic_cast<T*>(iter->second);
+    }
+
+    template <typename T = Entity, class Self>
+    T& getEntity(this Self& self, Entity::Id id)
+    {
+        auto ptr = self.findEntity(id);
+        assert(ptr);
+        return *ptr;
+    }
+
     void destroyEntity(Entity::Id id);
 
     b2World& getPhysicsWorld()

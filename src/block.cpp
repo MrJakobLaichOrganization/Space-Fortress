@@ -2,15 +2,17 @@
 
 std::vector<BlockArchetype> BlockGrid::m_blockArchetypes{};
 
-BlockGrid::BlockGrid(sf::Vector2u dimensions, TileRenderer* tileRenderer) :
+BlockGrid::BlockGrid(sf::Vector2u dimensions, TileRenderer* floorRenderer, TileRenderer* wallRenderer) :
     Grid(dimensions),
-    m_tileRenderer{tileRenderer}
+    m_floorRenderer{floorRenderer},
+    m_mainRenderer{wallRenderer}
 {
+
     const auto airIdx = m_blockArchetypes[0].tilemapIdx;
     for (std::size_t i = 0; i < getCount(); ++i)
     {
-        m_tileRenderer->setTile(i, {airIdx, airIdx}, false);
-        m_tileRenderer->setTile(i, {airIdx, airIdx}, true);
+        m_floorRenderer->setTile(i, {airIdx});
+        m_mainRenderer->setTile(i, {airIdx});
     }
 }
 
@@ -18,9 +20,9 @@ void BlockGrid::setBlockType(BlockArchetypeIndex blockType, Index idx, Direction
 {
     get(idx).blockAchetypeIdx = blockType;
 
-    if (m_tileRenderer)
+    if (m_mainRenderer)
     {
-        m_tileRenderer->setTile(idx, {0, getBlockArchetype(idx).tilemapIdx, dir}, false);
+        m_mainRenderer->setTile(idx, {getBlockArchetype(idx).tilemapIdx, dir});
     }
 }
 void BlockGrid::setBlockType(BlockArchetypeIndex blockType, Location pos, Direction dir)
@@ -35,9 +37,9 @@ void BlockGrid::clearBlockType(Index idx)
 {
     get(idx).blockAchetypeIdx = BlockArchetype::airIndex;
 
-    if (m_tileRenderer)
+    if (m_mainRenderer)
     {
-        m_tileRenderer->setTile(idx, {0, getBlockArchetype(idx).tilemapIdx, Direction::Up}, false);
+        m_mainRenderer->setTile(idx, {getBlockArchetype(idx).tilemapIdx, Direction::Up});
     }
 }
 void BlockGrid::clearBlockType(Location loc)
@@ -49,9 +51,9 @@ void BlockGrid::setFloorType(BlockArchetypeIndex blockType, Index idx)
 {
     get(idx).floorAchetypeIdx = blockType;
 
-    if (m_tileRenderer)
+    if (m_floorRenderer)
     {
-        m_tileRenderer->setTile(idx, {getFloorArchetype(idx).tilemapIdx}, true);
+        m_floorRenderer->setTile(idx, {getFloorArchetype(idx).tilemapIdx});
     }
 }
 void BlockGrid::setFloorType(BlockArchetypeIndex blockType, Location pos)

@@ -42,8 +42,8 @@ World::World(sf::RenderWindow& window, b2Vec2 gravity) : m_gravity(gravity)
     crewmate.targetLocation = {4, 6};
     firstShip.attachChild(&crewmate);
 
-    //firstShip.addMachine<Thruster>({2, 8}, Direction::Down);
-    //firstShip.addMachine<Thruster>({7, 7}, Direction::Right);
+    firstShip.addTileEntity<Thruster>("Thruster", {2, 8}, Direction::Down);
+    firstShip.addTileEntity<Thruster>("Thruster", {7, 7}, Direction::Right);
 
     for (auto& entity : m_entities)
     {
@@ -157,16 +157,6 @@ sf::View World::makeView(const sf::RenderWindow& window) const
     return {viewCenter, sf::Vector2f(window.getSize()) * viewZoom};
 }
 
-Entity* World::findEntity(Entity::Id id)
-{
-    auto iter = m_idToEntity.find(id);
-    return iter == m_idToEntity.end() ? nullptr : iter->second;
-}
-const Entity* World::findEntity(Entity::Id id) const
-{
-    auto iter = m_idToEntity.find(id);
-    return iter == m_idToEntity.end() ? nullptr : iter->second;
-}
 void World::destroyEntity(Entity::Id id)
 {
     auto iter = m_idToEntity.find(id);
