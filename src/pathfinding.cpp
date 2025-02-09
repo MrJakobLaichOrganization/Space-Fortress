@@ -151,7 +151,7 @@ std::vector<BlockGrid::Location> generatePath(const class BlockGrid& grid,
             }
 
             if (x & 1 && (!directionValid[(x - 1 + directions.size()) % directions.size()] ||
-                !directionValid[(x + 1) % directions.size()]))
+                          !directionValid[(x + 1) % directions.size()]))
             {
                 continue;
             }
