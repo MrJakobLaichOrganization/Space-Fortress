@@ -69,11 +69,18 @@ public:
             }
         }
 
+        {
+            for (std::uint32_t x = 0; x < 4; x++)
+            {
+                grid.setBlockType(grid.getBlockArchetypeIdx("Wall_MU"), {x + 1, 2});
+            }
+        }
+
         // Debug purposes
-        auto& station = addTileEntity<Workstation>("TablePapers", {3, 3}, Direction::Up);
+        auto& station = addTileEntity<Workstation>("TablePapers", {1, 6}, Direction::Up, Direction::Up);
         station.bills.emplace_back(100);
 
-        addTileEntity<Chest>("Chest", {4, 4}, Direction::Up, 100);
+        addTileEntity<Chest>("Chest", {4, 3}, Direction::Up, 100);
 
         grid.setBlockType(grid.getBlockArchetypeIdx("Wall_ML"), {0, 6});
         grid.setBlockType(grid.getBlockArchetypeIdx("Wall_MR"), {6, 6});

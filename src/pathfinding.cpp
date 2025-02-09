@@ -82,7 +82,8 @@ std::vector<BlockGrid::Location> generatePath(const class BlockGrid& grid,
                                               BlockGrid::Location end,
                                               std::size_t maxSteps)
 {
-    static const std::array<sf::Vector2i, 4> directions = {{{-1, 0}, {1, 0}, {0, -1}, {0, 1}}};
+    static const std::array<sf::Vector2i, 8> directions = {
+        {{-1, 0}, {-1, -1}, {0, -1}, {1, -1}, {1, 0}, {1, 1}, {0, 1}, {-1, 1}}};
     std::deque<PathNode> openTiles{};
     std::list<PathNode> traveledTiles{};
     auto isSolid = [&grid](sf::Vector2i loc)
@@ -135,14 +136,27 @@ std::vector<BlockGrid::Location> generatePath(const class BlockGrid& grid,
             return makePath(traveledTiles.front(), traveledTiles.back());
         }
 
-        for (const auto& dir : directions)
+        std::array<bool, directions.size()> directionValid{};
+
+        for (int x = 0; x < directions.size(); x++)
         {
-            if (location.x == 0 && dir.x < 0 || location.y == 0 && dir.y < 0)
+            directionValid[x] = isValid(static_cast<sf::Vector2i>(location) + directions[x]);
+        }
+
+        for (int x = 0; x < directions.size(); x++)
+        {
+            if (!directionValid[x])
             {
                 continue;
             }
 
-            auto newLoc = static_cast<sf::Vector2i>(location) + dir;
+            if (x & 1 && (!directionValid[(x - 1 + directions.size()) % directions.size()] ||
+                !directionValid[(x + 1) % directions.size()]))
+            {
+                continue;
+            }
+
+            auto newLoc = static_cast<sf::Vector2i>(location) + directions[x];
 
             if (!isValid(newLoc) || std::find(traveledTiles.begin(), traveledTiles.end(), newLoc) != traveledTiles.end())
             {

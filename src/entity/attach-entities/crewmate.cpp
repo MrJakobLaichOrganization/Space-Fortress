@@ -27,9 +27,14 @@ void Crewmate::update(sf::Time deltaTime) // NOLINT
 
 void Crewmate::step(sf::Time deltaTime)
 {
-    const BlockGrid::Location gridLocation = posToGridLocation(getPosition(), static_cast<sf::Vector2u>(Ship::blockSize));
+    constexpr float stepEpsilon = 0.1f;
 
-    if (targetLocation == gridLocation)
+    const auto ship = dynamic_cast<Ship*>(parent);
+
+    const BlockGrid::Location gridLocation = posToGridLocation(getPosition(), static_cast<sf::Vector2u>(Ship::blockSize));
+    const auto targetPosition = ship->locationToPosition(targetLocation) + Ship::blockSize / 2.f;
+
+    if ((targetPosition - getPosition()).length() <= stepEpsilon)
     {
         return;
     }
@@ -39,31 +44,26 @@ void Crewmate::step(sf::Time deltaTime)
         updatePathfinding();
     }
 
-    if (m_steps.size() < 2)
+    if (m_steps.empty())
     {
         return;
     }
 
-    auto currentStep = m_steps[0];
-    auto nextStep = m_steps[1];
-    if (nextStep == gridLocation)
+    auto currentStepPosition = ship->locationToPosition(m_steps[0]) + Ship::blockSize / 2.f;
+    if ((currentStepPosition - getPosition()).length() <= stepEpsilon)
     {
-        currentStep = m_steps[0];
         m_steps.erase(m_steps.begin());
-        if (m_steps.size() > 1)
+        if (m_steps.empty())
         {
-            nextStep = m_steps[1];
+            return;
         }
+
+        currentStepPosition = ship->locationToPosition(m_steps[0]) + Ship::blockSize / 2.f;
     }
 
-    if (currentStep != gridLocation)
-    {
-        updatePathfinding();
-        return;
-    }
-
-    const auto nextPosition = dynamic_cast<Ship*>(parent)->locationToPosition(nextStep) + Ship::blockSize / 2.f;
-    move((nextPosition - getPosition()).normalized() * speed * deltaTime.asSeconds());
+    const auto dir = currentStepPosition - getPosition();
+    const auto distance = dir.length();
+    move(dir.normalized() * std::min(speed * deltaTime.asSeconds(), distance));
 }
 
 void Crewmate::work(sf::Time /*deltaTime*/)
