@@ -35,7 +35,7 @@ struct BlockData
     // floor archetype
     std::uint32_t floorAchetypeIdx{};
 
-    class Entity* entity;
+    class Entity* entity{};
 };
 
 using BlockArchetypeIndex = std::uint32_t;

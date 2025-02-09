@@ -12,6 +12,7 @@
 
 class Game
 {
+public:
     sf::Clock clock{};
 
     InputManager inputManager;
@@ -23,7 +24,6 @@ class Game
 
     bool showDebug = false;
 
-public:
     Game()
     {
         window.setVerticalSyncEnabled(true);

@@ -31,7 +31,6 @@ void Crewmate::step(sf::Time deltaTime)
 
     const auto ship = dynamic_cast<Ship*>(parent);
 
-    const BlockGrid::Location gridLocation = posToGridLocation(getPosition(), static_cast<sf::Vector2u>(Ship::blockSize));
     const auto targetPosition = ship->locationToPosition(targetLocation) + Ship::blockSize / 2.f;
 
     if ((targetPosition - getPosition()).length() <= stepEpsilon)
