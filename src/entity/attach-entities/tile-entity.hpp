@@ -6,12 +6,7 @@
 class TileEntity : public AttachEntity
 {
 public:
-    TileEntity(class World* world,
-               Id id,
-               Location location,
-               Direction direction,
-               BlockGrid* grid,
-               BlockArchetypeIndex idx = 0) :
+    TileEntity(class World* world, Id id, Location location, Direction direction, BlockGrid* grid, BlockArchetypeIndex idx = 0) :
         m_location{location},
         m_direction{direction},
         m_grid{grid},
