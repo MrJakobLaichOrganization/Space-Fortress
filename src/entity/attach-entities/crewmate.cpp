@@ -67,13 +67,7 @@ void Crewmate::step(sf::Time deltaTime)
 
 void Crewmate::work(sf::Time /*deltaTime*/)
 {
-    static const sf::Vector2i dirOffsets[] = {
-        {0, -1},
-        {1, 0},
-        {0, 1},
-        {-1, 0},
-    };
-    const BlockGrid::Location gridLocation = posToGridLocation(getPosition(), static_cast<sf::Vector2u>(Ship::blockSize));
+    const Location gridLocation = posToGridLocation(getPosition(), Ship::blockSize);
     Ship* parentShip = dynamic_cast<Ship*>(parent);
 
     if (targetLocation == gridLocation)
@@ -139,9 +133,7 @@ void Crewmate::work(sf::Time /*deltaTime*/)
             workstation->inUse = true;
             m_currentWorkstation = workstation->id;
             m_currentTask.type = TaskType::Work;
-            m_currentTask.position = static_cast<sf::Vector2u>(
-                sf::Vector2i(workstation->getLocation()) +
-                dirOffsets[static_cast<std::uint8_t>(workstation->workStandDir)]);
+            m_currentTask.position = workstation->getLocation() + directionToLocation(workstation->workStandDir);
         }
         if (m_currentTask.type == TaskType::None)
         {
@@ -155,7 +147,7 @@ void Crewmate::work(sf::Time /*deltaTime*/)
 
 void Crewmate::updatePathfinding()
 {
-    const BlockGrid::Location gridLocation = posToGridLocation(getPosition(), static_cast<sf::Vector2u>(Ship::blockSize));
+    const Location gridLocation = posToGridLocation(getPosition(), Ship::blockSize);
     m_steps = dynamic_cast<Ship*>(parent)->pathfind(gridLocation, targetLocation);
 }
 void Crewmate::clearWorkstation()

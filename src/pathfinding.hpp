@@ -16,7 +16,4 @@
 /// @param start - beginning
 /// @param end - destination
 /// @param maxSteps - maximal number of steps which can be taken (100 by default)
-std::vector<BlockGrid::Location> generatePath(const class BlockGrid& grid,
-                                              BlockGrid::Location start,
-                                              BlockGrid::Location end,
-                                              std::size_t maxSteps = 100);
+std::vector<Location> generatePath(const class BlockGrid& grid, Location start, Location end, std::size_t maxSteps = 100);

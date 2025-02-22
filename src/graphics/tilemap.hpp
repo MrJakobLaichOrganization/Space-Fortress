@@ -19,7 +19,7 @@ class TileSheet
 public:
     using TileIndex = std::uint32_t;
 
-    TileSheet(const sf::Texture& texture, sf::Vector2u tileSize) : m_texture{texture}, m_tileSize{tileSize}
+    TileSheet(const sf::Texture& texture, Dimension tileSize) : m_texture{texture}, m_tileSize{tileSize}
     {
     }
 
@@ -52,16 +52,15 @@ public:
         bool operator==(const Tile&) const = default;
     };
 
-    TileRenderer(const TileSheet& tileSheet, const sf::Vector2u& dimension, const sf::Vector2f& tileSize);
+    TileRenderer(const TileSheet& tileSheet, Bounds bounds, Size tileSize);
 
-    void setTile(std::uint32_t idx, Tile tile);
-    void setTile(const sf::Vector2u& pos, Tile tile);
+    void setTile(Location loc, Tile tile);
 
 private:
     const TileSheet& m_tileSheet;
 
     sf::Vector2f m_tileSize;
-    Grid<Tile> m_grid;
+    OffsetGrid<Tile> m_grid;
     sf::VertexArray m_verts;
 
     void draw(sf::RenderTarget& target, sf::RenderStates states) const override;

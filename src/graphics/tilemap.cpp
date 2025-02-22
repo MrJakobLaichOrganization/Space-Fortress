@@ -4,18 +4,18 @@
 #include <cmath>
 
 
-TileRenderer::TileRenderer(const TileSheet& tileSheet, const sf::Vector2u& dimension, const sf::Vector2f& tileSize) :
+TileRenderer::TileRenderer(const TileSheet& tileSheet, Bounds bounds, Size tileSize) :
     m_tileSheet{tileSheet},
-    m_grid{dimension},
+    m_grid{bounds},
     m_tileSize{tileSize}
 {
     m_verts.setPrimitiveType(sf::PrimitiveType::Triangles);
-    m_verts.resize(m_grid.getCount() * 6);
+    m_verts.resize(m_grid.getBounds().size.x * m_grid.getBounds().size.y * 6);
 }
 
-void TileRenderer::setTile(std::uint32_t idx, Tile tile)
+void TileRenderer::setTile(Location loc, Tile tile)
 {
-    auto& cell = m_grid.get(idx);
+    auto& cell = m_grid.get(loc);
     if (cell == tile)
     {
         return;
@@ -32,14 +32,12 @@ void TileRenderer::setTile(std::uint32_t idx, Tile tile)
         sf::Vector2f{textureRect.position.x, textureRect.position.y + textureRect.size.y},
     };
 
-    const sf::Vector2 pos{idx % m_grid.getDimension().x, idx / m_grid.getDimension().x};
+    sf::Vertex* vert = &m_verts[m_grid.locationToIndex(loc) * 6];
 
-    sf::Vertex* vert = &m_verts[(pos.y * m_grid.getDimension().x + pos.x) * 6];
-
-    vert[0].position = sf::Vector2f(pos.x * m_tileSize.x, pos.y * m_tileSize.y);
-    vert[1].position = sf::Vector2f((pos.x + 1) * m_tileSize.x, pos.y * m_tileSize.y);
-    vert[2].position = sf::Vector2f((pos.x + 1) * m_tileSize.x, (pos.y + 1) * m_tileSize.y);
-    vert[3].position = sf::Vector2f(pos.x * m_tileSize.x, (pos.y + 1) * m_tileSize.y);
+    vert[0].position = sf::Vector2f(loc.x * m_tileSize.x, loc.y * m_tileSize.y);
+    vert[1].position = sf::Vector2f((loc.x + 1) * m_tileSize.x, loc.y * m_tileSize.y);
+    vert[2].position = sf::Vector2f((loc.x + 1) * m_tileSize.x, (loc.y + 1) * m_tileSize.y);
+    vert[3].position = sf::Vector2f(loc.x * m_tileSize.x, (loc.y + 1) * m_tileSize.y);
 
     // No point in rotating floor for now
     const auto rotationIndex = 4 - static_cast<int>(cell.direction);
@@ -51,10 +49,6 @@ void TileRenderer::setTile(std::uint32_t idx, Tile tile)
 
     vert[4] = vert[0];
     vert[5] = vert[2];
-}
-void TileRenderer::setTile(const sf::Vector2u& pos, Tile tile)
-{
-    setTile(m_grid.locationToIndex(pos), tile);
 }
 
 void TileRenderer::draw(sf::RenderTarget& target, sf::RenderStates states) const

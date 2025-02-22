@@ -13,7 +13,7 @@ enum class TaskType : std::uint8_t
 
 struct Task
 {
-    BlockGrid::Location position;
+    Location position;
     TaskType type = TaskType::None;
 
     bool operator==(const Task& other) const

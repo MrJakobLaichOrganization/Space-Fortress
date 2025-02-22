@@ -1,17 +1,33 @@
 #pragma once
 
+#include <SFML/Graphics/Rect.hpp>
+
 #include <SFML/System/Vector2.hpp>
 
 #include <box2d/box2d.h>
 
+#include <cstdint>
+
+using Index = std::int32_t;
+using Distance = float;
+
+using Position = sf::Vector2<Distance>;
+using Location = sf::Vector2<Index>;
+
+using Size = Position;
+using Dimension = Location;
+
+using Bounds = sf::Rect<Index>;
+using Zone = sf::Rect<Distance>;
+
 constexpr float meterToPixels = 64.f;
 
-inline b2Vec2 toBox2d(sf::Vector2f v)
+inline b2Vec2 toBox2d(Position v)
 {
     return {v.x / meterToPixels, v.y / meterToPixels};
 }
 
-inline sf::Vector2f toSFML(b2Vec2 v)
+inline Position toSFML(b2Vec2 v)
 {
     return {v.x * meterToPixels, v.y * meterToPixels};
 }
@@ -47,31 +63,31 @@ inline sf::Vector2f directionToPosition(Direction direction)
     switch (direction)
     {
         case Direction::Up:
-            return sf::Vector2f{0, -1};
+            return {0, -1};
         case Direction::Right:
-            return sf::Vector2f{1, 0};
+            return {1, 0};
         case Direction::Down:
-            return sf::Vector2f{0, 1};
+            return {0, 1};
         case Direction::Left:
-            return sf::Vector2f{-1, 0};
+            return {-1, 0};
     }
 
     assert(false);
     return {};
 }
 
-inline sf::Vector2i directionToLocation(Direction direction)
+inline Location directionToLocation(Direction direction)
 {
     switch (direction)
     {
         case Direction::Up:
-            return sf::Vector2i{0, -1};
+            return {0, -1};
         case Direction::Right:
-            return sf::Vector2i{1, 0};
+            return {1, 0};
         case Direction::Down:
-            return sf::Vector2i{0, 1};
+            return {0, 1};
         case Direction::Left:
-            return sf::Vector2i{-1, 0};
+            return {-1, 0};
     }
 
     assert(false);
