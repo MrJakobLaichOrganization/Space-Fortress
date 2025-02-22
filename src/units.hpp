@@ -6,6 +6,8 @@
 
 #include <box2d/box2d.h>
 
+#include <cstdint>
+
 using Index = std::int32_t;
 using Distance = float;
 

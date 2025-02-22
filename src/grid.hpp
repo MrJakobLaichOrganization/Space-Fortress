@@ -80,12 +80,12 @@ public:
         return m_bounds;
     }
 
-    Location getMin() const
+    [[nodiscard]] Location getMin() const
     {
         return m_bounds.position;
     }
 
-    Location getMax() const
+    [[nodiscard]] Location getMax() const
     {
         return m_bounds.position + m_bounds.size;
     }
