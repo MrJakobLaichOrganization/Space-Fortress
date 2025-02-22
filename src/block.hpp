@@ -40,84 +40,38 @@ struct BlockData
 
 using BlockArchetypeIndex = std::uint32_t;
 
-class BlockGrid : protected Grid<BlockData>
+class BlockGrid : protected OffsetGrid<BlockData>
 {
 public:
-    using Location = Grid::Location;
-    using Index = Grid::Index;
+    using OffsetGrid::getBounds;
+    using OffsetGrid::getMax;
+    using OffsetGrid::getMin;
+    using OffsetGrid::isValid;
 
-    using Grid::getCount;
-    using Grid::getDimension;
+    BlockGrid(Bounds bounds, TileRenderer* floorRenderer = nullptr, TileRenderer* wallRenderer = nullptr);
 
-    /// @param dimensions - grid size in tile count
-    /// @param tilemap - optional parameter, leave nullptr if not tilemap will be linked
-    BlockGrid(sf::Vector2u dimensions, TileRenderer* floorRenderer = nullptr, TileRenderer* wallRenderer = nullptr);
+    void setBlockType(BlockArchetypeIndex blockType, Location loc, Direction dir = Direction::Up);
+    void setBlockType(std::string_view archetypeName, Location loc, Direction dir = Direction::Up);
 
-    /// @brief Sets block type in grid
-    /// @param blockType - block archetype to set
-    /// @param idx - index of the block in array
-    void setBlockType(BlockArchetypeIndex blockType, Index idx, Direction dir = Direction::Up);
-    /// @brief
-    /// @param blockType - block archetype to set
-    /// @param pos - position relative to the top left
-    void setBlockType(BlockArchetypeIndex blockType, Location pos, Direction dir = Direction::Up);
-    /// @brief
-    /// @param blockType - block archetype name to set
-    /// @param pos - position relative to the top left
-    void setBlockType(std::string_view archetypeName, Location pos, Direction dir = Direction::Up);
-
-    /// @brief Clears the block from location
-    /// @param idx block grid index
-    void clearBlockType(Index idx);
-    /// @brief Clears the block from location
-    /// @param loc grid location of block
     void clearBlockType(Location loc);
 
-    /// @brief Sets floor type in grid
-    /// @param blockType - block archetype to set
-    /// @param idx - index of the block in array
-    void setFloorType(BlockArchetypeIndex blockType, Index idx);
-    /// @brief
-    /// @param blockType - floor archetype to set
-    /// @param pos - position relative to the top left
-    void setFloorType(BlockArchetypeIndex blockType, Location pos);
-    /// @brief
-    /// @param blockType - floor archetype name to set
-    /// @param pos - position relative to the top left
-    void setFloorType(std::string_view archetypeName, Location pos);
+    void setFloorType(BlockArchetypeIndex blockType, Location loc);
+    void setFloorType(std::string_view archetypeName, Location loc);
 
-    [[nodiscard]] const BlockArchetype& getBlockArchetype(Index idx) const;
-    [[nodiscard]] const BlockArchetype& getBlockArchetype(Location pos) const;
+    [[nodiscard]] const BlockArchetype& getBlockArchetype(Location loc) const;
     [[nodiscard]] BlockArchetypeIndex getBlockArchetypeIdx(std::string_view name) const;
 
-    [[nodiscard]] const BlockArchetype& getFloorArchetype(Index idx) const;
-    [[nodiscard]] const BlockArchetype& getFloorArchetype(Location pos) const;
+    [[nodiscard]] const BlockArchetype& getFloorArchetype(Location loc) const;
     [[nodiscard]] BlockArchetypeIndex getFloorArchetypeIdx(std::string_view name) const;
 
-    [[nodiscard]] const BlockData& getBlockData(Index idx) const;
-    [[nodiscard]] const BlockData& getBlockData(Location pos) const;
-    [[nodiscard]] BlockData& getBlockData(Index idx);
-    [[nodiscard]] BlockData& getBlockData(Location pos);
-
-    // Doesnt deal with tilemap, you gotta pass it yourself
-    template <class Archive>
-    void save(Archive& ar) const
-    {
-        Grid::save(ar);
-    }
-    template <class Archive>
-    void load(Archive& ar)
-    {
-        Grid::load(ar);
-    }
+    [[nodiscard]] const BlockData& getBlockData(Location loc) const;
+    [[nodiscard]] BlockData& getBlockData(Location loc);
 
     static void loadArchetypes(cereal::JSONInputArchive& ar)
     {
         m_blockArchetypes.clear();
         ar(m_blockArchetypes); // NOLINT
     }
-
-    [[nodiscard]] std::uint32_t calculateIndex(const sf::Vector2u& pos) const;
 
 private:
     TileRenderer* m_mainRenderer = nullptr;

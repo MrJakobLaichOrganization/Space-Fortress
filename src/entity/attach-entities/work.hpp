@@ -40,7 +40,7 @@ public:
 
     Workstation(World* world,
                 Entity::Id id,
-                BlockGrid::Location location,
+                Location location,
                 Direction direction,
                 BlockGrid* grid,
                 BlockArchetypeIndex idx,

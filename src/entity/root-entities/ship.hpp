@@ -23,19 +23,19 @@ public:
         Count
     };
 
-    static constexpr sf::Vector2f blockSize{64.f, 64.f};
-    static constexpr sf::Vector2u dimension{32, 32};
+    static constexpr Size blockSize{64.f, 64.f};
+    static constexpr Bounds bounds{{-32, -32}, {64, 64}};
 
     std::array<TileRenderer, static_cast<int>(Layer::Count)> tileRenderers{
-        {{Resources::get().tileSheet, dimension, blockSize}, {Resources::get().tileSheet, dimension, blockSize}}};
+        {{Resources::get().tileSheet, bounds, blockSize}, {Resources::get().tileSheet, bounds, blockSize}}};
 
-    BlockGrid grid{dimension, &tileRenderers[static_cast<int>(Layer::Floor)], &tileRenderers[static_cast<int>(Layer::Main)]};
+    BlockGrid grid{bounds, &tileRenderers[static_cast<int>(Layer::Floor)], &tileRenderers[static_cast<int>(Layer::Main)]};
 
     std::vector<Task> tasks;
     std::vector<Task> takenTasks;
 
     template <typename T, typename... Args>
-    T& addTileEntity(std::string_view archetypeName, BlockGrid::Location location, Direction direction, Args&&... args)
+    T& addTileEntity(std::string_view archetypeName, Location location, Direction direction, Args&&... args)
     {
         auto& tileEntity = world->createEntity<T>(location,
                                                   direction,
@@ -56,13 +56,13 @@ public:
         grid.setBlockType(grid.getBlockArchetypeIdx("Wall_BL"), {0, 7});
         grid.setBlockType(grid.getBlockArchetypeIdx("Wall_BR"), {6, 7});
 
-        for (std::uint32_t x = 0; x < 5; x++)
+        for (Index x = 0; x < 5; x++)
         {
             grid.setBlockType(grid.getBlockArchetypeIdx("Wall_MU"), {x + 1, 0});
             grid.setBlockType(grid.getBlockArchetypeIdx("Wall_MD"), {x + 1, 7});
             grid.setBlockType(grid.getBlockArchetypeIdx("Wall_ML"), {0, x + 1});
             grid.setBlockType(grid.getBlockArchetypeIdx("Wall_MR"), {6, x + 1});
-            for (std::uint32_t y = 0; y < 5; y++)
+            for (Index y = 0; y < 5; y++)
             {
                 grid.setFloorType(floorTile, {x + 1, y + 2});
                 grid.setFloorType(floorTile, {x + 1, 1});
@@ -70,9 +70,13 @@ public:
         }
 
         {
-            for (std::uint32_t x = 0; x < 4; x++)
+            for (Index x = 0; x < 4; x++)
             {
                 grid.setBlockType(grid.getBlockArchetypeIdx("Wall_MU"), {x + 1, 2});
+            }
+            for (Index x = 0; x < 4; x++)
+            {
+                grid.setBlockType(grid.getBlockArchetypeIdx("Wall_MU"), {0 - x, 2});
             }
         }
 
@@ -97,7 +101,7 @@ public:
 
     void updatePhysicFixtures()
     {
-        Grid<std::uint8_t> solidTiles(grid.getDimension());
+        OffsetGrid<std::uint8_t> solidTiles(grid.getBounds());
 
         b2PolygonShape dynamicBox;
 
@@ -107,20 +111,23 @@ public:
         fixtureDef.friction = 0.3f;
         fixtureDef.restitution = 0.5f;
 
+        const auto min = grid.getMin();
+        const auto max = grid.getMax();
+
         // Fill the solid tiles
-        for (std::uint32_t y = 0; y < grid.getDimension().y; ++y)
+        for (Index y = min.y; y < max.y; ++y)
         {
-            for (std::uint32_t x = 0; x < grid.getDimension().x; ++x)
+            for (Index x = min.x; x < max.x; ++x)
             {
-                const auto& blockData = grid.getBlockData(sf::Vector2u(x, y));
+                const auto& blockData = grid.getBlockData({x, y});
                 solidTiles.set({x, y}, blockData.blockAchetypeIdx || blockData.floorAchetypeIdx);
             }
         }
 
         // Create the box strips
-        for (std::uint32_t y = 0; y < grid.getDimension().y; ++y)
+        for (Index y = min.y; y < max.y; ++y)
         {
-            for (std::uint32_t x = 0; x < grid.getDimension().x; ++x)
+            for (Index x = min.x; x < max.x; ++x)
             {
                 if (!solidTiles.get({x, y}))
                 {
@@ -128,10 +135,10 @@ public:
                 }
                 solidTiles.set({x, y}, 0);
 
-                uint32_t left = x;
-                uint32_t right = x;
-                uint32_t top = y;
-                uint32_t bottom = y;
+                Index left = x;
+                Index right = x;
+                Index top = y;
+                Index bottom = y;
 
                 // Go left
                 while (solidTiles.isValid({left - 1, y}))
@@ -158,12 +165,12 @@ public:
                 }
 
                 // Go up
-                while (top > 0)
+                while (top > min.y)
                 {
                     bool valid = true;
-                    for (std::uint32_t testX = left; testX <= right; testX++)
+                    for (Index testX = left; testX <= right; testX++)
                     {
-                        if (!solidTiles.get({testX, top - 1u}))
+                        if (!solidTiles.get({testX, top - 1}))
                         {
                             valid = false;
                             break;
@@ -173,7 +180,7 @@ public:
                     if (valid)
                     {
                         top--;
-                        for (std::uint32_t testX = left; testX <= right; testX++)
+                        for (Index testX = left; testX <= right; testX++)
                         {
                             solidTiles.set({testX, top}, 0);
                         }
@@ -185,10 +192,10 @@ public:
                 }
 
                 // Go down
-                while (bottom + 1 < solidTiles.getDimension().y)
+                while (bottom + 1 < max.y)
                 {
                     bool valid = true;
-                    for (std::uint32_t testX = left; testX <= right; testX++)
+                    for (Index testX = left; testX <= right; testX++)
                     {
                         if (!solidTiles.get({testX, bottom + 1}))
                         {
@@ -200,7 +207,7 @@ public:
                     if (valid)
                     {
                         bottom++;
-                        for (std::uint32_t testX = left; testX <= right; testX++)
+                        for (Index testX = left; testX <= right; testX++)
                         {
                             solidTiles.set({testX, bottom}, 0);
                         }
@@ -214,7 +221,7 @@ public:
                 right++;
                 bottom++;
 
-                const float boxSize = toBox2d(blockSize).x;
+                const Distance boxSize = toBox2d(blockSize).x;
                 dynamicBox.SetAsBox((right - left) * boxSize / 2.f,
                                     (bottom - top) * boxSize / 2.f,
                                     b2Vec2{(left + (right - left) / 2.f) * boxSize, (top + (bottom - top) / 2.f) * boxSize},
@@ -258,12 +265,12 @@ public:
         return stations;
     }
 
-    sf::Vector2f locationToPosition(BlockGrid::Location location) const
+    Position locationToPosition(Location location) const
     {
         return {location.x * blockSize.x, location.y * blockSize.y};
     }
 
-    std::vector<BlockGrid::Location> pathfind(BlockGrid::Location start, BlockGrid::Location end) const
+    std::vector<Location> pathfind(Location start, Location end) const
     {
         return generatePath(grid, start, end);
     }

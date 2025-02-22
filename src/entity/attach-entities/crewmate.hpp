@@ -53,11 +53,11 @@ public:
         return m_name;
     }
 
-    BlockGrid::Location targetLocation;
+    Location targetLocation;
     float speed = 50.f;
 
 private:
-    std::vector<BlockGrid::Location> m_steps;
+    std::vector<Location> m_steps;
 
     std::string m_name;
     Gender m_gender;
@@ -69,9 +69,8 @@ private:
     void work(sf::Time deltaTime);
     void updatePathfinding();
 
-    static BlockGrid::Location posToGridLocation(sf::Vector2f pos, sf::Vector2u tileSize)
+    static Location posToGridLocation(Position pos, Size tileSize)
     {
-        return BlockGrid::Location{static_cast<std::uint32_t>(pos.x / tileSize.x),
-                                   static_cast<std::uint32_t>(pos.y / tileSize.y)};
+        return Location{static_cast<Index>(pos.x / tileSize.x), static_cast<Index>(pos.y / tileSize.y)};
     }
 };

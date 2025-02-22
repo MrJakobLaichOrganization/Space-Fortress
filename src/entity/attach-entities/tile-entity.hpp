@@ -8,7 +8,7 @@ class TileEntity : public AttachEntity
 public:
     TileEntity(class World* world,
                Id id,
-               BlockGrid::Location location,
+               Location location,
                Direction direction,
                BlockGrid* grid,
                BlockArchetypeIndex idx = 0) :
@@ -23,7 +23,7 @@ public:
 
     void setArchetypeIdx(BlockArchetypeIndex idx);
 
-    [[nodiscard]] BlockGrid::Location getLocation() const
+    [[nodiscard]] Location getLocation() const
     {
         return m_location;
     }
@@ -34,7 +34,7 @@ public:
     }
 
 protected:
-    BlockGrid::Location m_location;
+    Location m_location;
     Direction m_direction;
     BlockGrid* m_grid;
 };

@@ -8,7 +8,7 @@
 class Thruster : public TileEntity
 {
 public:
-    Thruster(World* world, Entity::Id id, BlockGrid::Location location, Direction direction, BlockGrid* grid, BlockArchetypeIndex idx) :
+    Thruster(World* world, Entity::Id id, Location location, Direction direction, BlockGrid* grid, BlockArchetypeIndex idx) :
         TileEntity(world, id, location, direction, grid, idx)
     {
         //tileIdx = 80;
@@ -18,7 +18,7 @@ public:
     {
         auto& ship = *static_cast<Ship*>(parent);
         const auto magnitude = 1000.f;
-        const auto force = -sf::Vector2f(magnitude, directionToAngle(m_direction) + ship.getRotation());
+        const auto force = -Position(magnitude, directionToAngle(m_direction) + ship.getRotation());
         ship.body->ApplyForce(toBox2d(force), toBox2d(ship.getTransform() * ship.locationToPosition(m_location)), true);
     }
 };

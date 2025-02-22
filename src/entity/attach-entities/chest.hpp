@@ -6,7 +6,7 @@ class Chest : public TileEntity
 public:
     Chest(class World* world,
           Id id,
-          BlockGrid::Location location,
+          Location location,
           Direction direction,
           BlockGrid* grid,
           BlockArchetypeIndex idx,

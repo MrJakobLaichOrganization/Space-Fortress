@@ -2,78 +2,68 @@
 
 std::vector<BlockArchetype> BlockGrid::m_blockArchetypes{};
 
-BlockGrid::BlockGrid(sf::Vector2u dimensions, TileRenderer* floorRenderer, TileRenderer* wallRenderer) :
-    Grid(dimensions),
+BlockGrid::BlockGrid(Bounds bounds, TileRenderer* floorRenderer, TileRenderer* wallRenderer) :
+    OffsetGrid(bounds),
     m_floorRenderer{floorRenderer},
     m_mainRenderer{wallRenderer}
 {
 
     const auto airIdx = m_blockArchetypes[0].tilemapIdx;
-    for (std::size_t i = 0; i < getCount(); ++i)
+    for (Index x = 0; x < getBounds().size.x; x++)
     {
-        m_floorRenderer->setTile(i, {airIdx});
-        m_mainRenderer->setTile(i, {airIdx});
+        for (Index y = 0; y < getBounds().size.y; y++)
+        {
+            const auto loc = getBounds().position + Location{x, y};
+            m_floorRenderer->setTile(loc, {airIdx});
+            m_mainRenderer->setTile(loc, {airIdx});
+        }
     }
 }
 
-void BlockGrid::setBlockType(BlockArchetypeIndex blockType, Index idx, Direction dir)
+void BlockGrid::setBlockType(BlockArchetypeIndex blockType, Location loc, Direction dir)
 {
-    get(idx).blockAchetypeIdx = blockType;
-
-    if (m_mainRenderer)
-    {
-        m_mainRenderer->setTile(idx, {getBlockArchetype(idx).tilemapIdx, dir});
-    }
-}
-void BlockGrid::setBlockType(BlockArchetypeIndex blockType, Location pos, Direction dir)
-{
-    setBlockType(blockType, locationToIndex(pos), dir);
-}
-void BlockGrid::setBlockType(std::string_view archetypeName, Location pos, Direction dir)
-{
-    setBlockType(getBlockArchetypeIdx(archetypeName), pos, dir);
-}
-void BlockGrid::clearBlockType(Index idx)
-{
-    get(idx).blockAchetypeIdx = BlockArchetype::airIndex;
+    get(loc).blockAchetypeIdx = blockType;
 
     if (m_mainRenderer)
     {
-        m_mainRenderer->setTile(idx, {getBlockArchetype(idx).tilemapIdx, Direction::Up});
+        m_mainRenderer->setTile(loc, {getBlockArchetype(loc).tilemapIdx, dir});
     }
 }
+void BlockGrid::setBlockType(std::string_view archetypeName, Location loc, Direction dir)
+{
+    setBlockType(getBlockArchetypeIdx(archetypeName), loc, dir);
+}
+
 void BlockGrid::clearBlockType(Location loc)
 {
-    clearBlockType(locationToIndex(loc));
+    get(loc).blockAchetypeIdx = BlockArchetype::airIndex;
+
+    if (m_mainRenderer)
+    {
+        m_mainRenderer->setTile(loc, {getBlockArchetype(loc).tilemapIdx, Direction::Up});
+    }
 }
 
-void BlockGrid::setFloorType(BlockArchetypeIndex blockType, Index idx)
+void BlockGrid::setFloorType(BlockArchetypeIndex blockType, Location loc)
 {
-    get(idx).floorAchetypeIdx = blockType;
+    get(loc).floorAchetypeIdx = blockType;
 
     if (m_floorRenderer)
     {
-        m_floorRenderer->setTile(idx, {getFloorArchetype(idx).tilemapIdx});
+        m_floorRenderer->setTile(loc, {getFloorArchetype(loc).tilemapIdx});
     }
 }
-void BlockGrid::setFloorType(BlockArchetypeIndex blockType, Location pos)
+void BlockGrid::setFloorType(std::string_view archetypeName, Location loc)
 {
-    setFloorType(blockType, locationToIndex(pos));
-}
-void BlockGrid::setFloorType(std::string_view archetypeName, Location pos)
-{
-    setFloorType(getBlockArchetypeIdx(archetypeName), pos);
+    setFloorType(getBlockArchetypeIdx(archetypeName), loc);
 }
 
-const BlockArchetype& BlockGrid::getBlockArchetype(Index idx) const
+const BlockArchetype& BlockGrid::getBlockArchetype(Location loc) const
 {
-    return m_blockArchetypes[get(idx).blockAchetypeIdx];
+    return m_blockArchetypes[get(loc).blockAchetypeIdx];
 }
-const BlockArchetype& BlockGrid::getBlockArchetype(Location pos) const
-{
-    return getBlockArchetype(locationToIndex(pos));
-}
-BlockGrid::Index BlockGrid::getBlockArchetypeIdx(std::string_view name) const
+
+BlockArchetypeIndex BlockGrid::getBlockArchetypeIdx(std::string_view name) const
 {
     for (std::size_t i = 0; i < m_blockArchetypes.size(); ++i)
     {
@@ -83,18 +73,15 @@ BlockGrid::Index BlockGrid::getBlockArchetypeIdx(std::string_view name) const
         }
     }
 
-    return static_cast<Index>(-1);
+    return static_cast<BlockArchetypeIndex>(-1);
 }
 
-const BlockArchetype& BlockGrid::getFloorArchetype(Index idx) const
+const BlockArchetype& BlockGrid::getFloorArchetype(Location loc) const
 {
-    return m_blockArchetypes[get(idx).floorAchetypeIdx];
+    return m_blockArchetypes[get(loc).floorAchetypeIdx];
 }
-const BlockArchetype& BlockGrid::getFloorArchetype(Location pos) const
-{
-    return getFloorArchetype(locationToIndex(pos));
-}
-BlockGrid::Index BlockGrid::getFloorArchetypeIdx(std::string_view name) const
+
+BlockArchetypeIndex BlockGrid::getFloorArchetypeIdx(std::string_view name) const
 {
     for (std::size_t i = 0; i < m_blockArchetypes.size(); ++i)
     {
@@ -104,22 +91,15 @@ BlockGrid::Index BlockGrid::getFloorArchetypeIdx(std::string_view name) const
         }
     }
 
-    return static_cast<Index>(-1);
+    return static_cast<BlockArchetypeIndex>(-1);
 }
 
-const BlockData& BlockGrid::getBlockData(Index idx) const
+const BlockData& BlockGrid::getBlockData(Location loc) const
 {
-    return get(idx);
+    return get(loc);
 }
-const BlockData& BlockGrid::getBlockData(Location pos) const
+
+BlockData& BlockGrid::getBlockData(Location loc)
 {
-    return get(pos);
-}
-BlockData& BlockGrid::getBlockData(Index idx)
-{
-    return get(idx);
-}
-BlockData& BlockGrid::getBlockData(Location pos)
-{
-    return get(pos);
+    return get(loc);
 }
