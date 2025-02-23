@@ -10,7 +10,6 @@
 #include "graphics/tilemap.hpp"
 #include "pathfinding.hpp"
 #include "resources.hpp"
-#include "task.hpp"
 #include "world.hpp"
 
 class Ship : public RootEntity
@@ -31,8 +30,7 @@ public:
 
     BlockGrid grid{bounds, &tileRenderers[static_cast<int>(Layer::Floor)], &tileRenderers[static_cast<int>(Layer::Main)]};
 
-    std::vector<Task> tasks;
-    std::vector<Task> takenTasks;
+    std::vector<std::unique_ptr<class Task>> tasks;
 
     template <typename T, typename... Args>
     T& addTileEntity(std::string_view archetypeName, Location location, Direction direction, Args&&... args)
@@ -90,6 +88,9 @@ public:
         grid.setBlockType(grid.getBlockArchetypeIdx("Wall_MR"), {6, 6});
 
         grid.setBlockType(grid.getBlockArchetypeIdx("DoorClosed"), {2, 0});
+
+        const auto targetPosition = locationToPosition({1, 5}) + Ship::blockSize / 2.f;
+        tasks.push_back(std::make_unique<MoveTask>(targetPosition));
 
         b2BodyDef bodyDef;
         bodyDef.type = b2_dynamicBody;
