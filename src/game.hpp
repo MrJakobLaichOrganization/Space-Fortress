@@ -1,6 +1,7 @@
 #pragma once
 
 #include "graphics/fps-counter.hpp"
+#include "gui/gui.hpp"
 #include "inputmanager.hpp"
 #include "world.hpp"
 
@@ -17,7 +18,7 @@ public:
 
     InputManager inputManager;
 
-    sf::RenderWindow window{sf::VideoMode({800, 600}), "My window"};
+    sf::RenderWindow window{sf::VideoMode({1024, 576}), "My window"};
     World world{window};
 
     FpsCountrer fpsCounter;
@@ -37,6 +38,17 @@ public:
 
     void run()
     {
+        sf::Font fnt = sf::Font::openFromFile(ASSETS_DIR "/IBMPlexMono-Regular.ttf").value();
+
+        MainContainer container{window.getSize()};
+        Image& btn = container.addChild<Image>(std::string_view{ASSETS_DIR "/gui/button.png"}, sf::Vector2f{0.5f, 0.5f}, sf::Vector2f{0.5f, 0.5f});
+        Text& txt2 = btn.addChild<Text>("test\nasassdf\ni",
+                                        fnt,
+                                        sf::Vector2f{0.0f, 0.0f},
+                                        sf::Vector2f{1.f, 1.f},
+                                        TextCentering::LEFT,
+                                        TextCentering::DOWN);
+        txt2.setText("AAAAA\nGGGGG");
         clock.start();
 
         while (window.isOpen())
@@ -112,6 +124,10 @@ public:
                     world.viewCenter = mousePos - (mousePos - world.viewCenter) * ratio;
                     world.viewZoom = newZoom;
                 }
+                else if (const auto* e = event->getIf<sf::Event::Resized>())
+                {
+                    container.onResizeImpl(e->size);
+                }
             }
 
             if (inputManager.isKeyDown(sf::Keyboard::Scan::Left))
@@ -143,10 +159,14 @@ public:
             world.update(delta, inputManager);
             fpsCounter.update(delta);
 
+            container.updateImpl(inputManager);
+
             window.clear();
 
             world.render(window);
             window.draw(fpsCounter);
+
+            container.drawImpl(window);
 
             ImGui::SFML::Render(window);
 
