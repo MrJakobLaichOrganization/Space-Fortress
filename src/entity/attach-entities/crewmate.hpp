@@ -51,7 +51,6 @@ public:
         return m_name;
     }
 
-    Location targetLocation;
     float speed = 50.f;
 
     static Location posToGridLocation(Position pos, Size tileSize)
@@ -59,14 +58,14 @@ public:
         return Location{static_cast<Index>(pos.x / tileSize.x), static_cast<Index>(pos.y / tileSize.y)};
     }
 
+    Task* currentTask{};
+    ActPtr currentAct;
+
 private:
-    std::vector<Location> m_steps;
 
     std::string m_name;
     Gender m_gender;
     Time m_birthTimestamp;
-    std::unique_ptr<Task> m_currentTask;
-    Entity::Id m_currentWorkstation{Entity::invalidID};
 
     void step(sf::Time deltaTime);
     void work(sf::Time deltaTime);

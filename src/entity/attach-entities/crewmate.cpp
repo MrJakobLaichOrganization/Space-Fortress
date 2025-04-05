@@ -17,37 +17,37 @@ Crewmate::Crewmate(World* world, Id id, std::string_view name, Gender gender) :
 }
 Crewmate::~Crewmate()
 {
+    assert(!currentTask);
 }
 
 void Crewmate::update(sf::Time deltaTime) // NOLINT
 {
-    if (!m_currentTask)
-    {
-        Ship& ship = *dynamic_cast<Ship*>(parent);
+    Ship& ship = *dynamic_cast<Ship*>(parent);
 
-        if (!ship.tasks.empty())
-        {
-            m_currentTask = std::move(ship.tasks.front());
-            ship.tasks.erase(ship.tasks.begin());
-        }
-        else
+    if (!currentTask)
+    {
+        if (!ship.takeTask(*this))
         {
             return;
         }
     }
 
-    auto result = m_currentTask->resolve(*this);
-    if (auto* error = std::get_if<TaskError>(&result))
+    if (!currentAct)
     {
-        m_currentTask.reset();
+        currentAct = currentTask->start();
     }
-    else if (std::get_if<TaskDone>(&result))
+
+    if (!currentAct)
     {
-        m_currentTask.reset();
+        assert(false);
+        return;
     }
-    else if (auto* action = std::get_if<Action>(&result))
+
+    auto actStatus = currentAct->doAct(*this, deltaTime);
+    if (actStatus == Act::Status::Fail || actStatus == Act::Status::Success)
     {
-        std::visit([&](auto& act) { act.act(*this, deltaTime); }, *action);
+        ship.removeTask(*currentTask);
+        currentAct = nullptr;
     }
 }
 

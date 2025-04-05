@@ -10,58 +10,61 @@
 #include <utility>
 #include <variant>
 #include <vector>
+#include <algorithm>
 
 class Crewmate;
 
-struct ActionMove
+class Act
 {
-    Position direction{};
+public:
+    enum class Status
+    {
+        Running,
+        Success,
+        Fail
+    };
 
-    void act(Crewmate& crewmate, sf::Time deltaTime);
+    virtual Status doAct(Crewmate& crewmate, sf::Time deltaTime) = 0;
 };
 
-struct ActionTakeItem
+class MoveAct : public Act
 {
-    void act(Crewmate& crewmate, sf::Time deltaTime)
+public:
+    Position targetPos;
+    std::vector<Location> steps;
+
+    MoveAct(Position targetPos) : targetPos{targetPos}
     {
     }
+    Status doAct(Crewmate& crewmate, sf::Time deltaTime) override;
 };
 
-using Action = std::variant<ActionMove, ActionTakeItem>;
-
-struct TaskErrorCouldNotReach
-{
-};
-
-using TaskError = std::variant<TaskErrorCouldNotReach>;
-
-struct TaskDone
-{
-};
+using ActPtr = std::unique_ptr<Act>;
 
 class Task
 {
 public:
-    virtual std::optional<TaskError> onStart(const Crewmate& crewmate)
-    {
-        return {};
-    }
-    virtual std::variant<Action, TaskError, TaskDone> resolve(const Crewmate& crewmate) = 0;
-    virtual void onCancel(const Crewmate& crewmate){
+    Crewmate* worker{};
 
+    virtual ~Task()
+    {
+        assert(!worker);
     }
+
+    virtual ActPtr start() = 0;
 };
 
 class MoveTask : public Task
 {
 public:
-    MoveTask(Position targetPos) : m_targetPos{targetPos}
+    MoveTask(Position targetPos) : targetPos{targetPos}
     {
     }
 
-private:
-    std::variant<Action, TaskError, TaskDone> resolve(const Crewmate& crewmate) override;
-
-    Position m_targetPos;
-    std::vector<Location> m_steps;
+    virtual ActPtr start()
+    {
+        return std::make_unique<MoveAct>(targetPos);
+    }
+    
+    Position targetPos;
 };
