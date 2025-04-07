@@ -17,8 +17,8 @@ Act::Status MoveAct::doAct(Crewmate& crewmate, sf::Time deltaTime)
 
     if (steps.empty())
     {
-        const Location gridLocation = crewmate.posToGridLocation(currentPos, Ship::blockSize);
-        const Location targetLocation = crewmate.posToGridLocation(targetPos, Ship::blockSize);
+        const Location gridLocation = Crewmate::posToGridLocation(currentPos, Ship::blockSize);
+        const Location targetLocation = Crewmate::posToGridLocation(targetPos, Ship::blockSize);
         steps = ship->pathfind(gridLocation, targetLocation);
     }
 

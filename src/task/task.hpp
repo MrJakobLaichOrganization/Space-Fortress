@@ -25,6 +25,7 @@ public:
     };
 
     virtual Status doAct(Crewmate& crewmate, sf::Time deltaTime) = 0;
+    virtual ~Act() = default;
 };
 
 class MoveAct : public Act
@@ -52,6 +53,7 @@ public:
     }
 
     virtual ActPtr start() = 0;
+    virtual ~Task() = default;
 };
 
 class MoveTask : public Task
@@ -61,7 +63,7 @@ public:
     {
     }
 
-    virtual ActPtr start()
+    ActPtr start() override
     {
         return std::make_unique<MoveAct>(targetPos);
     }

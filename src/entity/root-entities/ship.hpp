@@ -74,6 +74,8 @@ public:
 
         task->worker = &taskee;
         taskee.currentTask = task;
+
+        return task;
     }
 
     Ship(class World* world, Id id) : RootEntity{world, id}
