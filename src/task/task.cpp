@@ -40,6 +40,6 @@ Act::Status MoveAct::doAct(Crewmate& crewmate, sf::Time deltaTime)
     }
 
     const auto dir = currentStepPosition - currentPos;
-    crewmate.step(dir, deltaTime);
+    crewmate.move(dir.normalized() * std::min(crewmate.speed * deltaTime.asSeconds(), dir.length()));
     return Status::Running;
 }
