@@ -5,12 +5,12 @@
 
 #include <SFML/System/Time.hpp>
 
+#include <algorithm>
 #include <memory>
 #include <optional>
 #include <utility>
 #include <variant>
 #include <vector>
-#include <algorithm>
 
 class Crewmate;
 
@@ -67,6 +67,6 @@ public:
     {
         return std::make_unique<MoveAct>(targetPos);
     }
-    
+
     Position targetPos;
 };

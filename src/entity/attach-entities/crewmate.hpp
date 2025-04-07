@@ -62,7 +62,6 @@ public:
     ActPtr currentAct;
 
 private:
-
     std::string m_name;
     Gender m_gender;
     Time m_birthTimestamp;
