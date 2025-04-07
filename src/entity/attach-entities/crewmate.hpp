@@ -50,8 +50,6 @@ public:
         circle.setFillColor(sf::Color{214, 202, 146, 255});
         circle.setScale({0.4f, 0.4f});
         target.draw(circle, states);
-
-
     }
 
     bool isAdult() const;
@@ -74,7 +72,8 @@ public:
         if (direction.length() > 0)
         {
             const auto targetAngle = direction.angle();
-            setRotation(sf::radians(std::lerp(getRotation().asRadians(), targetAngle.asRadians(), 5.f * deltaTime.asSeconds())));
+            setRotation(
+                sf::radians(std::lerp(getRotation().asRadians(), targetAngle.asRadians(), 5.f * deltaTime.asSeconds())));
         }
     }
 
