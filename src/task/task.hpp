@@ -53,7 +53,6 @@ public:
     }
 
     virtual ActPtr start() = 0;
-    virtual ~Task() = default;
 };
 
 class MoveTask : public Task
