@@ -19,11 +19,6 @@ Workstation::~Workstation()
     {
         return;
     }
-
-    if (auto* entity = world->findEntity<Crewmate>(entityUsing))
-    {
-        entity->clearWorkstation();
-    }
 }
 
 bool Workstation::doWork()

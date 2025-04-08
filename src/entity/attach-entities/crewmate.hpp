@@ -3,7 +3,7 @@
 #include "block.hpp"
 #include "entity/attach-entities/work.hpp"
 #include "entity/attach-entity.hpp"
-#include "task.hpp"
+#include "task/task.hpp"
 #include "time.hpp"
 
 #include <SFML/System/Vector2.hpp>
@@ -33,13 +33,24 @@ public:
     {
         states.transform *= getTransform();
 
+        /*
+        // Debug render
         sf::CircleShape circle(localBounds.size.x / 2.f);
         circle.setFillColor(sf::Color::Yellow);
         circle.setOrigin(-localBounds.position);
         target.draw(circle, states);
-    }
+        */
 
-    void clearWorkstation();
+        sf::CircleShape circle(localBounds.size.x / 2.f);
+        circle.setFillColor(sf::Color{64, 154, 201, 255});
+        circle.setOrigin(-localBounds.position);
+        circle.setScale({0.5f, 1.f});
+        target.draw(circle, states);
+
+        circle.setFillColor(sf::Color{214, 202, 146, 255});
+        circle.setScale({0.4f, 0.4f});
+        target.draw(circle, states);
+    }
 
     bool isAdult() const;
     Time getBirthTimeStamp() const
@@ -53,24 +64,29 @@ public:
         return m_name;
     }
 
-    Location targetLocation;
     float speed = 50.f;
+    void step(Position direction, sf::Time deltaTime)
+    {
+        move(direction.normalized() * std::min(speed * deltaTime.asSeconds(), direction.length()));
 
-private:
-    std::vector<Location> m_steps;
-
-    std::string m_name;
-    Gender m_gender;
-    Time m_birthTimestamp;
-    Task m_currentTask;
-    Entity::Id m_currentWorkstation{Entity::invalidID};
-
-    void step(sf::Time deltaTime);
-    void work(sf::Time deltaTime);
-    void updatePathfinding();
+        if (direction.length() > 0)
+        {
+            const auto targetAngle = direction.angle();
+            setRotation(
+                sf::radians(std::lerp(getRotation().asRadians(), targetAngle.asRadians(), 5.f * deltaTime.asSeconds())));
+        }
+    }
 
     static Location posToGridLocation(Position pos, Size tileSize)
     {
         return Location{static_cast<Index>(pos.x / tileSize.x), static_cast<Index>(pos.y / tileSize.y)};
     }
+
+    Task* currentTask{};
+    ActPtr currentAct;
+
+private:
+    std::string m_name;
+    Gender m_gender;
+    Time m_birthTimestamp;
 };

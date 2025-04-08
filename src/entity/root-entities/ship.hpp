@@ -10,7 +10,6 @@
 #include "graphics/tilemap.hpp"
 #include "pathfinding.hpp"
 #include "resources.hpp"
-#include "task.hpp"
 #include "world.hpp"
 
 class Ship : public RootEntity
@@ -31,8 +30,7 @@ public:
 
     BlockGrid grid{bounds, &tileRenderers[static_cast<int>(Layer::Floor)], &tileRenderers[static_cast<int>(Layer::Main)]};
 
-    std::vector<Task> tasks;
-    std::vector<Task> takenTasks;
+    std::vector<std::unique_ptr<Task>> tasks;
 
     template <typename T, typename... Args>
     T& addTileEntity(std::string_view archetypeName, Location location, Direction direction, Args&&... args)
@@ -44,6 +42,40 @@ public:
                                                   std::forward<Args>(args)...);
         attachChild(&tileEntity);
         return tileEntity;
+    }
+
+    template <typename T, typename... Args>
+    auto addTask(Args&&... args)
+    {
+        tasks.push_back(std::make_unique<T>(std::forward<Args...>(args)...));
+    }
+
+    void removeTask(Task& task)
+    {
+        if (task.worker)
+        {
+            task.worker->currentTask = nullptr;
+            task.worker = nullptr;
+        }
+
+        std::erase_if(tasks, [&](const auto& ptr) { return ptr.get() == &task; });
+    }
+
+    Task* takeTask(Crewmate& taskee)
+    {
+        const auto it = std::ranges::find_if(tasks, [](const auto& t) { return !t->worker; });
+        if (it == tasks.end())
+        {
+            return nullptr;
+        }
+
+        Task* task = it->get();
+        assert(!task->worker);
+
+        task->worker = &taskee;
+        taskee.currentTask = task;
+
+        return task;
     }
 
     Ship(class World* world, Id id) : RootEntity{world, id}
@@ -90,6 +122,9 @@ public:
         grid.setBlockType(grid.getBlockArchetypeIdx("Wall_MR"), {6, 6});
 
         grid.setBlockType(grid.getBlockArchetypeIdx("DoorClosed"), {2, 0});
+
+        const auto targetPosition = locationToPosition({1, 5}) + Ship::blockSize / 2.f;
+        addTask<MoveTask>(targetPosition);
 
         b2BodyDef bodyDef;
         bodyDef.type = b2_dynamicBody;

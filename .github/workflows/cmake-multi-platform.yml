@@ -173,6 +173,7 @@ jobs:
         ln -s "$(brew --prefix llvm)/bin/clang-tidy" "/usr/local/bin/clang-tidy"
         ln -s "$(brew --prefix llvm)/bin/clang-apply-replacements" "/usr/local/bin/clang-apply-replacements"
         echo /usr/local/opt/llvm/bin >> $GITHUB_PATH
+        export SDKROOT="$(xcrun --sdk macosx --show-sdk-path)"
 
     - name: Configure
       run: cmake --preset dev -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_UNITY_BUILD=ON ${{matrix.platform.flags}}
