@@ -1,7 +1,8 @@
+#include "workstation.hpp"
+
 #include "entity/attach-entities/crewmate.hpp"
 #include "entity/attach-entity.hpp"
 #include "entity/root-entities/ship.hpp"
-#include "workstation.hpp"
 
 Workstation::Workstation(World* world,
                          Entity::Id id,
