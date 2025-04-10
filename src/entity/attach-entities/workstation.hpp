@@ -4,8 +4,11 @@
 #include "entity/attach-entities/tile-entity.hpp"
 #include "entity/entity.hpp"
 #include "world.hpp"
+#include "task/task.hpp"
 
 #include <vector>
+
+class Workstation;
 
 /// @brief Job for a workstation,
 struct Bill
@@ -30,12 +33,36 @@ struct BillCompare
     }
 };
 
+class WorkstationAct : public Act
+{
+public:
+    ActPtr moveAct;
+    Workstation* workstation{};
+
+    WorkstationAct(class Workstation* workstation);
+
+    Status doAct(Crewmate& crewmate, sf::Time deltaTime) override;
+};
+
+class WorkstationTask : public Task
+{
+public:
+    Workstation* workstation;
+
+    WorkstationTask(Workstation* workstation) : workstation{workstation}
+    {
+    }
+
+    ActPtr start() override
+    {
+        return std::make_unique<WorkstationAct>(workstation);
+    }
+};
+
 class Workstation : public TileEntity
 {
 public:
-    bool inUse{false};
     Entity::Id entityUsing{0};
-    std::vector<Bill> bills;
     Direction workStandDir;
 
     Workstation(World* world,
@@ -51,13 +78,17 @@ public:
     /// @return finished the bill
     bool doWork();
 
-    template <typename Archive>
-    void add(Archive& ar)
+    void updateTask();
+
+    void addBill(Bill bill)
     {
-        ar(m_location, workStandDir, inUse, entityUsing, bills);
+        m_bills.push_back(bill);
+        updateTask();
     }
 
 private:
+    WorkstationTask* task{};
+    std::vector<Bill> m_bills;
     std::uint16_t m_workSpeed = 5; // How much ticks per work
     std::uint16_t m_workCtr = 0;
 };

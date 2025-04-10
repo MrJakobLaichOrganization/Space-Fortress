@@ -1,7 +1,7 @@
 #pragma once
 
 #include "block.hpp"
-#include "entity/attach-entities/work.hpp"
+#include "entity/attach-entities/workstation.hpp"
 #include "entity/attach-entity.hpp"
 #include "task/task.hpp"
 #include "time.hpp"

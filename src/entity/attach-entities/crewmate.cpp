@@ -46,7 +46,10 @@ void Crewmate::update(sf::Time deltaTime) // NOLINT
     auto actStatus = currentAct->doAct(*this, deltaTime);
     if (actStatus == Act::Status::Fail || actStatus == Act::Status::Success)
     {
-        ship.removeTask(*currentTask);
+        if (currentTask)
+        {
+            ship.removeTask(*currentTask);
+        }
         currentAct = nullptr;
     }
 }

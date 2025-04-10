@@ -2,7 +2,7 @@
 
 #include "block.hpp"
 #include "entity/attach-entities/crewmate.hpp"
-#include "entity/attach-entities/work.hpp"
+#include "entity/attach-entities/workstation.hpp"
 //DEBUGGING
 #include "entity/attach-entities/chest.hpp"
 #include "entity/entity.hpp"
@@ -45,9 +45,9 @@ public:
     }
 
     template <typename T, typename... Args>
-    auto addTask(Args&&... args)
+    T& addTask(Args&&... args)
     {
-        tasks.push_back(std::make_unique<T>(std::forward<Args...>(args)...));
+        return static_cast<T&>(*tasks.emplace_back(std::make_unique<T>(std::forward<Args...>(args)...)));
     }
 
     void removeTask(Task& task)
@@ -114,7 +114,7 @@ public:
 
         // Debug purposes
         auto& station = addTileEntity<Workstation>("TablePapers", {1, 6}, Direction::Up, Direction::Up);
-        station.bills.emplace_back(100);
+        station.addBill({100});
 
         addTileEntity<Chest>("Chest", {4, 3}, Direction::Up, 100);
 
@@ -123,7 +123,7 @@ public:
 
         grid.setBlockType(grid.getBlockArchetypeIdx("DoorClosed"), {2, 0});
 
-        const auto targetPosition = locationToPosition({1, 5}) + Ship::blockSize / 2.f;
+        const auto targetPosition = locationToPosition({1, 4}) + Ship::blockSize / 2.f;
         addTask<MoveTask>(targetPosition);
 
         b2BodyDef bodyDef;
