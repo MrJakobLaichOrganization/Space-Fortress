@@ -18,20 +18,20 @@ Workstation::Workstation(World* world,
 Workstation::~Workstation()
 {
     assert(!entityUsing);
-    assert(!task);
+    assert(!m_task);
 }
 
 void Workstation::updateTask()
 {
-    const bool needTask = m_bills.size() > 0;
-    if (task && !needTask)
+    const bool needTask = !m_bills.empty();
+    if (m_task && !needTask)
     {
-        dynamic_cast<Ship*>(parent)->removeTask(*task);
-        task = nullptr;
+        dynamic_cast<Ship*>(parent)->removeTask(*m_task);
+        m_task = nullptr;
     }
-    else if (!task && needTask)
+    else if (!m_task && needTask)
     {
-        task = &dynamic_cast<Ship*>(parent)->addTask<WorkstationTask>(this);
+        m_task = &dynamic_cast<Ship*>(parent)->addTask<WorkstationTask>(this);
     }
 }
 

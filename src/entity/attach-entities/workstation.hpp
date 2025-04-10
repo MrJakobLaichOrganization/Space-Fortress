@@ -87,7 +87,7 @@ public:
     }
 
 private:
-    WorkstationTask* task{};
+    WorkstationTask* m_task{};
     std::vector<Bill> m_bills;
     std::uint16_t m_workSpeed = 5; // How much ticks per work
     std::uint16_t m_workCtr = 0;
