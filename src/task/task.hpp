@@ -51,7 +51,7 @@ public:
     template <typename... Args>
     ActSequence(Args&&... args)
     {
-        (acts.push_back(std::move(args)), ...);
+        (acts.push_back(std::forward<Args>(args)), ...);
     }
 
     ActSequence(ActSequence&&) = default;
@@ -64,18 +64,14 @@ public:
         if (act)
         {
             auto result = act->doAct(crewmate, deltaTime);
-            if (result != Status::Success)
-            {
-                return result;
-            }
-            else if (result == Status::Success)
+            if (result == Status::Success)
             {
                 act = nullptr;
                 actIndex++;
             }
             else
             {
-                assert(false);
+                return result;
             }
         }
 

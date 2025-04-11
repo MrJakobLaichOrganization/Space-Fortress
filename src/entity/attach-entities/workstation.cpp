@@ -69,7 +69,7 @@ WorkstationAct::WorkstationAct(Workstation* workstation) : workstation{workstati
 {
 }
 
-Act::Status WorkstationAct::doAct(Crewmate& crewmate, sf::Time deltaTime)
+Act::Status WorkstationAct::doAct(Crewmate&, sf::Time)
 {
     if (workstation->doWork())
     {
