@@ -1,6 +1,8 @@
+#include "workstation.hpp"
+
 #include "entity/attach-entities/crewmate.hpp"
 #include "entity/attach-entity.hpp"
-#include "work.hpp"
+#include "entity/root-entities/ship.hpp"
 
 Workstation::Workstation(World* world,
                          Entity::Id id,
@@ -15,27 +17,64 @@ Workstation::Workstation(World* world,
 }
 Workstation::~Workstation()
 {
-    if (!inUse)
+    assert(!entityUsing);
+    assert(!m_task);
+}
+
+void Workstation::updateTask()
+{
+    const bool needTask = !m_bills.empty();
+    if (m_task && !needTask)
     {
-        return;
+        dynamic_cast<Ship*>(parent)->removeTask(*m_task);
+        m_task = nullptr;
+    }
+    else if (!m_task && needTask)
+    {
+        m_task = &dynamic_cast<Ship*>(parent)->addTask<WorkstationTask>(this);
     }
 }
 
 bool Workstation::doWork()
 {
-    if (bills.empty())
+    if (m_bills.empty())
         return false;
 
     m_workCtr++;
     if (m_workCtr < m_workSpeed)
         return false;
 
-    bills[0].workDone++;
+    m_bills[0].workDone++;
     m_workCtr = 0;
-    if (bills[0].workDone >= bills[0].workMax)
+    if (m_bills[0].workDone >= m_bills[0].workMax)
     {
-        bills.erase(bills.begin());
+        m_bills.erase(m_bills.begin());
+        updateTask();
         return true;
     }
     return false;
+}
+
+ActPtr WorkstationTask::start()
+{
+    auto ship = dynamic_cast<Ship*>(workstation->parent);
+    const auto targetLocation = workstation->getLocation() + directionToLocation(workstation->workStandDir);
+    const auto targetPosition = ship->locationToPosition(targetLocation) + Ship::blockSize / 2.f;
+
+    return std::make_unique<ActSequence>(std::make_unique<MoveAct>(targetPosition),
+                                         std::make_unique<WorkstationAct>(workstation));
+}
+
+WorkstationAct::WorkstationAct(Workstation* workstation) : workstation{workstation}
+{
+}
+
+Act::Status WorkstationAct::doAct(Crewmate&, sf::Time)
+{
+    if (workstation->doWork())
+    {
+        return Status::Success;
+    }
+
+    return Status::Running;
 }

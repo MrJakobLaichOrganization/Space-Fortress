@@ -42,7 +42,7 @@ World::World(sf::RenderWindow& window, b2Vec2 gravity) : m_gravity(gravity)
     firstShip.attachChild(&crewmate);
 
     auto& crewmate2 = createEntity<Crewmate>("crewmate #2");
-    crewmate2.move({76.f, 94.f});
+    crewmate2.move({98.f, 94.f});
     firstShip.attachChild(&crewmate2);
 
     //firstShip.addTileEntity<Thruster>("Thruster", {2, 8}, Direction::Down);

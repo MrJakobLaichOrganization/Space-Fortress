@@ -42,6 +42,48 @@ public:
 
 using ActPtr = std::unique_ptr<Act>;
 
+class ActSequence : public Act
+{
+public:
+    std::vector<ActPtr> acts;
+    std::size_t actIndex{};
+
+    template <typename... Args>
+    ActSequence(Args&&... args)
+    {
+        (acts.push_back(std::forward<Args>(args)), ...);
+    }
+
+    ActSequence(ActSequence&&) = default;
+
+    Status doAct(Crewmate& crewmate, sf::Time deltaTime) override
+    {
+        assert(actIndex < acts.size());
+
+        auto& act = acts[actIndex];
+        if (act)
+        {
+            auto result = act->doAct(crewmate, deltaTime);
+            if (result == Status::Success)
+            {
+                act = nullptr;
+                actIndex++;
+            }
+            else
+            {
+                return result;
+            }
+        }
+
+        if (actIndex >= acts.size())
+        {
+            return Status::Success;
+        }
+
+        return Status::Running;
+    }
+};
+
 class Task
 {
 public:
