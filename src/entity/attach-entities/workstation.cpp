@@ -55,26 +55,22 @@ bool Workstation::doWork()
     return false;
 }
 
-WorkstationAct::WorkstationAct(Workstation* workstation) : workstation{workstation}
+ActPtr WorkstationTask::start()
 {
     auto ship = dynamic_cast<Ship*>(workstation->parent);
     const auto targetLocation = workstation->getLocation() + directionToLocation(workstation->workStandDir);
     const auto targetPosition = ship->locationToPosition(targetLocation) + Ship::blockSize / 2.f;
-    moveAct = std::make_unique<MoveAct>(targetPosition);
+
+    return std::make_unique<ActSequence>(std::make_unique<MoveAct>(targetPosition),
+                                         std::make_unique<WorkstationAct>(workstation));
+}
+
+WorkstationAct::WorkstationAct(Workstation* workstation) : workstation{workstation}
+{
 }
 
 Act::Status WorkstationAct::doAct(Crewmate& crewmate, sf::Time deltaTime)
 {
-    if (moveAct)
-    {
-        auto result = moveAct->doAct(crewmate, deltaTime);
-        if (result != Status::Running)
-        {
-            moveAct = nullptr;
-        }
-        return result;
-    }
-
     if (workstation->doWork())
     {
         return Status::Success;

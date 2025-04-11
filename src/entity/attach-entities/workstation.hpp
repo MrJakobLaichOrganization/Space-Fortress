@@ -36,7 +36,6 @@ struct BillCompare
 class WorkstationAct : public Act
 {
 public:
-    ActPtr moveAct;
     Workstation* workstation{};
 
     WorkstationAct(class Workstation* workstation);
@@ -53,10 +52,7 @@ public:
     {
     }
 
-    ActPtr start() override
-    {
-        return std::make_unique<WorkstationAct>(workstation);
-    }
+    ActPtr start() override;
 };
 
 class Workstation : public TileEntity
