@@ -50,7 +50,7 @@ void Crewmate::update(sf::Time deltaTime) // NOLINT
         {
             ship.removeTask(*currentTask);
         }
-        
+
         currentAct = nullptr;
     }
 }
