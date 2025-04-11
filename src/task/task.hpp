@@ -64,23 +64,23 @@ public:
         if (act)
         {
             auto result = act->doAct(crewmate, deltaTime);
-            if (result != Status::Success)
+            if (result == Status::Success)
+            {
+                act = nullptr;
+                actIndex++;
+            }
+            else
             {
                 return result;
             }
-
-            act = nullptr;
-            actIndex++;
         }
 
         if (actIndex >= acts.size())
         {
             return Status::Success;
         }
-        else
-        {
-            return Status::Running;
-        }
+
+        return Status::Running;
     }
 };
 
