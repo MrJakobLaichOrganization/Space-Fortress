@@ -41,7 +41,9 @@ public:
         sf::Font fnt = sf::Font::openFromFile(ASSETS_DIR "/IBMPlexMono-Regular.ttf").value();
 
         MainContainer container{window.getSize()};
-        Image& btn = container.addChild<Image>(std::string_view{ASSETS_DIR "/gui/button.png"}, sf::Vector2f{0.5f, 0.5f}, sf::Vector2f{0.5f, 0.5f});
+        Image& btn = container.addChild<Image>(std::string_view{ASSETS_DIR "/gui/button.png"},
+                                               sf::Vector2f{0.5f, 0.5f},
+                                               sf::Vector2f{0.5f, 0.5f});
         Text& txt2 = btn.addChild<Text>("test\nasassdf\ni",
                                         fnt,
                                         sf::Vector2f{0.0f, 0.0f},
