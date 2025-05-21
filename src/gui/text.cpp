@@ -54,12 +54,14 @@ void Text::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
     for (const auto& line : m_lines)
     {
-        target.draw(line);
+        target.draw(line, states);
     }
+    GuiElement::draw(target, states);
 }
 void Text::onResize(sf::Vector2u newDims)
 {
     updateDimensions();
+    GuiElement::onResize(newDims);
 }
 
 void Text::setText(std::string_view text)

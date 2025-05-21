@@ -11,23 +11,40 @@
 #include <functional>
 #include <inputmanager.hpp>
 #include <memory>
+#include <set>
 #include <string_view>
+#include <utility>
 #include <vector>
 
 #include <cstdint>
 
 class GuiElement : public sf::Drawable
 {
+public:
+    enum Features : std::uint8_t
+    {
+        FEAT_CLICKABLE = 1 << 0,
+        FEAT_CLICKPASS = 1 << 1
+    };
+
 protected:
     GuiElement* m_parent;
     sf::Vector2f m_position;
     sf::Vector2f m_dims;
-    std::vector<std::unique_ptr<GuiElement>> children;
+    std::vector<std::unique_ptr<GuiElement>> m_children;
+    Features m_features;
+    std::int32_t m_zPos; // The bigger zpos the topmost it is
 
-    GuiElement(sf::Vector2f position, sf::Vector2f dims, GuiElement* parent = nullptr) :
+    GuiElement(sf::Vector2f position, sf::Vector2f dims, Features feats, GuiElement* parent = nullptr) :
         m_position{position},
         m_dims{dims},
-        m_parent{parent}
+        m_parent{parent},
+        m_features{feats},
+        m_zPos(parent ? parent->getZpos() + 1 : 0)
+    {
+    }
+    GuiElement(sf::Vector2f position, sf::Vector2f dims, GuiElement* parent = nullptr) :
+        GuiElement(position, dims, static_cast<Features>(0), parent)
     {
     }
 
@@ -53,45 +70,60 @@ protected:
 public:
     virtual ~GuiElement() = default;
 
-    void drawImpl(sf::RenderWindow& wind)
-    {
-        wind.draw(*this);
-
-        for (auto& child : children)
-        {
-            child->drawImpl(wind);
-        }
-    }
-    void updateImpl(InputManager& inp)
-    {
-        update(inp);
-        for (auto& child : children)
-        {
-            child->updateImpl(inp);
-        }
-    }
-    void onResizeImpl(sf::Vector2u newDims)
-    {
-        onResize(newDims);
-        for (auto& child : children)
-        {
-            child->onResizeImpl(newDims);
-        }
-    }
-
     template <typename T, typename... Args>
     T& addChild(Args&&... args)
     {
-        children.push_back(std::make_unique<T>(std::forward<Args>(args)..., this));
-        return static_cast<T&>(*children.back());
+        m_children.push_back(std::make_unique<T>(std::forward<Args>(args)..., this));
+        onChildAdded(m_children.back().get());
+        return static_cast<T&>(*m_children.back());
     }
 
-    virtual void update(InputManager& input)
+    virtual void update(InputManager& manager)
     {
+        for (auto& child : m_children)
+        {
+            child->update(manager);
+        }
     }
-    // On screen resize (do not call this manually)
     virtual void onResize(sf::Vector2u newDims)
     {
+        for (auto& child : m_children)
+        {
+            child->onResize(newDims);
+        }
+    }
+    void draw(sf::RenderTarget& target, sf::RenderStates states) const override
+    {
+        for (auto& child : m_children)
+        {
+            child->draw(target, states);
+        }
+    }
+    virtual void onClick(InputManager& manager)
+    {
+    }
+    virtual void onChildAdded(GuiElement* el)
+    {
+        if (m_parent)
+        {
+            m_parent->onChildAdded(el);
+        }
+    }
+
+    [[nodiscard]] bool hasFeature(Features feat) const
+    {
+        return (m_features & feat) != 0;
+    }
+    void setFeature(Features feat, bool on = true)
+    {
+        if (on)
+        {
+            m_features = static_cast<Features>(std::to_underlying(m_features) | std::to_underlying(feat));
+        }
+        else
+        {
+            m_features = static_cast<Features>(std::to_underlying(m_features) ^ ~std::to_underlying(feat));
+        }
     }
 
     // Effective pos of element in pixels
@@ -107,19 +139,29 @@ public:
         auto parentSz = m_parent->pixelSize();
         return {parentSz.x * m_dims.x, parentSz.y * m_dims.y};
     }
+    [[nodiscard]] std::int32_t getZpos() const
+    {
+        return m_zPos;
+    }
+
+    struct ZposSorter
+    {
+        constexpr bool operator()(const GuiElement* first, const GuiElement* second) const
+        {
+            return first->getZpos() > second->getZpos();
+        }
+    };
 };
 
 // Empty container
 class MainContainer : public GuiElement
 {
+private:
+    std::set<GuiElement*, GuiElement::ZposSorter> m_allElements;
+
 public:
     MainContainer(sf::Vector2u screenDims) : m_screenDims{screenDims}, GuiElement({}, {1.f, 1.f})
     {
-    }
-
-    void onResize(sf::Vector2u newSize) override
-    {
-        m_screenDims = newSize;
     }
 
     [[nodiscard]] sf::Vector2f pixelPos() const override
@@ -131,8 +173,46 @@ public:
         return sf::Vector2f{m_screenDims.x * m_dims.x, m_screenDims.y * m_dims.y};
     }
 
-    void draw(sf::RenderTarget& _target, sf::RenderStates _states) const override
+    void draw(sf::RenderTarget& target, sf::RenderStates states) const override
     {
+        GuiElement::draw(target, states);
+    }
+    void update(InputManager& manager) override
+    {
+        GuiElement::update(manager);
+    }
+    void onResize(sf::Vector2u newDims) override
+    {
+        m_screenDims = newDims;
+
+        GuiElement::onResize(newDims);
+    }
+    void onClick(InputManager& manager) override
+    {
+        for (auto& element : m_allElements)
+        {
+            if (!element->hasFeature(FEAT_CLICKABLE))
+                continue;
+            if(manager.screenMousePos.x < element->pixelPos().x || manager.screenMousePos.y > element->pixelPos().x + element->pixelSize().x)
+            {
+                continue;
+            }
+            if(manager.screenMousePos.y < element->pixelPos().y || manager.screenMousePos.y > element->pixelPos().y + element->pixelSize().y)
+            {
+                continue;
+            }
+
+            element->onClick(manager);
+            if (!element->hasFeature(FEAT_CLICKPASS))
+            {
+                break;
+            }
+        }
+    }
+    void onChildAdded(GuiElement* child) override
+    {
+        GuiElement::onChildAdded(child);
+        m_allElements.insert(child);
     }
 
 protected:
@@ -143,48 +223,15 @@ protected:
     }
 };
 
-class TextButton : public GuiElement
+class Button : public GuiElement
 {
 public:
-    TextButton(std::string_view text, const sf::Font& font, sf::Vector2f loc, sf::Vector2f dim, GuiElement* parent = nullptr);
+    Button(sf::Vector2f loc, sf::Vector2f dim, GuiElement* parent = nullptr);
 
     void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
     void update(InputManager& input) override;
     void onResize(sf::Vector2u newDims) override;
-
-    void setHover(std::function<void()> callback)
-    {
-        m_onHover = callback;
-    }
-    void setClick(std::function<void()> callback)
-    {
-        m_onClick = callback;
-    }
-
-    void setPos(sf::Vector2f position);
-    void setText(std::string_view text);
-
-private:
-    void updateTextDimensions();
-
-    std::function<void()> m_onHover;
-    std::function<void()> m_onClick;
-
-    const sf::Texture m_bgTx{sf::Texture::loadFromFile(ASSETS_DIR "/Gui/button_bg.png").value()};
-    sf::Sprite m_background{m_bgTx};
-
-    sf::Text m_text;
-    bool m_lastPressed{};
-    bool m_hovering{};
-};
-class ImageButton : public GuiElement
-{
-public:
-    ImageButton(std::string_view imgDir, sf::Vector2f loc, sf::Vector2f dim, GuiElement* parent = nullptr);
-
-    void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
-    void update(InputManager& input) override;
-    void onResize(sf::Vector2u newDims) override;
+    void onClick(InputManager& manager) override;
 
     void setHover(std::function<void()> callback)
     {
@@ -198,16 +245,12 @@ public:
     void setPos(sf::Vector2f position);
 
 private:
-    void updateImageDimensions();
-
     std::function<void()> m_onHover;
     std::function<void()> m_onClick;
 
-    const sf::Texture m_bgTx{sf::Texture::loadFromFile(ASSETS_DIR "/Gui/button_bg.png").value()};
+    const sf::Texture m_bgTx{sf::Texture::loadFromFile(ASSETS_DIR "/gui/button_bg.png").value()};
     sf::Sprite m_background{m_bgTx};
 
-    sf::Texture m_spriteTx;
-    sf::Sprite m_img;
     bool m_lastPressed{};
     bool m_hovering{};
 };
@@ -250,7 +293,7 @@ public:
          TextCentering verticalCentering,
          GuiElement* parent = nullptr);
 
-    void draw(sf::RenderTarget& target, sf::RenderStates states) const;
+    void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
     void onResize(sf::Vector2u newDims) override;
 
     [[nodiscard]] const std::string& getText() const

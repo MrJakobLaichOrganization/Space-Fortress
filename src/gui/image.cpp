@@ -22,6 +22,7 @@ Image::Image(std::string_view imgPath, sf::Vector2f position, sf::Vector2f dims,
 void Image::onResize(sf::Vector2u newDims)
 {
     updateImageDimensions();
+    GuiElement::onResize(newDims);
 }
 
 void Image::setPos(sf::Vector2f newPos)
@@ -49,7 +50,8 @@ void Image::setImage(std::string_view imgPath)
 }
 void Image::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
-    target.draw(m_sprite);
+    target.draw(m_sprite, states);
+    GuiElement::draw(target, states);
 }
 void Image::updateImageDimensions()
 {

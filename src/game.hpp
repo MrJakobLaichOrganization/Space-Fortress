@@ -5,6 +5,7 @@
 #include "inputmanager.hpp"
 #include "world.hpp"
 
+#include <SFML/Graphics/RenderStates.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
 
 #include <imgui-SFML.h>
@@ -41,15 +42,17 @@ public:
         sf::Font fnt = sf::Font::openFromFile(ASSETS_DIR "/IBMPlexMono-Regular.ttf").value();
 
         MainContainer container{window.getSize()};
-        Image& btn = container.addChild<Image>(std::string_view{ASSETS_DIR "/gui/button.png"},
-                                               sf::Vector2f{0.5f, 0.5f},
-                                               sf::Vector2f{0.5f, 0.5f});
+        Button& btn = container.addChild<Button>(sf::Vector2f{0.5f, 0.5f}, sf::Vector2f{0.5f, 0.5f});
+        Button& btn2 = btn.addChild<Button>(sf::Vector2f{0.f, 0.f}, sf::Vector2f{1.f, 1.f});
+        btn2.setFeature(GuiElement::FEAT_CLICKPASS);
+        btn.setClick([]() { std::cout << "Click\n"; });
+        btn2.setClick([]() { std::cout << "Click2\n"; });
         Text& txt2 = btn.addChild<Text>("test\nasassdf\ni",
                                         fnt,
                                         sf::Vector2f{0.0f, 0.0f},
                                         sf::Vector2f{1.f, 1.f},
-                                        TextCentering::LEFT,
-                                        TextCentering::DOWN);
+                                        TextCentering::CENTER,
+                                        TextCentering::CENTER);
         txt2.setText("AAAAA\nGGGGG");
         clock.start();
 
@@ -94,6 +97,7 @@ public:
                     if (e->button == sf::Mouse::Button::Left)
                     {
                         inputManager.leftMouseButonDown = true;
+                        container.onClick(inputManager);
                     }
                     else if (e->button == sf::Mouse::Button::Right)
                     {
@@ -128,7 +132,7 @@ public:
                 }
                 else if (const auto* e = event->getIf<sf::Event::Resized>())
                 {
-                    container.onResizeImpl(e->size);
+                    container.onResize(e->size);
                 }
             }
 
@@ -161,14 +165,14 @@ public:
             world.update(delta, inputManager);
             fpsCounter.update(delta);
 
-            container.updateImpl(inputManager);
+            container.update(inputManager);
 
             window.clear();
 
             world.render(window);
             window.draw(fpsCounter);
 
-            container.drawImpl(window);
+            container.draw(window, sf::RenderStates::Default);
 
             ImGui::SFML::Render(window);
 
