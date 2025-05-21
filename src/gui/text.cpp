@@ -7,7 +7,7 @@ std::vector<std::string> splitStrLines(std::string_view str)
     std::vector<std::string> ret;
     std::string tmp;
 
-    for (char ch : str)
+    for (const char ch : str)
     {
         if (ch == '\n')
         {

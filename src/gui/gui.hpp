@@ -146,7 +146,7 @@ public:
 
     struct ZposSorter
     {
-        constexpr bool operator()(const GuiElement* first, const GuiElement* second) const
+        bool operator()(const GuiElement* first, const GuiElement* second) const
         {
             return first->getZpos() > second->getZpos();
         }
