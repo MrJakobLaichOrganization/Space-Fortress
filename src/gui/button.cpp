@@ -3,8 +3,6 @@
 
 #include <SFML/System/Vector2.hpp>
 
-#include <iostream>
-
 namespace
 {
 [[nodiscard]] sf::Vector2f newSpriteScale(const sf::Sprite& sprite, sf::Vector2u desiredSize)
@@ -78,7 +76,7 @@ void Button::update(InputManager& input)
     m_lastPressed = input.leftMouseButonDown;
 }
 
-void Button::onResize(sf::Vector2u newScreenSize)
+void Button::onResize(sf::Vector2u newDims)
 {
     const auto centerPos = calculateCenter();
 
@@ -87,7 +85,7 @@ void Button::onResize(sf::Vector2u newScreenSize)
     m_background.setScale(
         newSpriteScale(m_background, sf::Vector2u(m_dims.x * getScreenDims().x, m_dims.y * getScreenDims().y)));
 
-    GuiElement::onResize(newScreenSize);
+    GuiElement::onResize(newDims);
 }
 void Button::onClick(InputManager&)
 {

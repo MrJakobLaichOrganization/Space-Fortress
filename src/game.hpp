@@ -39,11 +39,11 @@ public:
 
     void run()
     {
-        sf::Font fnt = sf::Font::openFromFile(ASSETS_DIR "/IBMPlexMono-Regular.ttf").value();
+        const sf::Font fnt = sf::Font::openFromFile(ASSETS_DIR "/IBMPlexMono-Regular.ttf").value();
 
         MainContainer container{window.getSize()};
-        Button& btn = container.addChild<Button>(sf::Vector2f{0.5f, 0.5f}, sf::Vector2f{0.5f, 0.5f});
-        Button& btn2 = btn.addChild<Button>(sf::Vector2f{0.f, 0.f}, sf::Vector2f{1.f, 1.f});
+        auto& btn = container.addChild<Button>(sf::Vector2f{0.5f, 0.5f}, sf::Vector2f{0.5f, 0.5f});
+        auto& btn2 = btn.addChild<Button>(sf::Vector2f{0.f, 0.f}, sf::Vector2f{1.f, 1.f});
         btn2.setFeature(GuiElement::FEAT_CLICKPASS);
         btn.setClick([]() { std::cout << "Click\n"; });
         btn2.setClick([]() { std::cout << "Click2\n"; });

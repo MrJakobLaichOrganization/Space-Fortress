@@ -7,18 +7,18 @@ std::vector<std::string> splitStrLines(std::string_view str)
     std::vector<std::string> ret;
     std::string tmp;
 
-    for (auto it = str.begin(); it != str.end(); ++it)
+    for (char ch : str)
     {
-        if (*it == '\n')
+        if (ch == '\n')
         {
             ret.push_back(tmp);
             tmp.clear();
             continue;
         }
 
-        tmp += *it;
+        tmp += ch;
     }
-    if (tmp.size())
+    if (!tmp.empty())
     {
         ret.push_back(tmp);
     }
@@ -44,7 +44,7 @@ Text::Text(std::string_view text,
 
     for (const auto& line : lines)
     {
-        m_lines.push_back(sf::Text(font, line));
+        m_lines.emplace_back(font, line);
         m_lines.back().setFillColor({0, 0, 0});
     }
     updateDimensions();
@@ -72,7 +72,7 @@ void Text::setText(std::string_view text)
 
     for (const auto& line : lines)
     {
-        m_lines.push_back(sf::Text(m_font, line));
+        m_lines.emplace_back(m_font, line);
         m_lines.back().setFillColor({0, 0, 0});
     }
     updateDimensions();
@@ -97,6 +97,8 @@ void Text::updateDimensions()
                 break;
             case TextCentering::RIGHT:
                 line.setPosition({size.x + position.x - txtSize.x, 0});
+                break;
+            default:
                 break;
         }
         line.setFillColor({0, 0, 0});
@@ -123,6 +125,8 @@ void Text::updateDimensions()
                 break;
             case TextCentering::DOWN:
                 line.setPosition({line.getPosition().x, position.y + size.y - totalTextH - yPadding + yOff});
+                break;
+            default:
                 break;
         }
         yOff += lineSize.y + yPadding;

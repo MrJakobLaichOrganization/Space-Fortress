@@ -68,7 +68,7 @@ protected:
     }
 
 public:
-    virtual ~GuiElement() = default;
+    ~GuiElement() override = default;
 
     template <typename T, typename... Args>
     T& addChild(Args&&... args)
@@ -235,11 +235,11 @@ public:
 
     void setHover(std::function<void()> callback)
     {
-        m_onHover = callback;
+        m_onHover = std::move(callback);
     }
     void setClick(std::function<void()> callback)
     {
-        m_onClick = callback;
+        m_onClick = std::move(callback);
     }
 
     void setPos(sf::Vector2f position);
