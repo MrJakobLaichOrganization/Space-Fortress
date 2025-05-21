@@ -27,7 +27,7 @@ public:
     /// @param itemID - ID of the item to add
     /// @param amt - amount of items to add
     /// @return number of items removed (less than amount if not enough of them)
-    std::uint32_t remove(ItemType::Id itemID, int amt = 1);
+    std::uint32_t remove(ItemType::Id typeId, int amt = 1);
 
 private:
     std::uint64_t m_capacity; // Weight capacity
