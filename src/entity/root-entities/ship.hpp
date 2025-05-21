@@ -288,7 +288,7 @@ public:
             }
 
             const auto pos = locationToPosition(workstation->getLocation()) + blockSize / 2.f;
-            
+
             sf::RectangleShape background({blockSize.x * 0.8f, blockSize.y * 0.2f});
             background.setOrigin({0.f, background.getSize().y});
             background.setFillColor(sf::Color::Black);

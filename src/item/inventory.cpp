@@ -65,7 +65,9 @@ int Inventory::add(ItemType::Id typeId, int amt)
 }
 std::uint32_t Inventory::remove(ItemType::Id typeId, int amt)
 {
-    auto itmSlot = std::find_if(m_items.begin(), m_items.end(), [typeId](ItemSlot& slot) { return slot.item.type == typeId; });
+    auto itmSlot = std::find_if(m_items.begin(),
+                                m_items.end(),
+                                [typeId](ItemSlot& slot) { return slot.item.type == typeId; });
     if (itmSlot == m_items.end())
     {
         return 0;

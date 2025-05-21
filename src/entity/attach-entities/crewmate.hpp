@@ -3,9 +3,9 @@
 #include "block.hpp"
 #include "entity/attach-entities/workstation.hpp"
 #include "entity/attach-entity.hpp"
+#include "item/inventory.hpp"
 #include "task/task.hpp"
 #include "time.hpp"
-#include "item/inventory.hpp"
 
 #include <SFML/System/Vector2.hpp>
 
