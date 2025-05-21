@@ -6,7 +6,7 @@
 
 #include <cstdint>
 
-struct Item
+struct ItemType
 {
     using Id = std::uint32_t;
 
@@ -15,8 +15,8 @@ struct Item
     std::string description;
     std::uint32_t weight{};
 
-    Item() = default;
-    Item(Id itemID, std::string_view itmName, std::string_view desc, std::uint32_t weigh) :
+    ItemType() = default;
+    ItemType(Id itemID, std::string_view itmName, std::string_view desc, std::uint32_t weigh) :
         id(itemID),
         name{itmName},
         description{desc},
@@ -25,16 +25,22 @@ struct Item
     }
 };
 
-class ItemDatabase
+struct Item
+{
+    ItemType::Id type{};
+    int count{};
+};
+
+class ItemTypeDatabase
 {
 private:
-    static std::unordered_map<Item::Id, Item> items;
-    static Item::Id nextItemID;
+    static std::unordered_map<ItemType::Id, ItemType> itemTypes;
+    static ItemType::Id nextItemTypeID;
 
 public:
-    static Item::Id registerItem(std::string_view name, std::string_view description, std::uint32_t weight = 1);
+    static ItemType::Id registerItemType(std::string_view name, std::string_view description, std::uint32_t weight = 1);
     /// @brief Tries to find item
     /// @param id - id of the wanted item
     /// @return pointer to the item, nullptr if not found
-    [[nodiscard]] static const Item* findItem(Item::Id id);
+    [[nodiscard]] static const ItemType* findItemType(ItemType::Id id);
 };

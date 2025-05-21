@@ -5,6 +5,7 @@
 #include "entity/entity.hpp"
 #include "task/task.hpp"
 #include "world.hpp"
+#include "item/item.hpp"
 
 #include <vector>
 
@@ -13,6 +14,8 @@ class Workstation;
 /// @brief Job for a workstation,
 struct Bill
 {
+    Item itemToMake;
+
     std::uint16_t workDone{0};
     std::uint16_t workMax;
     /// @brief Priority: 1 - lowest, 9 - highest

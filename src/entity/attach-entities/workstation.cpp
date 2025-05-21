@@ -40,9 +40,15 @@ bool Workstation::doWork()
     if (m_bills.empty())
         return false;
 
-    m_bills[0].workDone += m_workSpeed;
-    if (m_bills[0].workDone >= m_bills[0].workMax)
+    auto& bill = m_bills[0];
+    bill.workDone += m_workSpeed;
+    if (bill.workDone >= bill.workMax)
     {
+        if (auto worker = dynamic_cast<Crewmate*>(world->findEntity(entityUsing)))
+        {
+            worker->inventory.add(bill.itemToMake.type, bill.itemToMake.count);
+        }
+
         m_bills.erase(m_bills.begin());
         updateTask();
         return true;
@@ -64,8 +70,9 @@ WorkstationAct::WorkstationAct(Workstation* workstation) : workstation{workstati
 {
 }
 
-Act::Status WorkstationAct::doAct(Crewmate&, sf::Time)
+Act::Status WorkstationAct::doAct(Crewmate& crewmate, sf::Time)
 {
+    workstation->entityUsing = crewmate.id;
     if (workstation->doWork())
     {
         return Status::Success;

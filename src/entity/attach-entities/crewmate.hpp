@@ -5,6 +5,7 @@
 #include "entity/attach-entity.hpp"
 #include "task/task.hpp"
 #include "time.hpp"
+#include "item/inventory.hpp"
 
 #include <SFML/System/Vector2.hpp>
 
@@ -84,6 +85,8 @@ public:
 
     Task* currentTask{};
     ActPtr currentAct;
+
+    Inventory inventory{9999999};
 
 private:
     std::string m_name;
