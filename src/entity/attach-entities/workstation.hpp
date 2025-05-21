@@ -50,6 +50,7 @@ public:
 
     WorkstationTask(Workstation* workstation) : workstation{workstation}
     {
+        removeOnSuccess = false;
     }
 
     ActPtr start() override;
