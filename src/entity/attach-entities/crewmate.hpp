@@ -3,6 +3,7 @@
 #include "block.hpp"
 #include "entity/attach-entities/workstation.hpp"
 #include "entity/attach-entity.hpp"
+#include "item/inventory.hpp"
 #include "task/task.hpp"
 #include "time.hpp"
 
@@ -84,6 +85,8 @@ public:
 
     Task* currentTask{};
     ActPtr currentAct;
+
+    Inventory inventory{9999999};
 
 private:
     std::string m_name;

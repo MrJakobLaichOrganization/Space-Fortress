@@ -89,6 +89,8 @@ class Task
 public:
     Crewmate* worker{};
 
+    bool removeOnSuccess{true};
+
     virtual ~Task()
     {
         assert(!worker);

@@ -103,6 +103,8 @@ public:
     Entity::Id rootEntityUnderMouse{};
     Entity::Id attachEntityUnderMouse{};
 
+    sf::RectangleShape hoverRect;
+
 private:
     b2Vec2 m_gravity{0, 0};
     std::unique_ptr<b2World> m_world;

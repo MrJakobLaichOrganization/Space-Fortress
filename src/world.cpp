@@ -83,6 +83,8 @@ void World::update(sf::Time deltaTime, InputManager& inputManager)
         entity->postPhysics();
     }
 
+    hoverRect = sf::RectangleShape{};
+
     if (const auto bodyUnderMouse = Box2dUtils::findBodyAtPoint(*m_world, toBox2d(inputManager.worldMousePos)))
     {
         if (auto* rootEntity = dynamic_cast<RootEntity*>(bodyUnderMouse->GetUserData().entity))
@@ -100,6 +102,19 @@ void World::update(sf::Time deltaTime, InputManager& inputManager)
                     attachEntityUnderMouse = child->id;
                     break;
                 }
+            }
+
+            if (auto ship = dynamic_cast<Ship*>(rootEntity))
+            {
+                const Location gridLocation = Crewmate::posToGridLocation(entityLocalMouse, Ship::blockSize);
+                const auto pos = ship->locationToPosition(gridLocation);
+
+                hoverRect.setRotation(ship->getRotation());
+                hoverRect.setPosition(ship->getTransform() * pos);
+                hoverRect.setSize(Ship::blockSize);
+                hoverRect.setOutlineThickness(5.f);
+                hoverRect.setOutlineColor(sf::Color::Red);
+                hoverRect.setFillColor(sf::Color::Transparent);
             }
         }
     }
@@ -127,6 +142,8 @@ void World::render(sf::RenderWindow& window)
     {
         m_world->DebugDraw();
     }
+
+    window.draw(hoverRect);
 
     showDebugMenu();
 }

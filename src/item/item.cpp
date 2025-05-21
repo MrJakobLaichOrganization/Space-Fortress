@@ -1,18 +1,18 @@
 #include "item.hpp"
 
-std::unordered_map<Item::Id, Item> ItemDatabase::items;
-Item::Id ItemDatabase::nextItemID{};
+std::unordered_map<ItemType::Id, ItemType> ItemTypeDatabase::itemTypes;
+ItemType::Id ItemTypeDatabase::nextItemTypeID{};
 
-Item::Id ItemDatabase::registerItem(std::string_view name, std::string_view description, std::uint32_t weight)
+ItemType::Id ItemTypeDatabase::registerItemType(std::string_view name, std::string_view description, std::uint32_t weight)
 {
-    items.insert(std::make_pair(nextItemID, Item(nextItemID, name, description, weight)));
+    itemTypes.insert(std::make_pair(nextItemTypeID, ItemType(nextItemTypeID, name, description, weight)));
 
-    nextItemID++;
+    nextItemTypeID++;
 
-    return nextItemID - 1;
+    return nextItemTypeID - 1;
 }
-const Item* ItemDatabase::findItem(Item::Id id)
+const ItemType* ItemTypeDatabase::findItemType(ItemType::Id id)
 {
-    auto iter = items.find(id);
-    return iter == items.end() ? nullptr : &iter->second;
+    auto iter = itemTypes.find(id);
+    return iter == itemTypes.end() ? nullptr : &iter->second;
 }

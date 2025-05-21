@@ -115,6 +115,8 @@ public:
         // Debug purposes
         auto& station = addTileEntity<Workstation>("TablePapers", {1, 6}, Direction::Up, Direction::Up);
         station.addBill({100});
+        station.addBill({100});
+        station.addBill({100});
 
         addTileEntity<Chest>("Chest", {4, 3}, Direction::Up, 100);
 
@@ -275,6 +277,39 @@ public:
         for (int x = 0; x < static_cast<int>(Layer::Count); x++)
         {
             target.draw(tileRenderers[x], states);
+        }
+
+        for (auto workstation : getWorkstations())
+        {
+            const auto progress = workstation->getProgress();
+            if (progress < 0.f)
+            {
+                continue;
+            }
+
+            const auto pos = locationToPosition(workstation->getLocation()) + blockSize / 2.f;
+
+            sf::RectangleShape background({blockSize.x * 0.8f, blockSize.y * 0.2f});
+            background.setOrigin({0.f, background.getSize().y});
+            background.setFillColor(sf::Color::Black);
+            background.setPosition(pos + sf::Vector2f{-background.getSize().x / 2.f, -blockSize.y * 0.4f});
+
+            auto foreground{background};
+
+            background.setOutlineColor(sf::Color::Black);
+            background.setOutlineThickness(5.f);
+            target.draw(background, states);
+
+            foreground.setScale({1.f - progress, 1.f});
+            foreground.setFillColor(sf::Color::Blue);
+            target.draw(foreground, states);
+
+            sf::Text num(Resources::get().imbPlexMono, std::to_string(workstation->getBillCount()), 30);
+            num.setFillColor(sf::Color::White);
+
+            const auto numBounds = num.getLocalBounds();
+            num.setPosition(background.getGlobalBounds().getCenter() - (numBounds.size) / 2.f - numBounds.position);
+            target.draw(num, states);
         }
 
         RootEntity::draw(target, originalStates);

@@ -3,6 +3,7 @@
 #include "block.hpp"
 #include "entity/attach-entities/tile-entity.hpp"
 #include "entity/entity.hpp"
+#include "item/item.hpp"
 #include "task/task.hpp"
 #include "world.hpp"
 
@@ -13,6 +14,8 @@ class Workstation;
 /// @brief Job for a workstation,
 struct Bill
 {
+    Item itemToMake;
+
     std::uint16_t workDone{0};
     std::uint16_t workMax;
     /// @brief Priority: 1 - lowest, 9 - highest
@@ -50,6 +53,7 @@ public:
 
     WorkstationTask(Workstation* workstation) : workstation{workstation}
     {
+        removeOnSuccess = false;
     }
 
     ActPtr start() override;
@@ -82,9 +86,24 @@ public:
         updateTask();
     }
 
+    std::size_t getBillCount() const
+    {
+        return m_bills.size();
+    }
+
+    float getProgress() const
+    {
+        if (m_bills.empty())
+        {
+            return -1.f;
+        }
+
+        return static_cast<float>(m_bills[0].workDone) / m_bills[0].workMax;
+    }
+
 private:
     WorkstationTask* m_task{};
     std::vector<Bill> m_bills;
-    std::uint16_t m_workSpeed = 5; // How much ticks per work
+    std::uint16_t m_workSpeed = 1; // How much ticks per work
     std::uint16_t m_workCtr = 0;
 };
