@@ -83,9 +83,24 @@ public:
         updateTask();
     }
 
+    std::size_t getBillCount() const
+    {
+        return m_bills.size();
+    }
+
+    float getProgress() const
+    {
+        if (m_bills.empty())
+        {
+            return -1.f;
+        }
+
+        return static_cast<float>(m_bills[0].workDone) / m_bills[0].workMax;
+    }
+
 private:
     WorkstationTask* m_task{};
     std::vector<Bill> m_bills;
-    std::uint16_t m_workSpeed = 5; // How much ticks per work
+    std::uint16_t m_workSpeed = 1; // How much ticks per work
     std::uint16_t m_workCtr = 0;
 };

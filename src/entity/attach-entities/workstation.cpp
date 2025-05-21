@@ -40,12 +40,7 @@ bool Workstation::doWork()
     if (m_bills.empty())
         return false;
 
-    m_workCtr++;
-    if (m_workCtr < m_workSpeed)
-        return false;
-
-    m_bills[0].workDone++;
-    m_workCtr = 0;
+    m_bills[0].workDone += m_workSpeed;
     if (m_bills[0].workDone >= m_bills[0].workMax)
     {
         m_bills.erase(m_bills.begin());
