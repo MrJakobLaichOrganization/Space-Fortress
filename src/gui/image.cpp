@@ -9,7 +9,7 @@ namespace
     return sf::Vector2f{static_cast<float>(desiredSize.x) / originalSize.x,
                         static_cast<float>(desiredSize.y / originalSize.y)};
 }
-}
+} // namespace
 
 Image::Image(std::string_view imgPath, sf::Vector2f position, sf::Vector2f dims, GuiElement* parent) :
     m_tx{sf::Texture::loadFromFile(std::string{imgPath}).value()},

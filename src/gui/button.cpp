@@ -89,7 +89,8 @@ void Button::onResize(sf::Vector2u newDims)
 }
 void Button::onClick(InputManager&)
 {
-    if(m_onClick){
+    if (m_onClick)
+    {
         m_onClick();
     }
 }

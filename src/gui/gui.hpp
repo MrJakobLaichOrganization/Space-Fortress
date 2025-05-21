@@ -193,11 +193,13 @@ public:
         {
             if (!element->hasFeature(FEAT_CLICKABLE))
                 continue;
-            if(manager.screenMousePos.x < element->pixelPos().x || manager.screenMousePos.y > element->pixelPos().x + element->pixelSize().x)
+            if (manager.screenMousePos.x < element->pixelPos().x ||
+                manager.screenMousePos.y > element->pixelPos().x + element->pixelSize().x)
             {
                 continue;
             }
-            if(manager.screenMousePos.y < element->pixelPos().y || manager.screenMousePos.y > element->pixelPos().y + element->pixelSize().y)
+            if (manager.screenMousePos.y < element->pixelPos().y ||
+                manager.screenMousePos.y > element->pixelPos().y + element->pixelSize().y)
             {
                 continue;
             }
