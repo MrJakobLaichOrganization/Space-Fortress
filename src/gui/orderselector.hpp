@@ -22,7 +22,7 @@ public:
 
     void draw() override
     {
-        ImGui::Begin("orders", nullptr, ImGuiWindowFlags_NoDecoration);
+        ImGui::Begin("orders", nullptr, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
         for (int idx = 0; idx < m_orders.size(); ++idx)
         {
             const auto& order = m_orders[idx];
@@ -43,6 +43,12 @@ public:
             ImGui::PopStyleVar();
             ImGui::SameLine();
         }
+
+        // Move the window to bottom middle
+        const auto size = ImGui::GetWindowSize();
+        const auto screenSize = ImGui::GetIO().DisplaySize;
+        ImGui::SetWindowPos(ImVec2{screenSize.x / 2 - size.x / 2, screenSize.y - size.y});
+        
         ImGui::End();
     }
 
