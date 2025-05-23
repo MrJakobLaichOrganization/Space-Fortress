@@ -48,7 +48,7 @@ public:
         const auto size = ImGui::GetWindowSize();
         const auto screenSize = ImGui::GetIO().DisplaySize;
         ImGui::SetWindowPos(ImVec2{screenSize.x / 2 - size.x / 2, screenSize.y - size.y});
-        
+
         ImGui::End();
     }
 
