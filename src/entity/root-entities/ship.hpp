@@ -3,6 +3,8 @@
 #include "block.hpp"
 #include "entity/attach-entities/crewmate.hpp"
 #include "entity/attach-entities/workstation.hpp"
+
+#include <random>
 //DEBUGGING
 #include "entity/attach-entities/chest.hpp"
 #include "entity/entity.hpp"
@@ -47,7 +49,7 @@ public:
     template <typename T, typename... Args>
     T& addTask(Args&&... args)
     {
-        return static_cast<T&>(*tasks.emplace_back(std::make_unique<T>(std::forward<Args...>(args)...)));
+        return static_cast<T&>(*tasks.emplace_back(std::make_unique<T>(std::forward<Args>(args)...)));
     }
 
     void removeTask(Task& task)
@@ -127,6 +129,18 @@ public:
 
         const auto targetPosition = locationToPosition({1, 4}) + Ship::blockSize / 2.f;
         addTask<MoveTask>(targetPosition);
+
+        std::random_device r;
+        std::default_random_engine e1(r());
+
+        for (int x = 0; x < 5; x++)
+        {
+            std::uniform_int_distribution<int> xDist(1, 5);
+            std::uniform_int_distribution<int> yDist(1, 6);
+
+            const auto rndPos = locationToPosition({xDist(e1), yDist(e1)}) + Ship::blockSize / 2.f;
+            addTask<MoveTask>(rndPos);
+        }
 
         b2BodyDef bodyDef;
         bodyDef.type = b2_dynamicBody;
@@ -335,9 +349,14 @@ public:
         return stations;
     }
 
-    Position locationToPosition(Location location) const
+    static Position locationToPosition(Location location)
     {
         return {location.x * blockSize.x, location.y * blockSize.y};
+    }
+
+    static Location positionToLocation(Position pos)
+    {
+        return Location{static_cast<Index>(pos.x / blockSize.x), static_cast<Index>(pos.y / blockSize.y)};
     }
 
     std::vector<Location> pathfind(Location start, Location end) const

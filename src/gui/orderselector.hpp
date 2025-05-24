@@ -22,6 +22,7 @@ public:
 
     void draw() override
     {
+        ImGui::SetNextWindowSize({0.f, 0.f});
         ImGui::Begin("orders", nullptr, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
         for (int idx = 0; idx < m_orders.size(); ++idx)
         {
@@ -69,6 +70,8 @@ private:
         {
             case OrderType::MOVE:
                 return "Move";
+            case OrderType::BUILD:
+                return "Build";
             default:
                 return "ERR_ORDER";
         }

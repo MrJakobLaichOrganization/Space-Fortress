@@ -10,7 +10,7 @@ Act::Status MoveAct::doAct(Crewmate& crewmate, sf::Time deltaTime)
     const auto ship = dynamic_cast<Ship*>(crewmate.parent);
     const auto currentPos = crewmate.getPosition();
 
-    if ((targetPos - currentPos).length() <= stepEpsilon)
+    if ((targetPos - currentPos).length() <= distance + stepEpsilon)
     {
         return Status::Success;
     }
@@ -27,7 +27,7 @@ Act::Status MoveAct::doAct(Crewmate& crewmate, sf::Time deltaTime)
         return Status::Fail;
     }
 
-    auto currentStepPosition = ship->locationToPosition(steps[0]) + Ship::blockSize / 2.f;
+    auto currentStepPosition = Ship::locationToPosition(steps[0]) + Ship::blockSize / 2.f;
     if ((currentStepPosition - currentPos).length() <= stepEpsilon)
     {
         steps.erase(steps.begin());
@@ -36,7 +36,7 @@ Act::Status MoveAct::doAct(Crewmate& crewmate, sf::Time deltaTime)
             return Status::Success;
         }
 
-        currentStepPosition = ship->locationToPosition(steps[0]) + Ship::blockSize / 2.f;
+        currentStepPosition = Ship::locationToPosition(steps[0]) + Ship::blockSize / 2.f;
     }
 
     const auto dir = currentStepPosition - currentPos;

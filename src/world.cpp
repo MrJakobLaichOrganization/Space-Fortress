@@ -5,6 +5,7 @@
 #include "entity/root-entities/ship.hpp"
 #include "gui/orderselector.hpp"
 #include "inputmanager.hpp"
+#include "task/building.hpp"
 #include "task/order.hpp"
 #include "task/task.hpp"
 #include "units.hpp"
@@ -42,7 +43,7 @@ World::World(sf::RenderWindow& window, b2Vec2 gravity) : m_gravity(gravity)
     firstShip.move({-250.f, 0.f});
     secondShip.move({250.f, 0.f});
 
-    m_windows.push_back(std::make_unique<OrderWindow>(std::vector<OrderType>{OrderType::MOVE}));
+    m_windows.push_back(std::make_unique<OrderWindow>(std::vector<OrderType>{OrderType::MOVE, OrderType::BUILD}));
 
     firstShip.rotate(sf::degrees(34.f));
 
@@ -53,6 +54,13 @@ World::World(sf::RenderWindow& window, b2Vec2 gravity) : m_gravity(gravity)
     auto& crewmate2 = createEntity<Crewmate>("crewmate #2");
     crewmate2.move({98.f, 94.f});
     firstShip.attachChild(&crewmate2);
+
+    for (int x = 0; x < 5; x++)
+    {
+        auto& c = createEntity<Crewmate>("crewmate #2");
+        c.move({98.f, 94.f});
+        (x & 1 ? firstShip : secondShip).attachChild(&c);
+    }
 
     //firstShip.addTileEntity<Thruster>("Thruster", {2, 8}, Direction::Down);
     //firstShip.addTileEntity<Thruster>("Thruster", {7, 7}, Direction::Right);
@@ -116,7 +124,7 @@ void World::update(sf::Time deltaTime, InputManager& inputManager)
             if (auto ship = dynamic_cast<Ship*>(rootEntity))
             {
                 const Location gridLocation = Crewmate::posToGridLocation(entityLocalMouse, Ship::blockSize);
-                const auto pos = ship->locationToPosition(gridLocation);
+                const auto pos = Ship::locationToPosition(gridLocation);
 
                 hoverRect.setRotation(ship->getRotation());
                 hoverRect.setPosition(ship->getTransform() * pos);
@@ -151,6 +159,10 @@ void World::dispatchGUIOrders(Ship& ship, const Position& pos)
         {
             case OrderType::MOVE:
                 ship.addTask<MoveTask>(pos);
+                break;
+
+            case OrderType::BUILD:
+                ship.addTask<BuildingTask>(Ship::positionToLocation(pos), 1.5f);
                 break;
 
             default:

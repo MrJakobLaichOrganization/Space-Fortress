@@ -31,10 +31,11 @@ public:
 class MoveAct : public Act
 {
 public:
+    Distance distance;
     Position targetPos;
     std::vector<Location> steps;
 
-    MoveAct(Position targetPos) : targetPos{targetPos}
+    MoveAct(Position targetPos, Distance distance = 0.f) : targetPos{targetPos}, distance{distance}
     {
     }
     Status doAct(Crewmate& crewmate, sf::Time deltaTime) override;
@@ -102,14 +103,15 @@ public:
 class MoveTask : public Task
 {
 public:
-    MoveTask(Position targetPos) : targetPos{targetPos}
+    MoveTask(Position targetPos, Distance distance = 0.f) : targetPos{targetPos}, distance{distance}
     {
     }
 
     ActPtr start() override
     {
-        return std::make_unique<MoveAct>(targetPos);
+        return std::make_unique<MoveAct>(targetPos, distance);
     }
 
     Position targetPos;
+    Distance distance;
 };
