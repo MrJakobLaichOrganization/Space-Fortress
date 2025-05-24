@@ -10,7 +10,7 @@ Act::Status MoveAct::doAct(Crewmate& crewmate, sf::Time deltaTime)
     const auto ship = dynamic_cast<Ship*>(crewmate.parent);
     const auto currentPos = crewmate.getPosition();
 
-    if ((targetPos - currentPos).length() <= stepEpsilon)
+    if ((targetPos - currentPos).length() <= distance + stepEpsilon)
     {
         return Status::Success;
     }

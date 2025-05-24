@@ -6,4 +6,5 @@
 enum class OrderType : std::uint8_t
 {
     MOVE,
+    BUILD
 };
