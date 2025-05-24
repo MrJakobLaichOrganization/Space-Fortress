@@ -4,7 +4,9 @@
 #include "entity/entity.hpp"
 #include "entity/root-entity.hpp"
 #include "graphics/starfield.hpp"
+#include "gui/guiwindow.hpp"
 #include "time.hpp"
+#include "units.hpp"
 
 #include <SFML/Graphics/RenderWindow.hpp>
 
@@ -106,6 +108,8 @@ public:
     sf::RectangleShape hoverRect;
 
 private:
+    void dispatchGUIOrders(class Ship& ship, const Position& pos);
+
     b2Vec2 m_gravity{0, 0};
     std::unique_ptr<b2World> m_world;
     const int32 m_velocityIterations = 6;
@@ -121,4 +125,6 @@ private:
     Entity::Id m_nextEntityId = 1;
 
     Starfield m_starfield;
+
+    std::vector<std::unique_ptr<GuiWindow>> m_windows;
 };

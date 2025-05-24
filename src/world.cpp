@@ -2,16 +2,23 @@
 
 #include "box2d-utils.hpp"
 #include "entity/attach-entities/crewmate.hpp"
-#include "entity/attach-entities/thruster.hpp"
 #include "entity/root-entities/ship.hpp"
+#include "gui/orderselector.hpp"
 #include "inputmanager.hpp"
+#include "task/order.hpp"
+#include "task/task.hpp"
+#include "units.hpp"
+
+#include <SFML/Window/Mouse.hpp>
+
+#include <SFML/System/Vector2.hpp>
 
 #include <algorithm>
-#include <exception>
 #include <format>
 #include <fstream>
 #include <imgui-SFML.h>
 #include <imgui.h>
+#include <iostream>
 
 #include <cereal/archives/json.hpp>
 
@@ -34,6 +41,8 @@ World::World(sf::RenderWindow& window, b2Vec2 gravity) : m_gravity(gravity)
     auto& secondShip = createEntity<Ship>();
     firstShip.move({-250.f, 0.f});
     secondShip.move({250.f, 0.f});
+
+    m_windows.push_back(std::make_unique<OrderWindow>(std::vector<OrderType>{OrderType::MOVE}));
 
     firstShip.rotate(sf::degrees(34.f));
 
@@ -115,6 +124,11 @@ void World::update(sf::Time deltaTime, InputManager& inputManager)
                 hoverRect.setOutlineThickness(5.f);
                 hoverRect.setOutlineColor(sf::Color::Red);
                 hoverRect.setFillColor(sf::Color::Transparent);
+
+                if (inputManager.isMousePressed(sf::Mouse::Button::Left))
+                {
+                    dispatchGUIOrders(*ship, pos);
+                }
             }
         }
     }
@@ -127,6 +141,22 @@ void World::update(sf::Time deltaTime, InputManager& inputManager)
     m_starfield.update(deltaTime, viewCenter, viewZoom);
 
     ++m_currentTimestamp;
+}
+void World::dispatchGUIOrders(Ship& ship, const Position& pos)
+{
+    const auto opt = dynamic_cast<OrderWindow*>(m_windows[0].get())->getActiveOrder();
+    if (opt)
+    {
+        switch (opt.value())
+        {
+            case OrderType::MOVE:
+                ship.addTask<MoveTask>(pos);
+                break;
+
+            default:
+                break;
+        }
+    }
 }
 
 void World::render(sf::RenderWindow& window)
@@ -141,6 +171,10 @@ void World::render(sf::RenderWindow& window)
     if (m_drawDebugInfo)
     {
         m_world->DebugDraw();
+    }
+    for (auto& window : m_windows)
+    {
+        window->draw();
     }
 
     window.draw(hoverRect);

@@ -49,6 +49,7 @@ public:
 
             const auto computedViewSpeed = World::viewSpeed * world.viewZoom * delta.asSeconds();
 
+            inputManager.update();
             while (const auto event = window.pollEvent())
             {
                 if (event->is<sf::Event::Closed>())
@@ -77,25 +78,14 @@ public:
                 }
                 else if (const auto* e = event->getIf<sf::Event::MouseButtonPressed>())
                 {
-                    if (e->button == sf::Mouse::Button::Left)
+                    if (!ImGui::GetIO().WantCaptureMouse)
                     {
-                        inputManager.leftMouseButonDown = true;
-                    }
-                    else if (e->button == sf::Mouse::Button::Right)
-                    {
-                        inputManager.rightMouseButonDown = true;
+                        inputManager.onButtonPress(e->button);
                     }
                 }
                 else if (const auto* e = event->getIf<sf::Event::MouseButtonReleased>())
                 {
-                    if (e->button == sf::Mouse::Button::Left)
-                    {
-                        inputManager.leftMouseButonDown = false;
-                    }
-                    else if (e->button == sf::Mouse::Button::Right)
-                    {
-                        inputManager.rightMouseButonDown = false;
-                    }
+                    inputManager.onButtonRelease(e->button);
                 }
                 else if (const auto* e = event->getIf<sf::Event::MouseWheelScrolled>())
                 {
@@ -139,7 +129,6 @@ public:
 
             ImGui::SFML::Update(window, delta);
 
-            inputManager.update();
             world.update(delta, inputManager);
             fpsCounter.update(delta);
 
