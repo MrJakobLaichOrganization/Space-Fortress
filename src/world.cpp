@@ -124,7 +124,7 @@ void World::update(sf::Time deltaTime, InputManager& inputManager)
             if (auto ship = dynamic_cast<Ship*>(rootEntity))
             {
                 const Location gridLocation = Crewmate::posToGridLocation(entityLocalMouse, Ship::blockSize);
-                const auto pos = ship->locationToPosition(gridLocation);
+                const auto pos = Ship::locationToPosition(gridLocation);
 
                 hoverRect.setRotation(ship->getRotation());
                 hoverRect.setPosition(ship->getTransform() * pos);

@@ -1,5 +1,7 @@
 #pragma once
 
+#include "task.hpp"
+
 class BuildingAct : public Act
 {
 public:
