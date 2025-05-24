@@ -5,7 +5,6 @@
 
 ActPtr BuildingTask::start()
 {
-    auto ship = dynamic_cast<Ship*>(worker->parent);
     const auto targetPosition = Ship::locationToPosition(location) + Ship::blockSize / 2.f;
 
     return std::make_unique<ActSequence>(std::make_unique<MoveAct>(targetPosition, Ship::blockSize.x),

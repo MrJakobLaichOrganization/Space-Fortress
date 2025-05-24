@@ -57,7 +57,6 @@ bool Workstation::doWork()
 
 ActPtr WorkstationTask::start()
 {
-    auto ship = dynamic_cast<Ship*>(workstation->parent);
     const auto targetLocation = workstation->getLocation() + directionToLocation(workstation->workStandDir);
     const auto targetPosition = Ship::locationToPosition(targetLocation) + Ship::blockSize / 2.f;
 
