@@ -3,6 +3,12 @@
 #include "entity/attach-entities/crewmate.hpp"
 #include "entity/root-entities/ship.hpp"
 
+Task::~Task(){
+    if(worker){
+        worker->currentTask = nullptr;
+    }
+}
+
 Act::Status MoveAct::doAct(Crewmate& crewmate, sf::Time deltaTime)
 {
     constexpr float stepEpsilon = 0.1f;

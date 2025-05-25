@@ -92,10 +92,7 @@ public:
 
     bool removeOnSuccess{true};
 
-    virtual ~Task()
-    {
-        assert(!worker);
-    }
+    virtual ~Task();
 
     virtual ActPtr start() = 0;
 };

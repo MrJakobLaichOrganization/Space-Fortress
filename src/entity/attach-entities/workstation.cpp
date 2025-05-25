@@ -16,8 +16,12 @@ Workstation::Workstation(World* world,
 }
 Workstation::~Workstation()
 {
+    if (m_task)
+    {
+        dynamic_cast<Ship*>(parent)->removeTask(*m_task);
+        m_task = nullptr;
+    }
     assert(!entityUsing);
-    assert(!m_task);
 }
 
 void Workstation::updateTask()

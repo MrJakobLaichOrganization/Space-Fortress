@@ -232,6 +232,9 @@ void World::destroyEntity(Entity::Id id)
     }
 
     m_idToEntity.erase(iter);
+    m_entities.erase(std::find_if(m_entities.begin(),
+                                  m_entities.end(),
+                                  [id](const std::unique_ptr<Entity>& entity) { return entity->id == id; }));
 }
 
 void World::setDebugDraw(bool on)
