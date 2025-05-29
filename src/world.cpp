@@ -43,7 +43,7 @@ World::World(sf::RenderWindow& window, b2Vec2 gravity) : m_gravity(gravity)
     firstShip.move({-250.f, 0.f});
     secondShip.move({250.f, 0.f});
 
-    m_windows.push_back(std::make_unique<OrderWindow>(std::vector<OrderType>{OrderType::MOVE, OrderType::BUILD}));
+    m_windows.push_back(std::make_unique<OrderWindow>(std::vector<OrderType>{OrderType::Move, OrderType::Build}));
 
     firstShip.rotate(sf::degrees(34.f));
 
@@ -157,11 +157,11 @@ void World::dispatchGUIOrders(Ship& ship, const Position& pos)
     {
         switch (opt.value())
         {
-            case OrderType::MOVE:
+            case OrderType::Move:
                 ship.addTask<MoveTask>(pos);
                 break;
 
-            case OrderType::BUILD:
+            case OrderType::Build:
                 ship.addTask<BuildingTask>(Ship::positionToLocation(pos), 1.5f);
                 break;
 
