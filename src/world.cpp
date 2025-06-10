@@ -2,6 +2,7 @@
 
 #include "box2d-utils.hpp"
 #include "entity/attach-entities/crewmate.hpp"
+#include "entity/entity.hpp"
 #include "entity/root-entities/ship.hpp"
 #include "gui/orderselector.hpp"
 #include "inputmanager.hpp"
@@ -20,6 +21,7 @@
 #include <imgui-SFML.h>
 #include <imgui.h>
 #include <iostream>
+#include <memory>
 
 #include <cereal/archives/json.hpp>
 
@@ -79,6 +81,15 @@ World::World(sf::RenderWindow& window, b2Vec2 gravity) : m_gravity(gravity)
 
     m_debugDraw->AppendFlags(
         b2Draw::e_shapeBit | b2Draw::e_jointBit | b2Draw::e_aabbBit | b2Draw::e_pairBit | b2Draw::e_centerOfMassBit);
+}
+World::~World()
+{
+    // Destroy root entities first
+    while (!m_rootEntities.empty())
+    {
+        destroyEntity(m_rootEntities.back()->id);
+        m_rootEntities.erase(m_rootEntities.end() - 1);
+    }
 }
 
 void World::update(sf::Time deltaTime, InputManager& inputManager)
@@ -225,16 +236,35 @@ sf::View World::makeView(const sf::RenderWindow& window) const
 
 void World::destroyEntity(Entity::Id id)
 {
+    const auto existenceChecker = [id](const std::unique_ptr<Entity>& current)
+    {
+        if (!current)
+        {
+            return false;
+        }
+        return id == current->id;
+    };
+
     auto iter = m_idToEntity.find(id);
     if (iter == m_idToEntity.end())
     {
         return;
     }
+    auto* entity = iter->second;
 
     m_idToEntity.erase(iter);
-    m_entities.erase(std::find_if(m_entities.begin(),
-                                  m_entities.end(),
-                                  [id](const std::unique_ptr<Entity>& entity) { return entity->id == id; }));
+    if (auto entityIt = std::find_if(m_entities.begin(),
+                                     m_entities.end(),
+                                     [&](const std::unique_ptr<Entity>& ptr)
+                                     {
+                                         if (!ptr)
+                                             return false;
+                                         return ptr->id == id;
+                                     });
+        entityIt != m_entities.end())
+    {
+        m_entities.erase(entityIt);
+    }
 }
 
 void World::setDebugDraw(bool on)

@@ -17,7 +17,14 @@ Crewmate::Crewmate(World* world, Id id, std::string_view name, Gender gender) :
 }
 Crewmate::~Crewmate()
 {
-    assert(!currentTask);
+    if (currentTask)
+    {
+        currentTask->worker = nullptr;
+        if (auto ship = dynamic_cast<Ship*>(parent))
+        {
+            ship->removeTask(*currentTask);
+        }
+    }
 }
 
 void Crewmate::update(sf::Time deltaTime) // NOLINT

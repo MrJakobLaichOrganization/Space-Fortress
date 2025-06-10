@@ -4,9 +4,11 @@
 #include "entity/attach-entities/crewmate.hpp"
 #include "entity/attach-entities/workstation.hpp"
 
+#include <algorithm>
 #include <random>
 //DEBUGGING
 #include "entity/attach-entities/chest.hpp"
+#include "entity/attach-entity.hpp"
 #include "entity/entity.hpp"
 #include "entity/root-entity.hpp"
 #include "graphics/tilemap.hpp"
@@ -59,7 +61,6 @@ public:
             task.worker->currentTask = nullptr;
             task.worker = nullptr;
         }
-
         std::erase_if(tasks, [&](const auto& ptr) { return ptr.get() == &task; });
     }
 
@@ -149,6 +150,14 @@ public:
 
         updatePhysicFixtures();
     }
+    ~Ship() override {
+        std::for_each(children.begin(), children.end(), [this](const AttachEntity *child){world->destroyEntity(child->id);});
+        //for(auto &child: children){
+        //    world->destroyEntity(child->id);
+        //}
+        children.clear();
+    }
+    
 
     void updatePhysicFixtures()
     {

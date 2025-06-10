@@ -9,9 +9,6 @@
 #include <SFML/Graphics/Texture.hpp>
 #include <SFML/Graphics/VertexArray.hpp>
 
-#include <atomic>
-#include <string>
-
 #include <cstdint>
 
 class TileSheet

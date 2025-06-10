@@ -18,8 +18,11 @@ Workstation::~Workstation()
 {
     if (m_task)
     {
-        dynamic_cast<Ship*>(parent)->removeTask(*m_task);
-        m_task = nullptr;
+        if (auto* ship = dynamic_cast<Ship*>(parent))
+        {
+            ship->removeTask(*m_task);
+            m_task = nullptr;
+        }
     }
     assert(!entityUsing);
 }
