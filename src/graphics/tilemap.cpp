@@ -96,8 +96,6 @@ TileSheet::TileSheet(const sf::Texture& texture, Dimension tileSize) :
     auto extraTiles = generateGenericTiles(*this);
     m_texture.update(extraTiles, sf::Vector2u(0u, texture.getSize().y));
 
-    m_texture.copyToImage().saveToFile("tilesheet.png");
-
     m_genericOffset = sf::Vector2f(0, texture.getSize().y);
     m_originalDimension = Dimension(texture.getSize()).componentWiseDiv(tileSize);
 }
