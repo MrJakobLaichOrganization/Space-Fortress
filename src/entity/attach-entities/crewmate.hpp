@@ -73,8 +73,7 @@ public:
         if (direction.length() > 0)
         {
             const auto targetAngle = direction.angle();
-            setRotation(
-                sf::radians(std::lerp(getRotation().asRadians(), targetAngle.asRadians(), 5.f * deltaTime.asSeconds())));
+            setRotation(lerp(getRotation(), targetAngle, 5.f * deltaTime.asSeconds()));
         }
     }
 

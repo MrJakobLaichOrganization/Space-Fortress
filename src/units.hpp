@@ -8,6 +8,7 @@
 #include <box2d/box2d.h>
 
 #include <cstdint>
+#include <cmath>
 
 using Index = std::int32_t;
 using Distance = float;
@@ -108,4 +109,21 @@ inline Location directionToLocation(Direction direction)
 
     assert(false);
     return {};
+}
+
+constexpr sf::Angle lerp(sf::Angle a, sf::Angle b, float t)
+{
+    auto diff = b.wrapUnsigned() - a.wrapUnsigned();
+    constexpr auto halfTurn = sf::degrees(180);
+    constexpr auto fullTurn = sf::degrees(360);
+    if (diff > halfTurn)
+    {
+        diff -= fullTurn;
+    }
+    else if (diff < -halfTurn)
+    {
+        diff += fullTurn;
+    }
+
+    return sf::radians(std::lerp(a.asRadians(), (a + diff).asRadians(), t));
 }
