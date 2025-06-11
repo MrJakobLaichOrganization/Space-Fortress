@@ -68,9 +68,9 @@ private:
     {
         switch (order)
         {
-            case OrderType::MOVE:
+            case OrderType::Move:
                 return "Move";
-            case OrderType::BUILD:
+            case OrderType::Build:
                 return "Build";
             default:
                 return "ERR_ORDER";
