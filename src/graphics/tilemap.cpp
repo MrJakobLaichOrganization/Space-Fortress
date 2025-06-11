@@ -20,17 +20,6 @@ sf::Texture generateGenericTiles(const TileSheet& tileSheet)
     const auto insideIndex = tileSize.componentWiseMul(sf::Vector2u(8, 5));
     const auto insideCornerIndex = tileSize.componentWiseMul(sf::Vector2u(9, 6));
 
-    sf::Image corner(halfSize);
-
-    sf::Image top(halfSize);
-    top.copy(sourceImg, {}, {sf::Vector2i(sideIndex), sf::Vector2i(halfSize)});
-
-    sf::Image inside(halfSize);
-    inside.copy(sourceImg, {}, {sf::Vector2i(insideIndex), sf::Vector2i(halfSize)});
-
-    sf::Image insideCorner(halfSize);
-    insideCorner.copy(sourceImg, {}, {sf::Vector2i(insideCornerIndex), sf::Vector2i(halfSize)});
-
     std::vector<sf::Image> corners(0b1000, sf::Image(halfSize));
     for (int x = 0; x < corners.size(); x++)
     {
@@ -41,23 +30,23 @@ sf::Texture generateGenericTiles(const TileSheet& tileSheet)
 
         if (!s && !t && !c)
         {
-            corners[x].copy(sourceImg, {}, {sf::Vector2i(cornerIndex), sf::Vector2i(halfSize)});
+            std::ignore = corners[x].copy(sourceImg, {}, {sf::Vector2i(cornerIndex), sf::Vector2i(halfSize)});
         }
         else if (s && t && c)
         {
-            corners[x].copy(sourceImg, {}, {sf::Vector2i(insideIndex), sf::Vector2i(halfSize)});
+            std::ignore = corners[x].copy(sourceImg, {}, {sf::Vector2i(insideIndex), sf::Vector2i(halfSize)});
         }
         else if (s && t && !c)
         {
-            corners[x].copy(sourceImg, {}, {sf::Vector2i(insideCornerIndex), sf::Vector2i(halfSize)});
+            std::ignore = corners[x].copy(sourceImg, {}, {sf::Vector2i(insideCornerIndex), sf::Vector2i(halfSize)});
         }
         else if (s && !t)
         {
-            corners[x].copy(sourceImg, {}, {sf::Vector2i(sideIndex), sf::Vector2i(halfSize)});
+            std::ignore = corners[x].copy(sourceImg, {}, {sf::Vector2i(sideIndex), sf::Vector2i(halfSize)});
         }
         else if (!s && t)
         {
-            corners[x].copy(sourceImg, {}, {sf::Vector2i(topIndex), sf::Vector2i(halfSize)});
+            std::ignore = corners[x].copy(sourceImg, {}, {sf::Vector2i(topIndex), sf::Vector2i(halfSize)});
         }
     }
 
@@ -88,9 +77,9 @@ sf::Texture generateGenericTiles(const TileSheet& tileSheet)
                     cImage.flipVertically();
                 }
 
-                result.copy(cImage,
-                            tileSize.componentWiseMul(sf::Vector2u(x, y)) + col * sf::Vector2u(halfSize.x, 0) +
-                                row * sf::Vector2u(0, halfSize.y));
+                std::ignore = result.copy(cImage,
+                                          tileSize.componentWiseMul(sf::Vector2u(x, y)) +
+                                              col * sf::Vector2u(halfSize.x, 0) + row * sf::Vector2u(0, halfSize.y));
             }
         }
     }
@@ -109,8 +98,8 @@ TileSheet::TileSheet(const sf::Texture& texture, Dimension tileSize) :
 
     m_texture.copyToImage().saveToFile("tilesheet.png");
 
-    genericOffset = sf::Vector2f(0, texture.getSize().y);
-    originalDimension = Dimension(texture.getSize()).componentWiseDiv(tileSize);
+    m_genericOffset = sf::Vector2f(0, texture.getSize().y);
+    m_originalDimension = Dimension(texture.getSize()).componentWiseDiv(tileSize);
 }
 
 TileRenderer::TileRenderer(const TileSheet& tileSheet, Bounds bounds, Size tileSize) :
