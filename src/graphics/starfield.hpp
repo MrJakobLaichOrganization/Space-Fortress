@@ -4,9 +4,8 @@
 
 class Starfield : public sf::Drawable
 {
-    mutable sf::Shader m_starFieldShader = sf::Shader::loadFromFile(ASSETS_DIR "/shaders/starfield.frag",
-                                                                    sf::Shader::Type::Fragment)
-                                               .value();
+    mutable sf::Shader m_starFieldShader{std::filesystem::path{ASSETS_DIR "/shaders/starfield.frag"},
+                                         sf::Shader::Type::Fragment};
     float m_starfieldTime{};
 
 public:

@@ -4,6 +4,7 @@
 
 #include <SFML/System/Vector2.hpp>
 
+#include <array>
 #include <box2d/box2d.h>
 
 #include <cstdint>
@@ -39,6 +40,21 @@ enum class Direction
     Down,
     Left
 };
+
+namespace Offset
+{
+static constexpr Location left{-1, 0};
+static constexpr Location topLeft{-1, -1};
+static constexpr Location top{0, -1};
+static constexpr Location topRight{1, -1};
+static constexpr Location right{1, 0};
+static constexpr Location bottomRight{1, 1};
+static constexpr Location bottom{0, 1};
+static constexpr Location bottomLeft{-1, 1};
+
+static constexpr std::array dirs8{left, topLeft, top, topRight, right, bottomRight, bottom, bottomLeft};
+
+} // namespace Offset
 
 inline sf::Angle directionToAngle(Direction direction)
 {

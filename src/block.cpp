@@ -8,7 +8,7 @@ BlockGrid::BlockGrid(Bounds bounds, TileRenderer* floorRenderer, TileRenderer* w
     m_mainRenderer{wallRenderer}
 {
 
-    const auto airIdx = m_blockArchetypes[0].tilemapIdx;
+    const auto airIdx = m_blockArchetypes[0].tileDef;
     for (Index x = 0; x < getBounds().size.x; x++)
     {
         for (Index y = 0; y < getBounds().size.y; y++)
@@ -26,7 +26,7 @@ void BlockGrid::setBlockType(BlockArchetypeIndex blockType, Location loc, Direct
 
     if (m_mainRenderer)
     {
-        m_mainRenderer->setTile(loc, {getBlockArchetype(loc).tilemapIdx, dir});
+        m_mainRenderer->setTile(loc, {getBlockArchetype(loc).tileDef, dir});
     }
 }
 void BlockGrid::setBlockType(std::string_view archetypeName, Location loc, Direction dir)
@@ -40,7 +40,7 @@ void BlockGrid::clearBlockType(Location loc)
 
     if (m_mainRenderer)
     {
-        m_mainRenderer->setTile(loc, {getBlockArchetype(loc).tilemapIdx, Direction::Up});
+        m_mainRenderer->setTile(loc, {getBlockArchetype(loc).tileDef, Direction::Up});
     }
 }
 
@@ -50,7 +50,7 @@ void BlockGrid::setFloorType(BlockArchetypeIndex blockType, Location loc)
 
     if (m_floorRenderer)
     {
-        m_floorRenderer->setTile(loc, {getFloorArchetype(loc).tilemapIdx});
+        m_floorRenderer->setTile(loc, {getFloorArchetype(loc).tileDef});
     }
 }
 void BlockGrid::setFloorType(std::string_view archetypeName, Location loc)

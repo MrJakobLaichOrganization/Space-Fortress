@@ -84,18 +84,18 @@ public:
     {
         const auto floorTile = grid.getBlockArchetypeIdx("Floor");
 
-        grid.setBlockType(grid.getBlockArchetypeIdx("Wall_TL"), {0, 0});
-        grid.setBlockType(grid.getBlockArchetypeIdx("Wall_TR"), {6, 0});
+        grid.setBlockType(grid.getBlockArchetypeIdx("Wall"), {0, 0});
+        grid.setBlockType(grid.getBlockArchetypeIdx("Wall"), {6, 0});
 
-        grid.setBlockType(grid.getBlockArchetypeIdx("Wall_BL"), {0, 7});
-        grid.setBlockType(grid.getBlockArchetypeIdx("Wall_BR"), {6, 7});
+        grid.setBlockType(grid.getBlockArchetypeIdx("Wall"), {0, 7});
+        grid.setBlockType(grid.getBlockArchetypeIdx("Wall"), {6, 7});
 
         for (Index x = 0; x < 5; x++)
         {
-            grid.setBlockType(grid.getBlockArchetypeIdx("Wall_MU"), {x + 1, 0});
-            grid.setBlockType(grid.getBlockArchetypeIdx("Wall_MD"), {x + 1, 7});
-            grid.setBlockType(grid.getBlockArchetypeIdx("Wall_ML"), {0, x + 1});
-            grid.setBlockType(grid.getBlockArchetypeIdx("Wall_MR"), {6, x + 1});
+            grid.setBlockType(grid.getBlockArchetypeIdx("Wall"), {x + 1, 0});
+            grid.setBlockType(grid.getBlockArchetypeIdx("Wall"), {x + 1, 7});
+            grid.setBlockType(grid.getBlockArchetypeIdx("Wall"), {0, x + 1});
+            grid.setBlockType(grid.getBlockArchetypeIdx("Wall"), {6, x + 1});
             for (Index y = 0; y < 5; y++)
             {
                 grid.setFloorType(floorTile, {x + 1, y + 2});
@@ -106,11 +106,11 @@ public:
         {
             for (Index x = 0; x < 4; x++)
             {
-                grid.setBlockType(grid.getBlockArchetypeIdx("Wall_MU"), {x + 1, 2});
+                grid.setBlockType(grid.getBlockArchetypeIdx("Wall"), {x + 1, 2});
             }
             for (Index x = 0; x < 4; x++)
             {
-                grid.setBlockType(grid.getBlockArchetypeIdx("Wall_MU"), {0 - x, 2});
+                grid.setBlockType(grid.getBlockArchetypeIdx("Wall"), {0 - x, 2});
             }
         }
 
@@ -122,8 +122,8 @@ public:
 
         addTileEntity<Chest>("Chest", {4, 3}, Direction::Up, 100);
 
-        grid.setBlockType(grid.getBlockArchetypeIdx("Wall_ML"), {0, 6});
-        grid.setBlockType(grid.getBlockArchetypeIdx("Wall_MR"), {6, 6});
+        grid.setBlockType(grid.getBlockArchetypeIdx("Wall"), {0, 6});
+        grid.setBlockType(grid.getBlockArchetypeIdx("Wall"), {6, 6});
 
         grid.setBlockType(grid.getBlockArchetypeIdx("DoorClosed"), {2, 0});
 
@@ -332,6 +332,11 @@ public:
     void update(sf::Time delta) override
     {
         RootEntity::update(delta);
+
+        for (auto& tileRenderer : tileRenderers)
+        {
+            tileRenderer.updateRenderData();
+        }
     }
 
     std::vector<Workstation*> getWorkstations() const
