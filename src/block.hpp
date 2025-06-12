@@ -18,15 +18,8 @@ struct BlockArchetype
     static constexpr std::uint32_t airIndex = 0;
     std::string name;
     std::string description;
-    // index of the tile in tilesheet
-    std::uint32_t tilemapIdx{};
+    TileSheet::TileDef tileDef{};
     bool solid = true;
-
-    template <class Archive>
-    void serialize(Archive& ar)
-    {
-        ar(name, description, tilemapIdx, solid);
-    }
 };
 struct BlockData
 {
@@ -67,10 +60,20 @@ public:
     [[nodiscard]] const BlockData& getBlockData(Location loc) const;
     [[nodiscard]] BlockData& getBlockData(Location loc);
 
-    static void loadArchetypes(cereal::JSONInputArchive& ar)
+    static void loadArchetypes()
     {
-        m_blockArchetypes.clear();
-        ar(m_blockArchetypes); // NOLINT
+        m_blockArchetypes = {{"Air", "", {14}, false},
+                             {"Thruster", "", {80}, true},
+                             {"Wall", "", {3, true}, true},
+                             {"Floor", "", {11}, false},
+                             {"DoorLocked", "", {57}, true},
+                             {"DoorClosed", "", {26}, true},
+                             {"DoorOpen", "", {27}, false},
+                             {"FloorDrain", "", {30}, false},
+                             {"TableEmpty", "", {39}, true},
+                             {"TablePapers", "", {29}, true},
+                             {"Chair", "", {16}, false},
+                             {"Chest", "", {33}, true}};
     }
 
 private:

@@ -17,18 +17,28 @@
 class TileSheet
 {
 public:
-    using TileIndex = std::uint32_t;
-
-    TileSheet(const sf::Texture& texture, Dimension tileSize) : m_texture{texture}, m_tileSize{tileSize}
+    struct TileDef
     {
-    }
+        std::uint16_t index;
+        bool isGeneric{};
+        std::uint8_t atlasIndex{};
 
-    [[nodiscard]] sf::FloatRect getTileRect(TileIndex tileIndex) const
+        bool operator==(const TileDef&) const = default;
+    };
+
+    TileSheet(const sf::Texture& texture, Dimension tileSize);
+
+    [[nodiscard]] sf::FloatRect getTileRect(std::uint16_t index) const
     {
         const sf::Vector2f tileSize{m_tileSize};
-        return {sf::Vector2f(tileIndex % (m_texture.getSize().x / m_tileSize.x) * m_tileSize.x,
-                             tileIndex / (m_texture.getSize().x / m_tileSize.x) * m_tileSize.y),
+        return {sf::Vector2f(index % m_originalDimension.x * m_tileSize.x, index / m_originalDimension.x * m_tileSize.y),
                 tileSize};
+    }
+
+    [[nodiscard]] sf::FloatRect getGenericRect(std::uint16_t index) const
+    {
+        const sf::Vector2f tileSize{m_tileSize};
+        return {m_genericOffset + sf::Vector2f(index % 16 * m_tileSize.x, index / 16 * m_tileSize.y), tileSize};
     }
 
     [[nodiscard]] const sf::Texture& getTexture() const
@@ -37,8 +47,11 @@ public:
     }
 
 private:
-    const sf::Texture& m_texture;
+    sf::Texture m_texture;
     sf::Vector2u m_tileSize;
+
+    Dimension m_originalDimension;
+    sf::Vector2f m_genericOffset;
 };
 
 class TileRenderer : public sf::Drawable
@@ -46,8 +59,9 @@ class TileRenderer : public sf::Drawable
 public:
     struct Tile
     {
-        TileSheet::TileIndex index{};
+        TileSheet::TileDef def{};
         Direction direction{};
+        bool isDirty{};
 
         bool operator==(const Tile&) const = default;
     };
@@ -55,6 +69,7 @@ public:
     TileRenderer(const TileSheet& tileSheet, Bounds bounds, Size tileSize);
 
     void setTile(Location loc, Tile tile);
+    void updateRenderData();
 
 private:
     const TileSheet& m_tileSheet;

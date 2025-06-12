@@ -21,7 +21,7 @@ Act::Status BuildingAct::doAct(Crewmate& crewmate, sf::Time time)
     if (duration <= 0.f)
     {
         auto ship = dynamic_cast<Ship*>(crewmate.parent);
-        ship->grid.setBlockType("Wall_TL", location);
+        ship->grid.setBlockType("Wall", location);
 
         return Status::Success;
     }

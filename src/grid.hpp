@@ -116,6 +116,21 @@ public:
         return (loc.y - m_bounds.position.y) * m_bounds.size.x + (loc.x - m_bounds.position.x);
     }
 
+    template <typename F>
+    void forEach(const F& func)
+    {
+        const auto end = m_bounds.position + m_bounds.size;
+        auto* cell = m_data.data();
+        for (Index y = m_bounds.position.y; y < end.y; y++)
+        {
+            for (Index x = m_bounds.position.x; x < end.x; x++)
+            {
+                const Location loc{x, y};
+                func(*(cell++), loc);
+            }
+        }
+    }
+
 private:
     [[nodiscard]] Index getCount() const
     {

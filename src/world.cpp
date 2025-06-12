@@ -26,15 +26,7 @@
 World::World(sf::RenderWindow& window, b2Vec2 gravity) : m_gravity(gravity)
 {
     {
-        // Load the block grid archetypes
-        std::ifstream file(CONFIG_DIR "/block_types.json");
-        if (!file.is_open())
-        {
-            throw std::ios_base::failure("Couldn't open '" CONFIG_DIR "/block_types.json'");
-        }
-        cereal::JSONInputArchive archive{file};
-        BlockGrid::loadArchetypes(archive);
-        file.close();
+        BlockGrid::loadArchetypes();
     }
 
     m_world = std::make_unique<b2World>(m_gravity);
