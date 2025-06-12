@@ -251,11 +251,8 @@ void World::destroyEntity(Entity::Id id)
         return;
     }
     m_idToEntity.erase(iter);
-    
-    if (auto entityIt = std::find_if(m_entities.begin(),
-                                     m_entities.end(),
-                                     existenceChecker);
-        entityIt != m_entities.end())
+
+    if (auto entityIt = std::find_if(m_entities.begin(), m_entities.end(), existenceChecker); entityIt != m_entities.end())
     {
         m_entities.erase(entityIt);
     }
