@@ -88,7 +88,6 @@ World::~World()
     while (!m_rootEntities.empty())
     {
         destroyEntity(m_rootEntities.back()->id);
-        m_rootEntities.erase(m_rootEntities.end() - 1);
     }
 }
 
@@ -250,12 +249,18 @@ void World::destroyEntity(Entity::Id id)
     {
         return;
     }
-    m_idToEntity.erase(iter);
 
-    if (auto entityIt = std::find_if(m_entities.begin(), m_entities.end(), existenceChecker); entityIt != m_entities.end())
+    if (auto rootIt = std::ranges::find(m_rootEntities, iter->second); rootIt != m_rootEntities.end())
+    {
+        m_rootEntities.erase(rootIt);
+    }
+
+    if (auto entityIt = std::ranges::find(m_entities, iter->second, &std::unique_ptr<Entity>::get); entityIt != m_entities.end())
     {
         m_entities.erase(entityIt);
     }
+
+    m_idToEntity.erase(iter);
 }
 
 void World::setDebugDraw(bool on)

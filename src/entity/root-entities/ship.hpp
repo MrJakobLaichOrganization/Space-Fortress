@@ -150,12 +150,13 @@ public:
 
         updatePhysicFixtures();
     }
+
     ~Ship() override
     {
-        std::for_each(children.begin(),
-                      children.end(),
-                      [this](const AttachEntity* child) { world->destroyEntity(child->id); });
-        children.clear();
+        while (!children.empty())
+        {
+            world->destroyEntity(children.back()->id);
+        }
     }
 
 

@@ -24,7 +24,6 @@ Workstation::~Workstation()
             m_task = nullptr;
         }
     }
-    assert(!entityUsing);
 }
 
 void Workstation::updateTask()
@@ -41,7 +40,7 @@ void Workstation::updateTask()
     }
 }
 
-bool Workstation::doWork()
+bool Workstation::doWork(Crewmate& worker)
 {
     if (m_bills.empty())
         return false;
@@ -50,10 +49,7 @@ bool Workstation::doWork()
     bill.workDone += m_workSpeed;
     if (bill.workDone >= bill.workMax)
     {
-        if (auto worker = dynamic_cast<Crewmate*>(world->findEntity(entityUsing)))
-        {
-            worker->inventory.add(bill.itemToMake.type, bill.itemToMake.count);
-        }
+        worker.inventory.add(bill.itemToMake.type, bill.itemToMake.count);
 
         m_bills.erase(m_bills.begin());
         updateTask();
@@ -71,14 +67,22 @@ ActPtr WorkstationTask::start()
                                          std::make_unique<WorkstationAct>(workstation));
 }
 
+WorkstationTask::~WorkstationTask()
+{
+    if (workstation)
+    {
+        workstation->m_task = nullptr;
+        workstation = nullptr;
+    }
+}
+
 WorkstationAct::WorkstationAct(Workstation* workstation) : workstation{workstation}
 {
 }
 
 Act::Status WorkstationAct::doAct(Crewmate& crewmate, sf::Time)
 {
-    workstation->entityUsing = crewmate.id;
-    if (workstation->doWork())
+    if (workstation->doWork(crewmate))
     {
         return Status::Success;
     }

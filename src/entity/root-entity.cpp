@@ -6,10 +6,11 @@
 
 RootEntity::~RootEntity()
 {
-    for (auto& child : children)
+    while (!children.empty())
     {
-        world->destroyEntity(child->id);
+        world->destroyEntity(children.back()->id);
     }
+    assert(children.empty());
 }
 
 void RootEntity::attachChild(AttachEntity* child)

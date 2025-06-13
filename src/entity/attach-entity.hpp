@@ -21,4 +21,6 @@ public:
 
     AttachEntity(const AttachEntity&) = delete;
     AttachEntity(AttachEntity&&) = default;
+
+    ~AttachEntity();
 };
