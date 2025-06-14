@@ -57,12 +57,13 @@ public:
     }
 
     ActPtr start() override;
+
+    ~WorkstationTask();
 };
 
 class Workstation : public TileEntity
 {
 public:
-    Entity::Id entityUsing{0};
     Direction workStandDir;
 
     Workstation(World* world,
@@ -76,7 +77,7 @@ public:
 
     /// @brief Does work on the current bill
     /// @return finished the bill
-    bool doWork();
+    bool doWork(class Crewmate& worker);
 
     void updateTask();
 
@@ -104,6 +105,7 @@ public:
 private:
     WorkstationTask* m_task{};
     std::vector<Bill> m_bills;
-    std::uint16_t m_workSpeed = 1; // How much ticks per work
-    std::uint16_t m_workCtr = 0;
+    std::uint16_t m_workSpeed = 1; // How much work per tick
+
+    friend class WorkstationTask;
 };

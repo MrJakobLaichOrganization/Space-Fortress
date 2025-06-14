@@ -23,44 +23,15 @@ public:
     RootEntity(const RootEntity&) = delete;
     RootEntity(RootEntity&&) = default;
 
-    void attachChild(AttachEntity* child)
-    {
-        child->parent = this;
-        children.push_back(child);
-    }
+    ~RootEntity() override;
 
-    virtual void prePhysics()
-    {
-        if (body)
-        {
-            body->SetTransform(toBox2d(getPosition()), getRotation().asRadians());
-        }
-    }
+    void attachChild(AttachEntity* child);
 
-    virtual void postPhysics()
-    {
-        if (body)
-        {
-            setPosition(toSFML(body->GetPosition()));
-            setRotation(sf::radians(body->GetAngle()));
-        }
-    }
+    virtual void prePhysics();
 
-    void update(sf::Time deltaTime) override
-    {
-        for (auto& entity : children)
-        {
-            entity->update(deltaTime);
-        }
-    }
+    virtual void postPhysics();
 
-    void draw(sf::RenderTarget& target, sf::RenderStates states) const override
-    {
-        states.transform *= getTransform();
+    void update(sf::Time deltaTime) override;
 
-        for (const auto& entity : children)
-        {
-            entity->draw(target, states);
-        }
-    }
+    void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 };

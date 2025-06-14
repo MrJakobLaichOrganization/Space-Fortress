@@ -2,6 +2,7 @@
 
 #include "box2d-utils.hpp"
 #include "entity/attach-entities/crewmate.hpp"
+#include "entity/entity.hpp"
 #include "entity/root-entities/ship.hpp"
 #include "gui/orderselector.hpp"
 #include "inputmanager.hpp"
@@ -20,6 +21,7 @@
 #include <imgui-SFML.h>
 #include <imgui.h>
 #include <iostream>
+#include <memory>
 
 #include <cereal/archives/json.hpp>
 
@@ -71,6 +73,14 @@ World::World(sf::RenderWindow& window, b2Vec2 gravity) : m_gravity(gravity)
 
     m_debugDraw->AppendFlags(
         b2Draw::e_shapeBit | b2Draw::e_jointBit | b2Draw::e_aabbBit | b2Draw::e_pairBit | b2Draw::e_centerOfMassBit);
+}
+World::~World()
+{
+    // Destroy root entities first
+    while (!m_rootEntities.empty())
+    {
+        destroyEntity(m_rootEntities.back()->id);
+    }
 }
 
 void World::update(sf::Time deltaTime, InputManager& inputManager)
@@ -217,10 +227,29 @@ sf::View World::makeView(const sf::RenderWindow& window) const
 
 void World::destroyEntity(Entity::Id id)
 {
+    const auto existenceChecker = [id](const std::unique_ptr<Entity>& current)
+    {
+        if (!current)
+        {
+            return false;
+        }
+        return id == current->id;
+    };
+
     auto iter = m_idToEntity.find(id);
     if (iter == m_idToEntity.end())
     {
         return;
+    }
+
+    if (auto rootIt = std::ranges::find(m_rootEntities, iter->second); rootIt != m_rootEntities.end())
+    {
+        m_rootEntities.erase(rootIt);
+    }
+
+    if (auto entityIt = std::ranges::find(m_entities, iter->second, &std::unique_ptr<Entity>::get); entityIt != m_entities.end())
+    {
+        m_entities.erase(entityIt);
     }
 
     m_idToEntity.erase(iter);

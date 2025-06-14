@@ -17,6 +17,14 @@ Crewmate::Crewmate(World* world, Id id, std::string_view name, Gender gender) :
 }
 Crewmate::~Crewmate()
 {
+    if (currentTask)
+    {
+        if (auto ship = dynamic_cast<Ship*>(parent))
+        {
+            ship->removeTask(*currentTask);
+        }
+    }
+
     assert(!currentTask);
 }
 

@@ -31,7 +31,7 @@ public:
     float viewZoom = 1.5f;
 
     World(sf::RenderWindow& wind, b2Vec2 gravity = b2Vec2{0, 0});
-    ~World() = default;
+    ~World();
 
     void update(sf::Time deltaTime, class InputManager& inputManager);
     void render(sf::RenderWindow& window);

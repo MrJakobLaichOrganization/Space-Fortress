@@ -1,15 +1,11 @@
 #pragma once
 
-#include "block.hpp"
 #include "units.hpp"
 
 #include <SFML/System/Time.hpp>
 
-#include <algorithm>
 #include <memory>
-#include <optional>
 #include <utility>
-#include <variant>
 #include <vector>
 
 class Crewmate;
@@ -92,10 +88,7 @@ public:
 
     bool removeOnSuccess{true};
 
-    virtual ~Task()
-    {
-        assert(!worker);
-    }
+    virtual ~Task() = default;
 
     virtual ActPtr start() = 0;
 };
