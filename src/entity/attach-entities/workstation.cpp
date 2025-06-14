@@ -21,9 +21,10 @@ Workstation::~Workstation()
         if (auto* ship = dynamic_cast<Ship*>(parent))
         {
             ship->removeTask(*m_task);
-            m_task = nullptr;
         }
     }
+
+    assert(!m_task);
 }
 
 void Workstation::updateTask()
