@@ -19,12 +19,13 @@ Crewmate::~Crewmate()
 {
     if (currentTask)
     {
-        currentTask->worker = nullptr;
         if (auto ship = dynamic_cast<Ship*>(parent))
         {
             ship->removeTask(*currentTask);
         }
     }
+
+    assert(!currentTask);
 }
 
 void Crewmate::update(sf::Time deltaTime) // NOLINT
